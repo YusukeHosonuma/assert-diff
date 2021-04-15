@@ -4,7 +4,7 @@
   <meta charset="utf-8" />
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="generator" content="Crystal Docs 0.36.1">
-<meta name="crystal_docs.project_version" content="main-dev">
+<meta name="crystal_docs.project_version" content="feature/print">
 <meta name="crystal_docs.project_name" content="assert-diff">
 
 
@@ -13,7 +13,7 @@
 <script type="text/javascript" src="js/doc.js"></script>
 
   <meta name="repository-name" content="assert-diff">
-  <title>Top Level Namespace - assert-diff main-dev</title>
+  <title>Top Level Namespace - assert-diff feature/print</title>
   <script type="text/javascript">
     CrystalDocs.base_path = "";
   </script>
@@ -39,7 +39,7 @@
       </h1>
 
       <span class="project-version">
-        main-dev
+        feature/print
       </span>
     </div>
   </div>
@@ -126,6 +126,20 @@
         
       </li>
     
+      <li class="entry-summary">
+        <a href="#print_diff(before,after,io:IO=STDOUT)-class-method" class="signature"><strong>print_diff</strong>(before, after, io : IO = <span class="t">STDOUT</span>)</a>
+        
+          <div class="summary"><p>Print diff to <em>io</em>.</p></div>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#print_diff_full(before,after,io:IO=STDOUT)-class-method" class="signature"><strong>print_diff_full</strong>(before, after, io : IO = <span class="t">STDOUT</span>)</a>
+        
+          <div class="summary"><p>Print full diff to <em>io</em>.</p></div>
+        
+      </li>
+    
   </ul>
 
 
@@ -202,6 +216,8 @@ describe <span class="t">Rectangle</span> <span class="k">do</span>
       <br/>
       <div>
         
+          [<a href="https://github.com/YusukeHosonuma/assert-diff/blob/1c369996577020b2ecb2408e7e10383706ebf6f3/src/assert-diff/assert.cr#L40" target="_blank">View source</a>]
+        
       </div>
     </div>
   
@@ -252,6 +268,83 @@ describe <span class="t">Rectangle</span> <span class="k">do</span>
       
       <br/>
       <div>
+        
+          [<a href="https://github.com/YusukeHosonuma/assert-diff/blob/1c369996577020b2ecb2408e7e10383706ebf6f3/src/assert-diff/assert.cr#L83" target="_blank">View source</a>]
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="print_diff(before,after,io:IO=STDOUT)-class-method">
+      <div class="signature">
+        
+        def <strong>print_diff</strong>(before, after, io : IO = <span class="t">STDOUT</span>)
+
+        <a class="method-permalink" href="#print_diff(before,after,io:IO=STDOUT)-class-method">#</a>
+      </div>
+      
+        <div class="doc">
+          
+          <p>Print diff to <em>io</em>.</p>
+
+<p>Consecutive no-changed are ommited like "...".
+Use <code><a href="toplevel.html#assert_diff_full(before:A,after:B,file=__FILE__,line=__LINE__)forallA,B-class-method">.assert_diff_full</a></code> if you need full-report.</p>
+
+<pre><code class="language-crystal">a <span class="o">=</span> <span class="t">Rectangle</span>.<span class="k">new</span>(<span class="t">Point</span>.<span class="k">new</span>(<span class="n">0</span>, <span class="n">0</span>), <span class="n">4</span>, <span class="n">3</span>)
+b <span class="o">=</span> <span class="t">Rectangle</span>.<span class="k">new</span>(<span class="t">Point</span>.<span class="k">new</span>(<span class="n">0</span>, <span class="n">1</span>), <span class="n">4</span>, <span class="n">7</span>)
+print_diff(a, b)
+<span class="c"># =&gt;</span>
+<span class="c">#   {</span>
+<span class="c"># -   height: 3,</span>
+<span class="c"># +   height: 7,</span>
+<span class="c">#     origin: {</span>
+<span class="c">#       ...</span>
+<span class="c"># -     y: 0,</span>
+<span class="c"># +     y: 1,</span>
+<span class="c">#     },</span>
+<span class="c">#     ...</span>
+<span class="c">#   }</span></code></pre>
+        </div>
+      
+      <br/>
+      <div>
+        
+          [<a href="https://github.com/YusukeHosonuma/assert-diff/blob/1c369996577020b2ecb2408e7e10383706ebf6f3/src/assert-diff/methods.cr#L24" target="_blank">View source</a>]
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="print_diff_full(before,after,io:IO=STDOUT)-class-method">
+      <div class="signature">
+        
+        def <strong>print_diff_full</strong>(before, after, io : IO = <span class="t">STDOUT</span>)
+
+        <a class="method-permalink" href="#print_diff_full(before,after,io:IO=STDOUT)-class-method">#</a>
+      </div>
+      
+        <div class="doc">
+          
+          <p>Print full diff to <em>io</em>.</p>
+
+<pre><code class="language-crystal">a <span class="o">=</span> <span class="t">Rectangle</span>.<span class="k">new</span>(<span class="t">Point</span>.<span class="k">new</span>(<span class="n">0</span>, <span class="n">0</span>), <span class="n">4</span>, <span class="n">3</span>)
+b <span class="o">=</span> <span class="t">Rectangle</span>.<span class="k">new</span>(<span class="t">Point</span>.<span class="k">new</span>(<span class="n">0</span>, <span class="n">1</span>), <span class="n">4</span>, <span class="n">7</span>)
+print_diff_full(a, b)
+<span class="c"># =&gt;</span>
+<span class="c"># {</span>
+<span class="c"># -   height: 3,</span>
+<span class="c"># +   height: 7,</span>
+<span class="c">#     origin: {</span>
+<span class="c">#       x: 0,</span>
+<span class="c"># -     y: 0,</span>
+<span class="c"># +     y: 1,</span>
+<span class="c">#     },</span>
+<span class="c">#     width: 4,</span>
+<span class="c"># }</span></code></pre>
+        </div>
+      
+      <br/>
+      <div>
+        
+          [<a href="https://github.com/YusukeHosonuma/assert-diff/blob/1c369996577020b2ecb2408e7e10383706ebf6f3/src/assert-diff/methods.cr#L46" target="_blank">View source</a>]
         
       </div>
     </div>

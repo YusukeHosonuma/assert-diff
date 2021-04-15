@@ -4,7 +4,7 @@
   <meta charset="utf-8" />
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="generator" content="Crystal Docs 0.36.1">
-<meta name="crystal_docs.project_version" content="main-dev">
+<meta name="crystal_docs.project_version" content="feature/print">
 <meta name="crystal_docs.project_name" content="assert-diff">
 
 
@@ -13,7 +13,7 @@
 <script type="text/javascript" src="js/doc.js"></script>
 
   <meta name="repository-name" content="assert-diff">
-  <title>assert-diff main-dev</title>
+  <title>assert-diff feature/print</title>
   <script type="text/javascript">
   CrystalDocs.base_path = "";
   </script>
@@ -39,7 +39,7 @@
       </h1>
 
       <span class="project-version">
-        main-dev
+        feature/print
       </span>
     </div>
   </div>
@@ -97,6 +97,8 @@
   </svg>
 </a>Example</h2>
 
+<p>Use in specs:</p>
+
 <pre><code class="language-crystal"><span class="k">require</span> <span class="s">&quot;assert-diff&quot;</span>
 
 <span class="k">struct</span> <span class="t">Rectangle</span>
@@ -131,6 +133,11 @@ describe <span class="t">Rectangle</span> <span class="k">do</span>
 <span class="c">#               }</span>
 <span class="c">#               ...</span>
 <span class="c">#             }</span></code></pre>
+
+<p>Use to output:</p>
+
+<pre><code class="language-crystal">print_diff(a, b)
+print_diff_full(a, b)</code></pre>
 
 <h2><a id="contributing" class="anchor" href="#contributing">
   <svg class="octicon-link" aria-hidden="true">
