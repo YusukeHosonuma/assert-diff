@@ -1,0 +1,272 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="generator" content="Crystal Docs 0.36.1">
+<meta name="crystal_docs.project_version" content="extension-tests">
+<meta name="crystal_docs.project_name" content="diff">
+
+
+
+<link href="css/style.css" rel="stylesheet" type="text/css" />
+<script type="text/javascript" src="js/doc.js"></script>
+
+  <meta name="repository-name" content="diff">
+  <title>Top Level Namespace - diff extension-tests</title>
+  <script type="text/javascript">
+    CrystalDocs.base_path = "";
+  </script>
+</head>
+<body>
+
+<svg class="hidden">
+  <symbol id="octicon-link" viewBox="0 0 16 16">
+    <path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path>
+  </symbol>
+</svg>
+<div class="sidebar">
+  <div class="sidebar-header">
+    <div class="search-box">
+      <input type="search" class="search-input" placeholder="Search..." spellcheck="false" aria-label="Search">
+    </div>
+
+    <div class="project-summary">
+      <h1 class="project-name">
+        <a href="index.html">
+          diff
+        </a>
+      </h1>
+
+      <span class="project-version">
+        extension-tests
+      </span>
+    </div>
+  </div>
+
+  <div class="search-results hidden">
+    <ul class="search-list"></ul>
+  </div>
+
+  <div class="types-list">
+    <ul>
+  
+  <li class=" current" data-id="diff/toplevel" data-name="top level namespace">
+      <a href="toplevel.html">Top Level Namespace</a>
+      
+    </li>
+  
+</ul>
+
+  </div>
+</div>
+
+
+<div class="main-content">
+<h1 class="type-name">
+
+  Top Level Namespace
+
+</h1>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  <h2>
+    <a id="defined-in" class="anchor" href="#defined-in">
+  <svg class="octicon-link" aria-hidden="true">
+    <use href="#octicon-link"/>
+  </svg>
+</a>
+    Defined in:
+  </h2>
+  
+
+
+
+
+
+
+
+  <h2>
+    <a id="method-summary" class="anchor" href="#method-summary">
+  <svg class="octicon-link" aria-hidden="true">
+    <use href="#octicon-link"/>
+  </svg>
+</a>
+    Method Summary
+  </h2>
+  <ul class="list-summary">
+    
+      <li class="entry-summary">
+        <a href="#assert_diff(before:A,after:B,file=__FILE__,line=__LINE__)forallA,B-class-method" class="signature"><strong>assert_diff</strong>(before : A, after : B, file = __FILE__, line = __LINE__) forall A, B</a>
+        
+          <div class="summary"><p>Assert equals with diff report.</p></div>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#assert_diff_full(before:A,after:B,file=__FILE__,line=__LINE__)forallA,B-class-method" class="signature"><strong>assert_diff_full</strong>(before : A, after : B, file = __FILE__, line = __LINE__) forall A, B</a>
+        
+          <div class="summary"><p>Assert equals with full diff report.</p></div>
+        
+      </li>
+    
+  </ul>
+
+
+
+
+
+
+
+<div class="methods-inherited">
+  
+</div>
+
+
+
+
+  <h2>
+    <a id="method-detail" class="anchor" href="#method-detail">
+  <svg class="octicon-link" aria-hidden="true">
+    <use href="#octicon-link"/>
+  </svg>
+</a>
+    Method Detail
+  </h2>
+  
+    <div class="entry-detail" id="assert_diff(before:A,after:B,file=__FILE__,line=__LINE__)forallA,B-class-method">
+      <div class="signature">
+        
+        def <strong>assert_diff</strong>(before : A, after : B, file = __FILE__, line = __LINE__) forall A, B
+
+        <a class="method-permalink" href="#assert_diff(before:A,after:B,file=__FILE__,line=__LINE__)forallA,B-class-method">#</a>
+      </div>
+      
+        <div class="doc">
+          
+          <p>Assert equals with diff report.</p>
+
+<p>Consecutive no-changed are ommited like "...".
+Use <code><a href="toplevel.html#assert_diff_full(before:A,after:B,file=__FILE__,line=__LINE__)forallA,B-class-method">.assert_diff_full</a></code> if you need full-report.</p>
+
+<pre><code class="language-crystal"><span class="k">struct</span> <span class="t">Rectangle</span>
+  <span class="k">def</span> <span class="m">initialize</span>(@origin : <span class="t">Point</span>, @width : <span class="t">Int32</span>, @height : <span class="t">Int32</span>)
+  <span class="k">end</span>
+<span class="k">end</span>
+
+<span class="k">struct</span> <span class="t">Point</span>
+  <span class="k">def</span> <span class="m">initialize</span>(@x : <span class="t">Int32</span>, @y : <span class="t">Int32</span>)
+  <span class="k">end</span>
+<span class="k">end</span>
+
+describe <span class="t">Rectangle</span> <span class="k">do</span>
+  describe <span class="s">&quot;example&quot;</span> <span class="k">do</span>
+    it <span class="s">&quot;failed&quot;</span> <span class="k">do</span>
+      a <span class="o">=</span> <span class="t">Rectangle</span>.<span class="k">new</span>(<span class="t">Point</span>.<span class="k">new</span>(<span class="n">0</span>, <span class="n">0</span>), <span class="n">4</span>, <span class="n">3</span>)
+      b <span class="o">=</span> <span class="t">Rectangle</span>.<span class="k">new</span>(<span class="t">Point</span>.<span class="k">new</span>(<span class="n">0</span>, <span class="n">1</span>), <span class="n">4</span>, <span class="n">7</span>)
+      assert_diff(a, b)
+    <span class="k">end</span>
+  <span class="k">end</span>
+<span class="k">end</span>
+
+<span class="c"># Expected: {&quot;origin&quot; =&gt; {&quot;x&quot; =&gt; 0, &quot;y&quot; =&gt; 1}, &quot;width&quot; =&gt; 4, &quot;height&quot; =&gt; 7}</span>
+<span class="c">#      got: {&quot;origin&quot; =&gt; {&quot;x&quot; =&gt; 0, &quot;y&quot; =&gt; 0}, &quot;width&quot; =&gt; 4, &quot;height&quot; =&gt; 3}</span>
+<span class="c">#     diff:   {</span>
+<span class="c">#           -   height: 3,</span>
+<span class="c">#           +   height: 7,</span>
+<span class="c">#               origin: {</span>
+<span class="c">#                 ...</span>
+<span class="c">#           -     y: 0,</span>
+<span class="c">#           +     y: 1,</span>
+<span class="c">#               }</span>
+<span class="c">#               ...</span>
+<span class="c">#             }</span></code></pre>
+        </div>
+      
+      <br/>
+      <div>
+        
+          [<a href="https://github.com/YusukeHosonuma/assert-diff/blob/dda0865380f96c45b1819ccc54c25d10bdfa3206/src/assert-diff/assert.cr#L42" target="_blank">View source</a>]
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="assert_diff_full(before:A,after:B,file=__FILE__,line=__LINE__)forallA,B-class-method">
+      <div class="signature">
+        
+        def <strong>assert_diff_full</strong>(before : A, after : B, file = __FILE__, line = __LINE__) forall A, B
+
+        <a class="method-permalink" href="#assert_diff_full(before:A,after:B,file=__FILE__,line=__LINE__)forallA,B-class-method">#</a>
+      </div>
+      
+        <div class="doc">
+          
+          <p>Assert equals with full diff report.</p>
+
+<pre><code class="language-crystal"><span class="k">struct</span> <span class="t">Rectangle</span>
+  <span class="k">def</span> <span class="m">initialize</span>(@origin : <span class="t">Point</span>, @width : <span class="t">Int32</span>, @height : <span class="t">Int32</span>)
+  <span class="k">end</span>
+<span class="k">end</span>
+
+<span class="k">struct</span> <span class="t">Point</span>
+  <span class="k">def</span> <span class="m">initialize</span>(@x : <span class="t">Int32</span>, @y : <span class="t">Int32</span>)
+  <span class="k">end</span>
+<span class="k">end</span>
+
+describe <span class="t">Rectangle</span> <span class="k">do</span>
+  describe <span class="s">&quot;example&quot;</span> <span class="k">do</span>
+    it <span class="s">&quot;failed&quot;</span> <span class="k">do</span>
+      a <span class="o">=</span> <span class="t">Rectangle</span>.<span class="k">new</span>(<span class="t">Point</span>.<span class="k">new</span>(<span class="n">0</span>, <span class="n">0</span>), <span class="n">4</span>, <span class="n">3</span>)
+      b <span class="o">=</span> <span class="t">Rectangle</span>.<span class="k">new</span>(<span class="t">Point</span>.<span class="k">new</span>(<span class="n">0</span>, <span class="n">1</span>), <span class="n">4</span>, <span class="n">7</span>)
+      assert_diff(a, b)
+    <span class="k">end</span>
+  <span class="k">end</span>
+<span class="k">end</span>
+<span class="c"># Expected: {&quot;origin&quot; =&gt; {&quot;x&quot; =&gt; 0, &quot;y&quot; =&gt; 1}, &quot;width&quot; =&gt; 4, &quot;height&quot; =&gt; 7}</span>
+<span class="c">#      got: {&quot;origin&quot; =&gt; {&quot;x&quot; =&gt; 0, &quot;y&quot; =&gt; 0}, &quot;width&quot; =&gt; 4, &quot;height&quot; =&gt; 3}</span>
+<span class="c">#     diff:   {</span>
+<span class="c">#           -   height: 3,</span>
+<span class="c">#           +   height: 7,</span>
+<span class="c">#               origin: {</span>
+<span class="c">#                 x: 0,</span>
+<span class="c">#           -     y: 0,</span>
+<span class="c">#           +     y: 1,</span>
+<span class="c">#               },</span>
+<span class="c">#               width: 4,</span>
+<span class="c">#             }</span></code></pre>
+        </div>
+      
+      <br/>
+      <div>
+        
+          [<a href="https://github.com/YusukeHosonuma/assert-diff/blob/dda0865380f96c45b1819ccc54c25d10bdfa3206/src/assert-diff/assert.cr#L85" target="_blank">View source</a>]
+        
+      </div>
+    </div>
+  
+
+
+
+
+
+
+</div>
+
+</body>
+</html>
