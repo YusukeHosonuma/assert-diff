@@ -1,80 +1,77 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
-    <meta charset="utf-8" />
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="generator" content="Crystal Docs 0.36.1">
-    <meta name="crystal_docs.project_version" content="extension-tests">
-    <meta name="crystal_docs.project_name" content="diff">
+  <meta charset="utf-8" />
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="generator" content="Crystal Docs 0.36.1">
+<meta name="crystal_docs.project_version" content="main-dev">
+<meta name="crystal_docs.project_name" content="assert-diff">
 
 
 
-    <link href="css/style.css" rel="stylesheet" type="text/css" />
-    <script type="text/javascript" src="js/doc.js"></script>
+<link href="css/style.css" rel="stylesheet" type="text/css" />
+<script type="text/javascript" src="js/doc.js"></script>
 
-    <meta name="repository-name" content="diff">
-    <title>diff extension-tests</title>
-    <script type="text/javascript">
-        CrystalDocs.base_path = "";
-    </script>
+  <meta name="repository-name" content="assert-diff">
+  <title>assert-diff main-dev</title>
+  <script type="text/javascript">
+  CrystalDocs.base_path = "";
+  </script>
 </head>
-
 <body>
 
-    <svg class="hidden">
+<svg class="hidden">
   <symbol id="octicon-link" viewBox="0 0 16 16">
     <path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path>
   </symbol>
 </svg>
-    <div class="sidebar">
-        <div class="sidebar-header">
-            <div class="search-box">
-                <input type="search" class="search-input" placeholder="Search..." spellcheck="false" aria-label="Search">
-            </div>
-
-            <div class="project-summary">
-                <h1 class="project-name">
-                    <a href="index.html">
-          diff
-        </a>
-                </h1>
-
-                <span class="project-version">
-        extension-tests
-      </span>
-            </div>
-        </div>
-
-        <div class="search-results hidden">
-            <ul class="search-list"></ul>
-        </div>
-
-        <div class="types-list">
-            <ul>
-
-                <li class=" " data-id="diff/toplevel" data-name="top level namespace">
-                    <a href="toplevel.html">Top Level Namespace</a>
-
-                </li>
-
-            </ul>
-
-        </div>
+<div class="sidebar">
+  <div class="sidebar-header">
+    <div class="search-box">
+      <input type="search" class="search-input" placeholder="Search..." spellcheck="false" aria-label="Search">
     </div>
 
+    <div class="project-summary">
+      <h1 class="project-name">
+        <a href="index.html">
+          assert-diff
+        </a>
+      </h1>
 
-    <div class="main-content">
-        <h1>
-            <a id="assert-diff" class="anchor" href="#assert-diff">
-                <svg class="octicon-link" aria-hidden="true">
+      <span class="project-version">
+        main-dev
+      </span>
+    </div>
+  </div>
+
+  <div class="search-results hidden">
+    <ul class="search-list"></ul>
+  </div>
+
+  <div class="types-list">
+    <ul>
+  
+  <li class=" " data-id="assert-diff/toplevel" data-name="top level namespace">
+      <a href="toplevel.html">Top Level Namespace</a>
+      
+    </li>
+  
+</ul>
+
+  </div>
+</div>
+
+
+<div class="main-content">
+<h1><a id="assert-diff" class="anchor" href="#assert-diff">
+  <svg class="octicon-link" aria-hidden="true">
     <use href="#octicon-link"/>
   </svg>
-            </a>assert-diff</h1>
+</a>assert-diff</h1>
 
-        <p>Assert equals with readable diff report.</p>
+<p>Assert equals with readable diff report.</p>
 
-        <pre><code class="language-crystal"><span class="k">require</span> <span class="s">&quot;assert-diff&quot;</span>
+<pre><code class="language-crystal"><span class="k">require</span> <span class="s">&quot;assert-diff&quot;</span>
 
 a <span class="o">=</span> <span class="t">Rectangle</span>.<span class="k">new</span>(<span class="t">Point</span>.<span class="k">new</span>(<span class="n">0</span>, <span class="n">0</span>), <span class="n">4</span>, <span class="n">3</span>)
 b <span class="o">=</span> <span class="t">Rectangle</span>.<span class="k">new</span>(<span class="t">Point</span>.<span class="k">new</span>(<span class="n">0</span>, <span class="n">1</span>), <span class="n">4</span>, <span class="n">7</span>)
@@ -94,37 +91,31 @@ assert_diff(a, b)
 <span class="c">#               ...</span>
 <span class="c">#             }</span></code></pre>
 
-        <h2>
-            <a id="installation" class="anchor" href="#installation">
-                <svg class="octicon-link" aria-hidden="true">
+<h2><a id="installation" class="anchor" href="#installation">
+  <svg class="octicon-link" aria-hidden="true">
     <use href="#octicon-link"/>
   </svg>
-            </a>Installation</h2>
+</a>Installation</h2>
 
-        <ol>
-            <li>Add the dependency to your <code>shard.yml</code>:</li>
-        </ol>
+<ol><li>Add the dependency to your <code>shard.yml</code>:</li></ol>
 
-        <p><code></code>`yaml dependencies:
-        </p>
+<p><code></code>`yaml
+   dependencies:</p>
 
-        <pre><code class="language-crystal"> diff:
+<pre><code class="language-crystal"> diff:
    github: YusukeHosonuma/assert-diff</code></pre>
 
-        <p><code></code>`</p>
+<p><code></code>`</p>
 
-        <ol>
-            <li>Run <code>shards install</code></li>
-        </ol>
+<ol><li>Run <code>shards install</code></li></ol>
 
-        <h2>
-            <a id="example" class="anchor" href="#example">
-                <svg class="octicon-link" aria-hidden="true">
+<h2><a id="example" class="anchor" href="#example">
+  <svg class="octicon-link" aria-hidden="true">
     <use href="#octicon-link"/>
   </svg>
-            </a>Example</h2>
+</a>Example</h2>
 
-        <pre><code class="language-crystal"><span class="k">require</span> <span class="s">&quot;assert-diff&quot;</span>
+<pre><code class="language-crystal"><span class="k">require</span> <span class="s">&quot;assert-diff&quot;</span>
 
 <span class="k">struct</span> <span class="t">Rectangle</span>
   <span class="k">def</span> <span class="m">initialize</span>(@origin : <span class="t">Point</span>, @width : <span class="t">Int32</span>, @height : <span class="t">Int32</span>)
@@ -159,34 +150,24 @@ describe <span class="t">Rectangle</span> <span class="k">do</span>
 <span class="c">#               ...</span>
 <span class="c">#             }</span></code></pre>
 
-        <h2>
-            <a id="contributing" class="anchor" href="#contributing">
-                <svg class="octicon-link" aria-hidden="true">
+<h2><a id="contributing" class="anchor" href="#contributing">
+  <svg class="octicon-link" aria-hidden="true">
     <use href="#octicon-link"/>
   </svg>
-            </a>Contributing</h2>
+</a>Contributing</h2>
 
-        <p>I don't think it can be used for edge cases. Issues and PRs are welcome.</p>
+<p>I don't think it can be used for edge cases.  
+Issues and PRs are welcome.</p>
 
-        <ol>
-            <li>Fork it (&lt;https://github.com/YusukeHosonuma/assert-diff/fork>)</li>
-            <li>Create your feature branch (<code>git checkout -b my-new-feature</code>)</li>
-            <li>Commit your changes (<code>git commit -am 'Add some feature'</code>)</li>
-            <li>Push to the branch (<code>git push origin my-new-feature</code>)</li>
-            <li>Create a new Pull Request</li>
-        </ol>
+<ol><li>Fork it (&lt;https://github.com/YusukeHosonuma/assert-diff/fork>)</li><li>Create your feature branch (<code>git checkout -b my-new-feature</code>)</li><li>Commit your changes (<code>git commit -am 'Add some feature'</code>)</li><li>Push to the branch (<code>git push origin my-new-feature</code>)</li><li>Create a new Pull Request</li></ol>
 
-        <h2>
-            <a id="contributors" class="anchor" href="#contributors">
-                <svg class="octicon-link" aria-hidden="true">
+<h2><a id="contributors" class="anchor" href="#contributors">
+  <svg class="octicon-link" aria-hidden="true">
     <use href="#octicon-link"/>
   </svg>
-            </a>Contributors</h2>
+</a>Contributors</h2>
 
-        <ul>
-            <li><a href="https://github.com/YusukeHosonuma">Yusuke Hosonuma</a> - creator and maintainer</li>
-        </ul>
-    </div>
+<ul><li><a href="https://github.com/YusukeHosonuma">Yusuke Hosonuma</a> - creator and maintainer</li></ul>
+</div>
 </body>
-
 </html>
