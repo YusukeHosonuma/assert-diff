@@ -1,5 +1,3 @@
-require "json"
-
 # Assert equals with diff report.
 #
 # Consecutive no-changed are ommited like "...".
