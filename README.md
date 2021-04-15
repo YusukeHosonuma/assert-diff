@@ -2,7 +2,7 @@
 
 Assert equals with readable diff report.
 
-![screenshot](./image/screenshot.png)
+![screenshot](https://github.com/YusukeHosonuma/assert-diff/raw/main/image/screenshot.png)
 
 ## Installation
 
