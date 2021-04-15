@@ -18,6 +18,8 @@ Assert equals with readable diff report.
 
 ## Example
 
+Use in specs:
+
 ```crystal
 require "assert-diff"
 
@@ -53,6 +55,13 @@ end
 #               }
 #               ...
 #             }
+```
+
+Use to output:
+
+```crystal
+print_diff(a, b)
+print_diff_full(a, b)
 ```
 
 ## Contributing
