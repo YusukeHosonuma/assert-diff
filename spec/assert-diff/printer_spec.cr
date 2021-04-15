@@ -13,7 +13,7 @@ private def plain_diff_full(x, y)
   printer.print_diff(diff).gsub(/\e.+?m/, "")
 end
 
-struct BasicTypes
+private struct BasicTypes
   def initialize(
     @int : Int32,
     @float : Float32,
@@ -25,7 +25,7 @@ struct BasicTypes
   end
 end
 
-struct ComplexStruct
+private struct ComplexStruct
   def initialize(
     @int : Int32,
     @float : Float32,

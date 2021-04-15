@@ -1,23 +1,21 @@
 require "json"
 
 # :nodoc:
-module AssertDiff
-  module Extension
-    private macro to_hash
-      {% if @type.abstract? %}
-        raise "abstract class is not supported yet."
-      {% else %}
-        {
-          {% for m in @type.instance_vars %}
-          {{m.name}}: @{{m.name}}.__to_h,
-          {% end %}
-        }
-      {% end %}
-    end
+module AssertDiff::Extension
+  private macro to_hash
+    {% if @type.abstract? %}
+      raise "abstract class is not supported yet."
+    {% else %}
+      {
+        {% for m in @type.instance_vars %}
+        {{m.name}}: @{{m.name}}.__to_h,
+        {% end %}
+      }
+    {% end %}
+  end
 
-    def __to_h
-      to_hash
-    end
+  def __to_h
+    to_hash
   end
 end
 
