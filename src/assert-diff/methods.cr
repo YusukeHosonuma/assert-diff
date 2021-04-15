@@ -1,6 +1,10 @@
 require "colorize"
 
 # Print diff to *io*.
+#
+# Consecutive no-changed are ommited like "...".
+# Use `.assert_diff_full` if you need full-report.
+#
 # ```
 # a = Rectangle.new(Point.new(0, 0), 4, 3)
 # b = Rectangle.new(Point.new(0, 1), 4, 7)
@@ -21,7 +25,8 @@ def print_diff(before, after, io : IO = STDOUT)
   print_diff_to_io(before, after, true, io)
 end
 
-# Print diff to *io*.
+# Print full diff to *io*.
+#
 # ```
 # a = Rectangle.new(Point.new(0, 0), 4, 3)
 # b = Rectangle.new(Point.new(0, 1), 4, 7)
