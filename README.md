@@ -42,19 +42,6 @@ describe Rectangle do
     end
   end
 end
-
-# Expected: {"origin" => {"x" => 0, "y" => 1}, "width" => 4, "height" => 7}
-#      got: {"origin" => {"x" => 0, "y" => 0}, "width" => 4, "height" => 3}
-#     diff:   {
-#           -   height: 3,
-#           +   height: 7,
-#               origin: {
-#                 ...
-#           -     y: 0,
-#           +     y: 1,
-#               }
-#               ...
-#             }
 ```
 
 Use to output:
