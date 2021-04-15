@@ -2,27 +2,7 @@
 
 Assert equals with readable diff report.
 
-```crystal
-require "assert-diff"
-
-a = Rectangle.new(Point.new(0, 0), 4, 3)
-b = Rectangle.new(Point.new(0, 1), 4, 7)
-
-assert_diff(a, b)
-
-# Expected: {"origin" => {"x" => 0, "y" => 1}, "width" => 4, "height" => 7}
-#      got: {"origin" => {"x" => 0, "y" => 0}, "width" => 4, "height" => 3}
-#     diff:   {
-#           -   height: 3,
-#           +   height: 7,
-#               origin: {
-#                 ...
-#           -     y: 0,
-#           +     y: 1,
-#               }
-#               ...
-#             }
-```
+![screenshot](./image/screenshot.png)
 
 ## Installation
 
@@ -30,7 +10,7 @@ assert_diff(a, b)
 
    ```yaml
    dependencies:
-     diff:
+     assert-diff:
        github: YusukeHosonuma/assert-diff
    ```
 

@@ -71,25 +71,7 @@
 
 <p>Assert equals with readable diff report.</p>
 
-<pre><code class="language-crystal"><span class="k">require</span> <span class="s">&quot;assert-diff&quot;</span>
-
-a <span class="o">=</span> <span class="t">Rectangle</span>.<span class="k">new</span>(<span class="t">Point</span>.<span class="k">new</span>(<span class="n">0</span>, <span class="n">0</span>), <span class="n">4</span>, <span class="n">3</span>)
-b <span class="o">=</span> <span class="t">Rectangle</span>.<span class="k">new</span>(<span class="t">Point</span>.<span class="k">new</span>(<span class="n">0</span>, <span class="n">1</span>), <span class="n">4</span>, <span class="n">7</span>)
-
-assert_diff(a, b)
-
-<span class="c"># Expected: {&quot;origin&quot; =&gt; {&quot;x&quot; =&gt; 0, &quot;y&quot; =&gt; 1}, &quot;width&quot; =&gt; 4, &quot;height&quot; =&gt; 7}</span>
-<span class="c">#      got: {&quot;origin&quot; =&gt; {&quot;x&quot; =&gt; 0, &quot;y&quot; =&gt; 0}, &quot;width&quot; =&gt; 4, &quot;height&quot; =&gt; 3}</span>
-<span class="c">#     diff:   {</span>
-<span class="c">#           -   height: 3,</span>
-<span class="c">#           +   height: 7,</span>
-<span class="c">#               origin: {</span>
-<span class="c">#                 ...</span>
-<span class="c">#           -     y: 0,</span>
-<span class="c">#           +     y: 1,</span>
-<span class="c">#               }</span>
-<span class="c">#               ...</span>
-<span class="c">#             }</span></code></pre>
+<p><img src="./image/screenshot.png" alt="screenshot"/></p>
 
 <h2><a id="installation" class="anchor" href="#installation">
   <svg class="octicon-link" aria-hidden="true">
@@ -102,7 +84,7 @@ assert_diff(a, b)
 <p><code></code>`yaml
    dependencies:</p>
 
-<pre><code class="language-crystal"> diff:
+<pre><code class="language-crystal"> assert-diff:
    github: YusukeHosonuma/assert-diff</code></pre>
 
 <p><code></code>`</p>
