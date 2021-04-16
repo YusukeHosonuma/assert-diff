@@ -25,7 +25,6 @@ describe ".print_diff" do
     io = IO::Memory.new
     a = Rectangle.new(Point.new(0, 0), 4, 3)
     b = Rectangle.new(Point.new(0, 1), 4, 7)
-    print_diff(a, b)
     print_diff(a, b, io)
     io.to_s.gsub(/\e.+?m/, "").should eq <<-EOF
       {
