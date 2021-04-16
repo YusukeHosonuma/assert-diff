@@ -5,7 +5,7 @@ module AssertDiff
     end
 
     def print_diff(diff : Diff) : String
-      content = dump(diff).rchop(",")
+      content = dump(diff)
       colorize(content)
     end
 
@@ -84,7 +84,7 @@ module AssertDiff
 
     private def mark(mark : Char, key : String?, value : Raw, indent : String)
       indent = indent.lchop("  ")
-      prefix = key ? "#{indent}#{key}: " : "#{indent}"
+      prefix = key ? "#{indent}#{key}: " : indent
 
       value = case value
               when .nil?
