@@ -33,7 +33,7 @@ module AssertDiff
     when before.as_a? && after.as_a?
       array_diff(before.as_a, after.as_a)
     else
-      raise "not reachable"
+      value_diff(before, after)
     end
   end
 
