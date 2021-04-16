@@ -20,6 +20,7 @@ private struct BasicTypes
     @bool : Bool,
     @optional : String?,
     @string : String,
+    @multiline_string : String,
     @char : Char
   )
   end
@@ -112,6 +113,7 @@ describe AssertDiff do
         true,
         nil,
         "Hello",
+        "Apple\nOrange\nBanana",
         'a',
       )
       after = BasicTypes.new(
@@ -120,9 +122,9 @@ describe AssertDiff do
         false,
         "not nil",
         "Goodbye",
+        "Apple\nGrape\nBanana",
         'b',
       )
-      # assert_diff(before, after)
       plain_diff(before, after).should eq <<-DIFF
         {
       -   bool: true,
@@ -133,6 +135,13 @@ describe AssertDiff do
       +   float: 1.3,
       -   int: 42,
       +   int: 49,
+          multiline_string:
+            ```
+            Apple
+      -     Orange
+      +     Grape
+            Banana
+            ```,
       -   optional: nil,
       +   optional: "not nil",
       -   string: "Hello",
@@ -158,7 +167,6 @@ describe AssertDiff do
         xc: {a: 3, b: 9}, # changed
         xd: {a: 5, b: 5}, # added
       }
-
       plain_diff(before, after).should eq <<-DIFF
         {
           ...
@@ -199,7 +207,6 @@ describe AssertDiff do
         [10, 90, 30],
         3, # added
       ]
-
       plain_diff(before, after).should eq <<-DIFF
         [
           ...
@@ -259,7 +266,6 @@ describe AssertDiff do
           {"a" => 1, "b" => 3},
         )
       )
-
       plain_diff(before, after).should eq <<-DIFF
         {
           array: [

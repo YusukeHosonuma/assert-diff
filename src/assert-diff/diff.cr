@@ -2,9 +2,19 @@ require "colorize"
 
 # :nodoc:
 module AssertDiff
-  alias Diff = Status | Array(Diff) | Hash(String, Diff)
+  alias MultilineDiff = Array(Status)
+  alias Diff = Status | Array(Diff) | Hash(String, Diff) | MultilineDiff
   alias Status = Same | Added | Deleted | Changed
-  alias Raw = JSON::Any::Type
+  alias Raw = JSON::Any::Type | RawString
+
+  struct RawString
+    def initialize(@raw : String)
+    end
+
+    def to_s
+      @raw
+    end
+  end
 
   struct Same
     property value : Raw
@@ -74,6 +84,7 @@ module AssertDiff
                when x == y             then Same.new(x.raw)
                when x.as_h? && y.as_h? then hash_diff(x.as_h, y.as_h)
                when x.as_a? && y.as_a? then array_diff(x.as_a, y.as_a)
+               when x.as_s? && y.as_s? then string_diff(x.as_s, y.as_s)
                else                         Changed.new(x.raw, y.raw)
                end
       result[key] = status
@@ -83,6 +94,44 @@ module AssertDiff
       unless before[key]?
         result[key] = Added.new(y.raw)
       end
+    end
+
+    result
+  end
+
+  private def self.string_diff(before, after) : Status | MultilineDiff
+    if before.includes?("\n") || after.includes?("\n")
+      multiline_diff(before, after)
+    else
+      if before == after
+        Same.new(before)
+      else
+        Changed.new(before, after)
+      end
+    end
+  end
+
+  private def self.multiline_diff(before, after) : MultilineDiff
+    xs = before.split("\n")
+    ys = after.split("\n")
+
+    result = MultilineDiff.new
+
+    xs.zip(ys) do |x, y|
+      break if !x || !y
+
+      if x == y
+        result << Same.new(RawString.new(x))
+      else
+        result << Changed.new(RawString.new(x), RawString.new(y))
+      end
+    end
+
+    case
+    when xs.size < ys.size
+      result.concat(ys.skip(xs.size).map { |line| Added.new(RawString.new(line)) })
+    when xs.size > ys.size
+      result.concat(xs.skip(ys.size).map { |line| Deleted.new(RawString.new(line)) })
     end
 
     result
