@@ -9,30 +9,30 @@ module AssertDiff
       colorize(content)
     end
 
-    private def dump(status : Diff, key = nil, indent = "") : String
+    private def dump(diff : Diff, key = nil, indent = "") : String
       prefix = if key
                  "#{indent}#{key}: "
                else
                  "#{indent}"
                end
 
-      case status
+      case diff
       in Same
-        mark(' ', key, status.value, indent)
+        mark(' ', key, diff.value, indent)
       in Added
-        mark('+', key, status.value, indent)
+        mark('+', key, diff.value, indent)
       in Deleted
-        mark('-', key, status.value, indent)
+        mark('-', key, diff.value, indent)
       in Changed
-        separater = status.before.is_a?(RawString) ? "\n" : ",\n"
+        separater = diff.before.is_a?(RawString) ? "\n" : ",\n"
         [
-          mark('-', key, status.before, indent),
-          mark('+', key, status.after, indent),
+          mark('-', key, diff.before, indent),
+          mark('+', key, diff.after, indent),
         ].join(separater)
       in Hash(String, Diff)
         content = if @ommit_consecutive
-                    status.keys.sort
-                      .map { |k| {k, status[k]} }
+                    diff.keys.sort
+                      .map { |k| {k, diff[k]} }
                       .grouped_by { |_, v| v.is_a?(Same) }
                       .flat_map { |xs|
                         if xs.first[1].is_a?(Same)
@@ -43,7 +43,7 @@ module AssertDiff
                       }
                       .join("\n")
                   else
-                    status.keys.sort.map { |k| dump(status[k], k, indent + "  ") + "," }.join("\n")
+                    diff.keys.sort.map { |k| dump(diff[k], k, indent + "  ") + "," }.join("\n")
                   end
         <<-HASH
           #{prefix}#{"{"}
@@ -52,7 +52,7 @@ module AssertDiff
         HASH
       in Array(Diff)
         content = if @ommit_consecutive
-                    status
+                    diff
                       .grouped_by &.is_a?(Same)
                       .flat_map { |xs|
                         if xs.first.is_a?(Same)
@@ -63,7 +63,7 @@ module AssertDiff
                       }
                       .join("\n")
                   else
-                    status.map { |s| dump(s, nil, indent + "  ") + "," }.join("\n")
+                    diff.map { |s| dump(s, nil, indent + "  ") + "," }.join("\n")
                   end
         <<-ARRAY
           #{prefix}[
@@ -71,7 +71,7 @@ module AssertDiff
           #{indent}]
         ARRAY
       in MultilineDiff
-        content = status
+        content = diff
           .map { |s|
             dump(s, nil, indent + "  ")
           }
