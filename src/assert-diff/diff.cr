@@ -14,26 +14,15 @@ module AssertDiff
        a.is_a?(JSON::Serializable) && b.is_a?(NamedTuple) ||
        a.is_a?(NamedTuple) && b.is_a?(JSON::Serializable) ||
        a.is_a?(NamedTuple) && b.is_a?(NamedTuple)
-      json_diff(
+      value_diff(
         JSON.parse(a.to_json),
         JSON.parse(b.to_json)
       )
     else
-      json_diff(
+      value_diff(
         JSON.parse(a.__to_h.to_json),
         JSON.parse(b.__to_h.to_json)
       )
-    end
-  end
-
-  private def self.json_diff(before, after) : Diff
-    case
-    when before.as_h? && after.as_h?
-      hash_diff(before.as_h, after.as_h)
-    when before.as_a? && after.as_a?
-      array_diff(before.as_a, after.as_a)
-    else
-      value_diff(before, after)
     end
   end
 
@@ -60,6 +49,24 @@ module AssertDiff
     result
   end
 
+  private def self.array_diff(xs : Array, ys : Array) : Array(Diff)
+    result = [] of Diff
+
+    xs.zip?(ys) do |x, y|
+      break if !x || !y
+      result << value_diff(x, y)
+    end
+
+    case
+    when xs.size < ys.size
+      result.concat(ys.skip(xs.size).map { |e| Added.new(e.raw) })
+    when xs.size > ys.size
+      result.concat(xs.skip(ys.size).map { |e| Deleted.new(e.raw) })
+    end
+
+    result
+  end
+
   private def self.value_diff(x : JSON::Any, y : JSON::Any) : Diff
     case
     when x == y             then Same.new(x.raw)
@@ -72,7 +79,7 @@ module AssertDiff
 
   private def self.string_diff(x : String, y : String) : Status | MultilineDiff
     if x.includes?("\n") || y.includes?("\n")
-      multiline_diff(x, y)
+      multiline_string_diff(x, y)
     else
       if x == y
         Same.new(x)
@@ -82,7 +89,7 @@ module AssertDiff
     end
   end
 
-  private def self.multiline_diff(before : String, after : String) : MultilineDiff
+  private def self.multiline_string_diff(before : String, after : String) : MultilineDiff
     result = MultilineDiff.new
 
     xs = before.lines
@@ -103,24 +110,6 @@ module AssertDiff
       result.concat(ys.skip(xs.size).map { |line| Added.new(RawString.new(line)) })
     when xs.size > ys.size
       result.concat(xs.skip(ys.size).map { |line| Deleted.new(RawString.new(line)) })
-    end
-
-    result
-  end
-
-  private def self.array_diff(xs : Array, ys : Array) : Array(Diff)
-    result = [] of Diff
-
-    xs.zip?(ys) do |x, y|
-      break if !x || !y
-      result << value_diff(x, y)
-    end
-
-    case
-    when xs.size < ys.size
-      result.concat(ys.skip(xs.size).map { |e| Added.new(e.raw) })
-    when xs.size > ys.size
-      result.concat(xs.skip(ys.size).map { |e| Deleted.new(e.raw) })
     end
 
     result
