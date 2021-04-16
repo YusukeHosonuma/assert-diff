@@ -100,7 +100,7 @@ module AssertDiff
                 #{value.map { |k, v| "  #{k}: #{v}," }.join("\n")}
                 }
                 EOF
-                return content.split("\n").map { |s| "#{mark} #{indent}#{s}" }.join("\n")
+                return content.lines.map { |s| "#{mark} #{indent}#{s}" }.join("\n")
               else
                 value.to_s
               end
@@ -110,14 +110,14 @@ module AssertDiff
 
     private def indent_tail(string : String, indent : Int) : String
       return string unless string.includes?("\n")
-      lines = string.split("\n")
+      lines = string.lines
       head = lines[0]
       tail = lines[1..]
       head + "\n" + tail.map { |s| "#{" " * indent}#{s}" }.join("\n")
     end
 
-    private def colorize(lines : String) : String
-      lines.split("\n").map do |line|
+    private def colorize(content : String) : String
+      content.lines.map do |line|
         case line
         when .starts_with?("-")
           line.colorize(:red)
