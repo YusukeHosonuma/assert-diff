@@ -24,10 +24,11 @@ module AssertDiff
       in Deleted
         mark('-', key, status.value, indent)
       in Changed
+        separater = status.before.is_a?(RawString) ? "\n" : ",\n"
         [
           mark('-', key, status.before, indent),
           mark('+', key, status.after, indent),
-        ].join("\n")
+        ].join(separater)
       in Hash(String, Diff)
         content = if @ommit_consecutive
                     status.keys.sort
@@ -37,17 +38,17 @@ module AssertDiff
                         if xs.first[1].is_a?(Same)
                           "  #{indent}  ..."
                         else
-                          xs.map { |k, v| dump(v, k, indent + "  ") }
+                          xs.map { |k, v| dump(v, k, indent + "  ") + "," }
                         end
                       }
                       .join("\n")
                   else
-                    status.keys.sort.map { |k| dump(status[k], k, indent + "  ") }.join("\n")
+                    status.keys.sort.map { |k| dump(status[k], k, indent + "  ") + "," }.join("\n")
                   end
         <<-HASH
           #{prefix}#{"{"}
         #{content}
-          #{indent}#{"},"}
+          #{indent}#{"}"}
         HASH
       in Array(Diff)
         content = if @ommit_consecutive
@@ -57,18 +58,30 @@ module AssertDiff
                         if xs.first.is_a?(Same)
                           "  #{indent}  ..."
                         else
-                          xs.map { |s| dump(s, nil, indent + "  ") }
+                          xs.map { |s| dump(s, nil, indent + "  ") + "," }
                         end
                       }
                       .join("\n")
                   else
-                    status.map { |s| dump(s, nil, indent + "  ") }.join("\n")
+                    status.map { |s| dump(s, nil, indent + "  ") + "," }.join("\n")
                   end
         <<-ARRAY
           #{prefix}[
         #{content}
-          #{indent}],
+          #{indent}]
         ARRAY
+      in MultilineDiff
+        content = status
+          .map { |s|
+            dump(s, nil, indent + "  ")
+          }
+          .join("\n")
+        <<-EOF
+          #{indent}#{key}:
+          #{indent}  ```
+        #{content}
+          #{indent}  ```
+        EOF
       end
     end
 
@@ -78,21 +91,23 @@ module AssertDiff
       value = case value
               when .nil?
                 "nil"
+              when .is_a?(RawString)
+                value.to_s
               when .is_a?(String)
                 "\"#{value}\""
               when .is_a?(Hash)
                 head = key ? "#{key}: {" : "{"
                 content = <<-EOF
-              #{head}
-              #{value.map { |k, v| "  #{k}: #{v}," }.join("\n")}
-              },
-              EOF
+                #{head}
+                #{value.map { |k, v| "  #{k}: #{v}," }.join("\n")}
+                }
+                EOF
                 return content.split("\n").map { |s| "#{mark} #{indent}#{s}" }.join("\n")
               else
                 value.to_s
               end
 
-      "#{mark} #{prefix}#{value},"
+      "#{mark} #{prefix}#{value}"
     end
 
     private def indent_tail(string : String, indent : Int) : String
