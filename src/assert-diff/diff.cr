@@ -2,26 +2,12 @@ require "colorize"
 
 # :nodoc:
 module AssertDiff
-  alias Diff = Status | Array(Diff) | Hash(String, Diff) | MultilineDiff
-
-  alias Status = Same | Added | Deleted | Changed
-  record Same, value : Raw
-  record Added, value : Raw
-  record Deleted, value : Raw
-  record Changed, before : Raw, after : Raw
+  alias Diff = Status |
+               Array(Diff) |
+               Hash(String, Diff) |
+               MultilineDiff
 
   alias MultilineDiff = Array(Status)
-
-  alias Raw = JSON::Any::Type | RawString
-
-  struct RawString
-    def initialize(@raw : String)
-    end
-
-    def to_s
-      @raw
-    end
-  end
 
   def self.diff(a : A, b : B) : Diff forall A, B
     if a.is_a?(JSON::Serializable) && b.is_a?(JSON::Serializable) ||
