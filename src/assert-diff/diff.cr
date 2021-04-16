@@ -2,9 +2,16 @@ require "colorize"
 
 # :nodoc:
 module AssertDiff
-  alias MultilineDiff = Array(Status)
   alias Diff = Status | Array(Diff) | Hash(String, Diff) | MultilineDiff
+
   alias Status = Same | Added | Deleted | Changed
+  record Same, value : Raw
+  record Added, value : Raw
+  record Deleted, value : Raw
+  record Changed, before : Raw, after : Raw
+
+  alias MultilineDiff = Array(Status)
+
   alias Raw = JSON::Any::Type | RawString
 
   struct RawString
@@ -13,35 +20,6 @@ module AssertDiff
 
     def to_s
       @raw
-    end
-  end
-
-  struct Same
-    property value : Raw
-
-    def initialize(@value : Raw)
-    end
-  end
-
-  struct Added
-    property value : Raw
-
-    def initialize(@value : Raw)
-    end
-  end
-
-  struct Deleted
-    property value : Raw
-
-    def initialize(@value : Raw)
-    end
-  end
-
-  struct Changed
-    property before : Raw
-    property after : Raw
-
-    def initialize(@before : Raw, @after : Raw)
     end
   end
 
