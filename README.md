@@ -9,9 +9,10 @@ Assert equals with readable diff report.
 1. Add the dependency to your `shard.yml`:
 
    ```yaml
-   dependencies:
+   development_dependencies:
      assert-diff:
        github: YusukeHosonuma/assert-diff
+       branch: main
    ```
 
 2. Run `shards install`
