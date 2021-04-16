@@ -79,13 +79,10 @@ module AssertDiff
     before.keys.each do |key|
       x = before[key]
       y = after[key]?
-      status = case
-               when y.nil?             then Deleted.new(x.raw)
-               when x == y             then Same.new(x.raw)
-               when x.as_h? && y.as_h? then hash_diff(x.as_h, y.as_h)
-               when x.as_a? && y.as_a? then array_diff(x.as_a, y.as_a)
-               when x.as_s? && y.as_s? then string_diff(x.as_s, y.as_s)
-               else                         Changed.new(x.raw, y.raw)
+      status = if y.nil?
+                 Deleted.new(x.raw)
+               else
+                 value_diff(x, y)
                end
       result[key] = status
     end
@@ -97,6 +94,16 @@ module AssertDiff
     end
 
     result
+  end
+
+  private def self.value_diff(x : JSON::Any, y : JSON::Any) : Diff
+    case
+    when x == y             then Same.new(x.raw)
+    when x.as_h? && y.as_h? then hash_diff(x.as_h, y.as_h)
+    when x.as_a? && y.as_a? then array_diff(x.as_a, y.as_a)
+    when x.as_s? && y.as_s? then string_diff(x.as_s, y.as_s)
+    else                         Changed.new(x.raw, y.raw)
+    end
   end
 
   private def self.string_diff(before, after) : Status | MultilineDiff
@@ -117,7 +124,7 @@ module AssertDiff
 
     result = MultilineDiff.new
 
-    xs.zip(ys) do |x, y|
+    xs.zip?(ys) do |x, y|
       break if !x || !y
 
       if x == y
@@ -142,17 +149,7 @@ module AssertDiff
 
     before.zip?(after) do |x, y|
       break if !x || !y
-
-      case
-      when x == y
-        result << Same.new(x.raw)
-      when x.as_h? && y.as_h?
-        result << hash_diff(x.as_h, y.as_h)
-      when x.as_a? && y.as_a?
-        result << array_diff(x.as_a, y.as_a)
-      else
-        result << Changed.new(x.raw, y.raw)
-      end
+      result << value_diff(x, y)
     end
 
     case
