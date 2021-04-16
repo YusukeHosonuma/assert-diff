@@ -108,14 +108,6 @@ module AssertDiff
       "#{mark} #{prefix}#{value}"
     end
 
-    private def indent_tail(string : String, indent : Int) : String
-      return string unless string.includes?("\n")
-      lines = string.lines
-      head = lines[0]
-      tail = lines[1..]
-      head + "\n" + tail.map { |s| "#{" " * indent}#{s}" }.join("\n")
-    end
-
     private def colorize(content : String) : String
       content.lines.map do |line|
         case line
