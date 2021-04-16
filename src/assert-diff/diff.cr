@@ -70,23 +70,23 @@ module AssertDiff
     end
   end
 
-  private def self.string_diff(before, after) : Status | MultilineDiff
-    if before.includes?("\n") || after.includes?("\n")
-      multiline_diff(before, after)
+  private def self.string_diff(x : String, y : String) : Status | MultilineDiff
+    if x.includes?("\n") || y.includes?("\n")
+      multiline_diff(x, y)
     else
-      if before == after
-        Same.new(before)
+      if x == y
+        Same.new(x)
       else
-        Changed.new(before, after)
+        Changed.new(x, y)
       end
     end
   end
 
-  private def self.multiline_diff(before, after) : MultilineDiff
-    xs = before.split("\n")
-    ys = after.split("\n")
-
+  private def self.multiline_diff(before : String, after : String) : MultilineDiff
     result = MultilineDiff.new
+
+    xs = before.lines
+    ys = after.lines
 
     xs.zip?(ys) do |x, y|
       break if !x || !y
@@ -108,19 +108,19 @@ module AssertDiff
     result
   end
 
-  private def self.array_diff(before, after) : Array(Diff)
+  private def self.array_diff(xs : Array, ys : Array) : Array(Diff)
     result = [] of Diff
 
-    before.zip?(after) do |x, y|
+    xs.zip?(ys) do |x, y|
       break if !x || !y
       result << value_diff(x, y)
     end
 
     case
-    when before.size < after.size
-      result.concat(after.skip(before.size).map { |e| Added.new(e.raw) })
-    when before.size > after.size
-      result.concat(before.skip(after.size).map { |e| Deleted.new(e.raw) })
+    when xs.size < ys.size
+      result.concat(ys.skip(xs.size).map { |e| Added.new(e.raw) })
+    when xs.size > ys.size
+      result.concat(xs.skip(ys.size).map { |e| Deleted.new(e.raw) })
     end
 
     result
