@@ -10,11 +10,8 @@ module AssertDiff
     end
 
     private def dump(diff : Diff, key = nil, indent = "") : String
-      prefix = if key
-                 "#{indent}#{key}: "
-               else
-                 "#{indent}"
-               end
+      indent = indent + "  "
+      prefix = key ? "#{indent}#{key}: " : indent
 
       case diff
       in Same
@@ -36,19 +33,19 @@ module AssertDiff
                       .grouped_by { |_, v| v.is_a?(Same) }
                       .flat_map { |xs|
                         if xs.first[1].is_a?(Same)
-                          "  #{indent}  ..."
+                          "#{indent}  ..."
                         else
-                          xs.map { |k, v| dump(v, k, indent + "  ") + "," }
+                          xs.map { |k, v| dump(v, k, indent) + "," }
                         end
                       }
                       .join("\n")
                   else
-                    diff.keys.sort.map { |k| dump(diff[k], k, indent + "  ") + "," }.join("\n")
+                    diff.keys.sort.map { |k| dump(diff[k], k, indent) + "," }.join("\n")
                   end
         <<-HASH
-          #{prefix}#{"{"}
+        #{prefix}#{"{"}
         #{content}
-          #{indent}#{"}"}
+        #{indent}#{"}"}
         HASH
       in Array(Diff)
         content = if @ommit_consecutive
@@ -56,36 +53,37 @@ module AssertDiff
                       .grouped_by &.is_a?(Same)
                       .flat_map { |xs|
                         if xs.first.is_a?(Same)
-                          "  #{indent}  ..."
+                          "#{indent}  ..."
                         else
-                          xs.map { |s| dump(s, nil, indent + "  ") + "," }
+                          xs.map { |s| dump(s, nil, indent) + "," }
                         end
                       }
                       .join("\n")
                   else
-                    diff.map { |s| dump(s, nil, indent + "  ") + "," }.join("\n")
+                    diff.map { |s| dump(s, nil, indent) + "," }.join("\n")
                   end
         <<-ARRAY
-          #{prefix}[
+        #{prefix}[
         #{content}
-          #{indent}]
+        #{indent}]
         ARRAY
       in MultilineDiff
         content = diff
           .map { |s|
-            dump(s, nil, indent + "  ")
+            dump(s, nil, indent)
           }
           .join("\n")
         <<-EOF
-          #{indent}#{key}:
-          #{indent}  ```
+        #{indent}#{key}:
+        #{indent}  ```
         #{content}
-          #{indent}  ```
+        #{indent}  ```
         EOF
       end
     end
 
     private def mark(mark : Char, key : String?, value : Raw, indent : String)
+      indent = indent.lchop("  ")
       prefix = key ? "#{indent}#{key}: " : "#{indent}"
 
       value = case value
