@@ -87,13 +87,15 @@ module AssertDiff
       prefix = key ? "#{indent}#{key}: " : indent
 
       value = case value
-              when .nil?
-                "nil"
-              when .is_a?(RawString)
+              in Bool, Int64, Float64, RawString
                 value.to_s
-              when .is_a?(String)
+              in String
                 "\"#{value}\""
-              when .is_a?(Hash)
+              in Nil
+                "nil"
+              in Array
+                value.to_s # TODO: fix
+              in Hash
                 head = key ? "#{key}: {" : "{"
                 content = <<-EOF
                 #{head}
@@ -101,10 +103,7 @@ module AssertDiff
                 }
                 EOF
                 return content.lines.map { |s| "#{mark} #{indent}#{s}" }.join("\n")
-              else
-                value.to_s
               end
-
       "#{mark} #{prefix}#{value}"
     end
 
