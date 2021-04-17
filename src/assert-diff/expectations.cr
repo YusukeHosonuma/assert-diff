@@ -3,14 +3,14 @@ module AssertDiff
   struct EqualDiffExpectation(T)
     @original_expectation : Spec::EqualExpectation(T)
 
-    def initialize(@expected_value : T)
+    def initialize(@expected_value : T, @ommit_consecutive : Bool)
       @original_expectation = Spec::EqualExpectation.new(@expected_value)
     end
 
     def failure_message(actual_value)
       original_message = @original_expectation.failure_message(actual_value)
 
-      printer = Printer.new(true)
+      printer = Printer.new(@ommit_consecutive)
       diff = printer.print_diff(AssertDiff.diff(actual_value, @expected_value)).split("\n")
 
       original_message + "\n" +
