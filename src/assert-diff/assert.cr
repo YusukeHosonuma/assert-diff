@@ -1,12 +1,14 @@
 # The same as `.eq`, but print readable diff report if actual not equals *value* (`!=`).
 #
 # ```
-# x = {a: 1, b: 2, c: 3}
-# y = {a: 1, b: 2, c: 0}
+# x = {a: 1, b: 2, c: 0}
+# y = {a: 1, b: 2, c: 3}
+#
 # x.should eq_diff y
+#
 # # =>
-# # Expected: {a: 1, b: 2, c: 0}
-# #      got: {a: 1, b: 2, c: 3}
+# # Expected: {a: 1, b: 2, c: 3}
+# #      got: {a: 1, b: 2, c: 0}
 # #     diff:   {
 # #             ...
 # #         -   c: 3,
@@ -20,12 +22,14 @@ end
 # The same as `.eq_diff`, but this print full diff report.
 #
 # ```
-# x = {a: 1, b: 2, c: 3}
-# y = {a: 1, b: 2, c: 0}
+# x = {a: 1, b: 2, c: 0}
+# y = {a: 1, b: 2, c: 3}
+#
 # x.should eq_diff_full y
+#
 # # =>
-# # Expected: {a: 1, b: 2, c: 0}
-# #      got: {a: 1, b: 2, c: 3}
+# # Expected: {a: 1, b: 2, c: 3}
+# #      got: {a: 1, b: 2, c: 0}
 # #     diff:   {
 # #             a: 1,
 # #             b: 2,

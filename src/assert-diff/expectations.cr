@@ -13,7 +13,7 @@ module AssertDiff
       original_message = @original_expectation.failure_message(actual_value)
 
       printer = Printer.new(@ommit_consecutive)
-      diff = printer.print_diff(AssertDiff.diff(actual_value, @expected_value)).split("\n")
+      diff = printer.print_diff(AssertDiff.diff(@expected_value, actual_value)).split("\n")
 
       original_message + "\n" +
         <<-EOF
