@@ -102,31 +102,32 @@ module AssertDiff
 
     private def mark(mark : Char, key : String?, value : Raw, indent : String)
       indent = indent.lchop("  ")
-      prefix = key ? "#{mark} #{indent}#{key}: " : "#{mark} #{indent}"
+      content = (key ? "#{key}: " : "") + dump_raw(value)
+      content.lines.join("\n") do |line|
+        "#{mark} #{indent}#{line}"
+      end
+    end
 
+    private def dump_raw(value : Raw)
       case value
       in Bool, Int64, Float64, RawString
-        prefix + value.to_s
+        value.to_s
       in String
-        prefix + "\"#{value}\""
+        "\"#{value}\""
       in Nil
-        prefix + "nil"
+        "nil"
       in Array
-        head = key ? "#{key}: [" : "["
-        content = <<-EOF
-        #{head}
+        <<-EOF
+        [
         #{value.join("\n") { |e| "  #{e}," }}
         ]
         EOF
-        content.lines.join("\n") { |s| "#{mark} #{indent}#{s}" }
       in Hash
-        head = key ? "#{key}: {" : "{"
-        content = <<-EOF
-        #{head}
+        <<-EOF
+        {
         #{value.join("\n") { |k, v| "  #{k}: #{v}," }}
         }
         EOF
-        content.lines.join("\n") { |s| "#{mark} #{indent}#{s}" }
       end
     end
 
