@@ -6,11 +6,14 @@ jobs:
   test:
     runs-on: ubuntu-latest
     steps:
-    - name: Download source
-      uses: actions/checkout@v2
+      - name: Download source
+        uses: actions/checkout@v2
 
-    - name: Install Crystal
-      uses: oprypin/install-crystal@v1
-    
-    - name: Run tests
-      run: crystal spec
+      - name: Install Crystal
+        uses: oprypin/install-crystal@v1
+
+      - name: Check formatting
+        run: crystal tool format --check
+
+      - name: Run tests
+        run: crystal spec
