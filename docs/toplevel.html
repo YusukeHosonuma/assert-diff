@@ -77,7 +77,39 @@
 
 
 
+  <h2>
+    <a id="included-modules" class="anchor" href="#included-modules">
+  <svg class="octicon-link" aria-hidden="true">
+    <use href="#octicon-link"/>
+  </svg>
+</a>
+    Included Modules
+  </h2>
+  <ul class="other-types-list">
+    
+      <li class="other-type">Spec::Expectations</li>
+    
+      <li class="other-type">Spec::Methods</li>
+    
+  </ul>
 
+
+
+  <h2>
+    <a id="extended-modules" class="anchor" href="#extended-modules">
+  <svg class="octicon-link" aria-hidden="true">
+    <use href="#octicon-link"/>
+  </svg>
+</a>
+    Extended Modules
+  </h2>
+  <ul class="other-types-list">
+    
+      <li class="other-type">Spec::Expectations</li>
+    
+      <li class="other-type">Spec::Methods</li>
+    
+  </ul>
 
 
 
@@ -115,14 +147,28 @@
       <li class="entry-summary">
         <a href="#assert_diff(before:A,after:B,file=__FILE__,line=__LINE__)forallA,B-class-method" class="signature"><strong>assert_diff</strong>(before : A, after : B, file = __FILE__, line = __LINE__) forall A, B</a>
         
-          <div class="summary"><p>Assert equals with diff report.</p></div>
+          <div class="summary"><p>The same as <code><a href="toplevel.html#eq_diff(value)-class-method">.eq_diff</a></code>, but this can be used independently.</p></div>
         
       </li>
     
       <li class="entry-summary">
         <a href="#assert_diff_full(before:A,after:B,file=__FILE__,line=__LINE__)forallA,B-class-method" class="signature"><strong>assert_diff_full</strong>(before : A, after : B, file = __FILE__, line = __LINE__) forall A, B</a>
         
-          <div class="summary"><p>Assert equals with full diff report.</p></div>
+          <div class="summary"><p>The same as <code><a href="toplevel.html#eq_diff_full(value)-class-method">.eq_diff_full</a></code>, but this can be used independently.</p></div>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#eq_diff(value)-class-method" class="signature"><strong>eq_diff</strong>(value)</a>
+        
+          <div class="summary"><p>The same as <code>.eq</code>, but print readable diff report if actual not equals <em>value</em> (<code>!=</code>).</p></div>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#eq_diff_full(value)-class-method" class="signature"><strong>eq_diff_full</strong>(value)</a>
+        
+          <div class="summary"><p>The same as <code><a href="toplevel.html#eq_diff(value)-class-method">.eq_diff</a></code>, but this print full diff report.</p></div>
         
       </li>
     
@@ -150,6 +196,26 @@
 
 <div class="methods-inherited">
   
+    
+
+
+    
+
+
+    
+
+
+  
+    
+
+
+    
+
+
+    
+
+
+  
 </div>
 
 
@@ -174,49 +240,15 @@
       
         <div class="doc">
           
-          <p>Assert equals with diff report.</p>
+          <p>The same as <code><a href="toplevel.html#eq_diff(value)-class-method">.eq_diff</a></code>, but this can be used independently.</p>
 
-<p>Consecutive no-changed are ommited like "...".
-Use <code><a href="toplevel.html#assert_diff_full(before:A,after:B,file=__FILE__,line=__LINE__)forallA,B-class-method">.assert_diff_full</a></code> if you need full-report.</p>
-
-<pre><code class="language-crystal"><span class="k">struct</span> <span class="t">Rectangle</span>
-  <span class="k">def</span> <span class="m">initialize</span>(@origin : <span class="t">Point</span>, @width : <span class="t">Int32</span>, @height : <span class="t">Int32</span>)
-  <span class="k">end</span>
-<span class="k">end</span>
-
-<span class="k">struct</span> <span class="t">Point</span>
-  <span class="k">def</span> <span class="m">initialize</span>(@x : <span class="t">Int32</span>, @y : <span class="t">Int32</span>)
-  <span class="k">end</span>
-<span class="k">end</span>
-
-describe <span class="t">Rectangle</span> <span class="k">do</span>
-  describe <span class="s">&quot;example&quot;</span> <span class="k">do</span>
-    it <span class="s">&quot;failed&quot;</span> <span class="k">do</span>
-      a <span class="o">=</span> <span class="t">Rectangle</span>.<span class="k">new</span>(<span class="t">Point</span>.<span class="k">new</span>(<span class="n">0</span>, <span class="n">0</span>), <span class="n">4</span>, <span class="n">3</span>)
-      b <span class="o">=</span> <span class="t">Rectangle</span>.<span class="k">new</span>(<span class="t">Point</span>.<span class="k">new</span>(<span class="n">0</span>, <span class="n">1</span>), <span class="n">4</span>, <span class="n">7</span>)
-      assert_diff(a, b)
-    <span class="k">end</span>
-  <span class="k">end</span>
-<span class="k">end</span>
-
-<span class="c"># Expected: {&quot;origin&quot; =&gt; {&quot;x&quot; =&gt; 0, &quot;y&quot; =&gt; 1}, &quot;width&quot; =&gt; 4, &quot;height&quot; =&gt; 7}</span>
-<span class="c">#      got: {&quot;origin&quot; =&gt; {&quot;x&quot; =&gt; 0, &quot;y&quot; =&gt; 0}, &quot;width&quot; =&gt; 4, &quot;height&quot; =&gt; 3}</span>
-<span class="c">#     diff:   {</span>
-<span class="c">#           -   height: 3,</span>
-<span class="c">#           +   height: 7,</span>
-<span class="c">#               origin: {</span>
-<span class="c">#                 ...</span>
-<span class="c">#           -     y: 0,</span>
-<span class="c">#           +     y: 1,</span>
-<span class="c">#               }</span>
-<span class="c">#               ...</span>
-<span class="c">#             }</span></code></pre>
+<pre><code class="language-crystal">assert_diff(x, y)</code></pre>
         </div>
       
       <br/>
       <div>
         
-          [<a href="https://github.com/YusukeHosonuma/assert-diff/blob/50c81911254ac08dd47d74abf963f1b8d5d52e0a/src/assert-diff/assert.cr#L40" target="_blank">View source</a>]
+          [<a href="https://github.com/YusukeHosonuma/assert-diff/blob/15b9de592d98c520e88f8b8e3546e77c5b2d0a53/src/assert-diff/assert.cr#L49" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -231,45 +263,86 @@ describe <span class="t">Rectangle</span> <span class="k">do</span>
       
         <div class="doc">
           
-          <p>Assert equals with full diff report.</p>
+          <p>The same as <code><a href="toplevel.html#eq_diff_full(value)-class-method">.eq_diff_full</a></code>, but this can be used independently.</p>
 
-<pre><code class="language-crystal"><span class="k">struct</span> <span class="t">Rectangle</span>
-  <span class="k">def</span> <span class="m">initialize</span>(@origin : <span class="t">Point</span>, @width : <span class="t">Int32</span>, @height : <span class="t">Int32</span>)
-  <span class="k">end</span>
-<span class="k">end</span>
-
-<span class="k">struct</span> <span class="t">Point</span>
-  <span class="k">def</span> <span class="m">initialize</span>(@x : <span class="t">Int32</span>, @y : <span class="t">Int32</span>)
-  <span class="k">end</span>
-<span class="k">end</span>
-
-describe <span class="t">Rectangle</span> <span class="k">do</span>
-  describe <span class="s">&quot;example&quot;</span> <span class="k">do</span>
-    it <span class="s">&quot;failed&quot;</span> <span class="k">do</span>
-      a <span class="o">=</span> <span class="t">Rectangle</span>.<span class="k">new</span>(<span class="t">Point</span>.<span class="k">new</span>(<span class="n">0</span>, <span class="n">0</span>), <span class="n">4</span>, <span class="n">3</span>)
-      b <span class="o">=</span> <span class="t">Rectangle</span>.<span class="k">new</span>(<span class="t">Point</span>.<span class="k">new</span>(<span class="n">0</span>, <span class="n">1</span>), <span class="n">4</span>, <span class="n">7</span>)
-      assert_diff(a, b)
-    <span class="k">end</span>
-  <span class="k">end</span>
-<span class="k">end</span>
-<span class="c"># Expected: {&quot;origin&quot; =&gt; {&quot;x&quot; =&gt; 0, &quot;y&quot; =&gt; 1}, &quot;width&quot; =&gt; 4, &quot;height&quot; =&gt; 7}</span>
-<span class="c">#      got: {&quot;origin&quot; =&gt; {&quot;x&quot; =&gt; 0, &quot;y&quot; =&gt; 0}, &quot;width&quot; =&gt; 4, &quot;height&quot; =&gt; 3}</span>
-<span class="c">#     diff:   {</span>
-<span class="c">#           -   height: 3,</span>
-<span class="c">#           +   height: 7,</span>
-<span class="c">#               origin: {</span>
-<span class="c">#                 x: 0,</span>
-<span class="c">#           -     y: 0,</span>
-<span class="c">#           +     y: 1,</span>
-<span class="c">#               },</span>
-<span class="c">#               width: 4,</span>
-<span class="c">#             }</span></code></pre>
+<pre><code class="language-crystal">assert_diff_full(x, y)</code></pre>
         </div>
       
       <br/>
       <div>
         
-          [<a href="https://github.com/YusukeHosonuma/assert-diff/blob/50c81911254ac08dd47d74abf963f1b8d5d52e0a/src/assert-diff/assert.cr#L83" target="_blank">View source</a>]
+          [<a href="https://github.com/YusukeHosonuma/assert-diff/blob/15b9de592d98c520e88f8b8e3546e77c5b2d0a53/src/assert-diff/assert.cr#L58" target="_blank">View source</a>]
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="eq_diff(value)-class-method">
+      <div class="signature">
+        
+        def <strong>eq_diff</strong>(value)
+
+        <a class="method-permalink" href="#eq_diff(value)-class-method">#</a>
+      </div>
+      
+        <div class="doc">
+          
+          <p>The same as <code>.eq</code>, but print readable diff report if actual not equals <em>value</em> (<code>!=</code>).</p>
+
+<pre><code class="language-crystal">x <span class="o">=</span> {a: <span class="n">1</span>, b: <span class="n">2</span>, c: <span class="n">0</span>}
+y <span class="o">=</span> {a: <span class="n">1</span>, b: <span class="n">2</span>, c: <span class="n">3</span>}
+
+x.should eq_diff y
+
+<span class="c"># =&gt;</span>
+<span class="c"># Expected: {a: 1, b: 2, c: 3}</span>
+<span class="c">#      got: {a: 1, b: 2, c: 0}</span>
+<span class="c">#     diff:   {</span>
+<span class="c">#             ...</span>
+<span class="c">#         -   c: 3,</span>
+<span class="c">#         +   c: 0,</span>
+<span class="c">#           }</span></code></pre>
+        </div>
+      
+      <br/>
+      <div>
+        
+          [<a href="https://github.com/YusukeHosonuma/assert-diff/blob/15b9de592d98c520e88f8b8e3546e77c5b2d0a53/src/assert-diff/assert.cr#L18" target="_blank">View source</a>]
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="eq_diff_full(value)-class-method">
+      <div class="signature">
+        
+        def <strong>eq_diff_full</strong>(value)
+
+        <a class="method-permalink" href="#eq_diff_full(value)-class-method">#</a>
+      </div>
+      
+        <div class="doc">
+          
+          <p>The same as <code><a href="toplevel.html#eq_diff(value)-class-method">.eq_diff</a></code>, but this print full diff report.</p>
+
+<pre><code class="language-crystal">x <span class="o">=</span> {a: <span class="n">1</span>, b: <span class="n">2</span>, c: <span class="n">0</span>}
+y <span class="o">=</span> {a: <span class="n">1</span>, b: <span class="n">2</span>, c: <span class="n">3</span>}
+
+x.should eq_diff_full y
+
+<span class="c"># =&gt;</span>
+<span class="c"># Expected: {a: 1, b: 2, c: 3}</span>
+<span class="c">#      got: {a: 1, b: 2, c: 0}</span>
+<span class="c">#     diff:   {</span>
+<span class="c">#             a: 1,</span>
+<span class="c">#             b: 2,</span>
+<span class="c">#         -   c: 3,</span>
+<span class="c">#         +   c: 0,</span>
+<span class="c">#           }</span></code></pre>
+        </div>
+      
+      <br/>
+      <div>
+        
+          [<a href="https://github.com/YusukeHosonuma/assert-diff/blob/15b9de592d98c520e88f8b8e3546e77c5b2d0a53/src/assert-diff/assert.cr#L40" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -308,7 +381,7 @@ print_diff(a, b)
       <br/>
       <div>
         
-          [<a href="https://github.com/YusukeHosonuma/assert-diff/blob/50c81911254ac08dd47d74abf963f1b8d5d52e0a/src/assert-diff/methods.cr#L24" target="_blank">View source</a>]
+          [<a href="https://github.com/YusukeHosonuma/assert-diff/blob/15b9de592d98c520e88f8b8e3546e77c5b2d0a53/src/assert-diff/methods.cr#L24" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -344,7 +417,7 @@ print_diff_full(a, b)
       <br/>
       <div>
         
-          [<a href="https://github.com/YusukeHosonuma/assert-diff/blob/50c81911254ac08dd47d74abf963f1b8d5d52e0a/src/assert-diff/methods.cr#L46" target="_blank">View source</a>]
+          [<a href="https://github.com/YusukeHosonuma/assert-diff/blob/15b9de592d98c520e88f8b8e3546e77c5b2d0a53/src/assert-diff/methods.cr#L46" target="_blank">View source</a>]
         
       </div>
     </div>
