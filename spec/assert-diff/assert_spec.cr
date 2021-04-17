@@ -1,143 +1,81 @@
 require "../spec_helper"
 
-describe "asssertions" do
-  before = {
-    a: "1",
-    b: "2", # to delete
-    c: "3", # to change
-    x: {
-      a: 1,
-      b: true, # to delete
-      c: nil,  # to change
-    },
-    y: [
-      1,
-      2,
-    ],
-  }
-  after = {
-    a: "1",
-    c: "4",
-    d: "5", # added
-    x: {
-      a: 1,
-      c: 1.2,   # changed
-      d: false, # added
-    },
-    y: [
-      1,
-      3,
-    ],
-  }
+ACTUAL   = {a: 1, b: 2, c: 3}
+EXPECTED = {a: 1, b: 2, c: 0}
 
-  it ".assert_diff" do
+EXPECTED_MESSAGE = <<-EOF
+Expected: {a: 1, b: 2, c: 0}
+     got: {a: 1, b: 2, c: 3}
+    diff:   {
+              ...
+          -   c: 3,
+          +   c: 0,
+            }
+EOF
+
+EXPECTED_MESSAGE_FULL = <<-EOF
+Expected: {a: 1, b: 2, c: 0}
+     got: {a: 1, b: 2, c: 3}
+    diff:   {
+              a: 1,
+              b: 2,
+          -   c: 3,
+          +   c: 0,
+            }
+EOF
+
+describe "expectations" do
+  it "eq_diff" do
     begin
-      assert_diff(before, after) # line number is important!!
+      ACTUAL.should eq_diff EXPECTED
     rescue ex : Spec::AssertionFailed
+      ex.line.should eq 30
       ex.file.should eq __FILE__
-      ex.line.should eq 35
-      ex.message.not_nil!.gsub(/\e.+?m/, "").should eq <<-EOF
-      Expected: {a: "1", c: "4", d: "5", x: {a: 1, c: 1.2, d: false}, y: [1, 3]}
-           got: {a: "1", b: "2", c: "3", x: {a: 1, b: true, c: nil}, y: [1, 2]}
-          diff:   {
-                    ...
-                -   b: "2",
-                -   c: "3",
-                +   c: "4",
-                +   d: "5",
-                    x: {
-                      ...
-                -     b: true,
-                -     c: nil,
-                +     c: 1.2,
-                +     d: false,
-                    },
-                    y: [
-                      ...
-                -     2,
-                +     3,
-                    ],
-                  }
-      EOF
+      strip_escape_code(ex.message).should eq EXPECTED_MESSAGE
+    else
+      fail "Nothing was raised"
     end
   end
 
-  it ".assert_diff_full" do
+  it "eq_diff_full" do
     begin
-      assert_diff_full(before, after) # line number is important!!
+      ACTUAL.should eq_diff_full EXPECTED
     rescue ex : Spec::AssertionFailed
+      ex.line.should eq 42
       ex.file.should eq __FILE__
-      ex.line.should eq 67
-      ex.message.not_nil!.gsub(/\e.+?m/, "").should eq <<-EOF
-      Expected: {a: "1", c: "4", d: "5", x: {a: 1, c: 1.2, d: false}, y: [1, 3]}
-           got: {a: "1", b: "2", c: "3", x: {a: 1, b: true, c: nil}, y: [1, 2]}
-          diff:   {
-                    a: "1",
-                -   b: "2",
-                -   c: "3",
-                +   c: "4",
-                +   d: "5",
-                    x: {
-                      a: 1,
-                -     b: true,
-                -     c: nil,
-                +     c: 1.2,
-                +     d: false,
-                    },
-                    y: [
-                      1,
-                -     2,
-                +     3,
-                    ],
-                  }
-      EOF
-    end
-  end
-end
-
-describe "eq_diff" do
-  it "works" do
-    x = {a: 1, b: 2, c: 3}
-    y = {a: 1, b: 2, c: 0}
-    begin
-      x.should eq_diff y
-    rescue ex : Spec::AssertionFailed
-      ex.line.should eq 103
-      ex.message.not_nil!.gsub(/\e.+?m/, "").should eq <<-EOF
-      Expected: {a: 1, b: 2, c: 0}
-           got: {a: 1, b: 2, c: 3}
-          diff:   {
-                    ...
-                -   c: 3,
-                +   c: 0,
-                  }
-      EOF
+      strip_escape_code(ex.message).should eq EXPECTED_MESSAGE_FULL
     else
       fail "Nothing was raised"
     end
   end
 end
 
-describe "eq_diff_full" do
-  it "works" do
-    x = {a: 1, b: 2, c: 3}
-    y = {a: 1, b: 2, c: 0}
+describe "assertions" do
+  it "assert_diff" do
     begin
-      x.should eq_diff_full y
+      assert_diff(ACTUAL, EXPECTED)
     rescue ex : Spec::AssertionFailed
-      ex.line.should eq 126
-      ex.message.not_nil!.gsub(/\e.+?m/, "").should eq <<-EOF
-      Expected: {a: 1, b: 2, c: 0}
-           got: {a: 1, b: 2, c: 3}
-          diff:   {
-                    a: 1,
-                    b: 2,
-                -   c: 3,
-                +   c: 0,
-                  }
-      EOF
+      ex.line.should eq 56
+      ex.file.should eq __FILE__
+      strip_escape_code(ex.message).should eq EXPECTED_MESSAGE
     else
       fail "Nothing was raised"
     end
   end
+
+  it "assert_diff_full" do
+    begin
+      assert_diff_full(ACTUAL, EXPECTED)
+    rescue ex : Spec::AssertionFailed
+      ex.line.should eq 68
+      ex.file.should eq __FILE__
+      strip_escape_code(ex.message).should eq EXPECTED_MESSAGE_FULL
+    else
+      fail "Nothing was raised"
+    end
+  end
+end
+
+private def strip_escape_code(message)
+  message.not_nil!.gsub(/\e.+?m/, "")
 end
