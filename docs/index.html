@@ -102,7 +102,7 @@
 
 <pre><code class="language-crystal"><span class="k">require</span> <span class="s">&quot;assert-diff&quot;</span>
 
-describe <span class="t">Rectangle</span>, focus: <span class="n">true</span> <span class="k">do</span>
+describe <span class="t">Rectangle</span> <span class="k">do</span>
   it <span class="s">&quot;example&quot;</span> <span class="k">do</span>
     actual <span class="o">=</span> <span class="t">Rectangle</span>.<span class="k">new</span>(<span class="t">Point</span>.<span class="k">new</span>(<span class="n">0</span>, <span class="n">0</span>), <span class="n">4</span>, <span class="n">3</span>, <span class="s">&quot;One\nTwo\nThree&quot;</span>)
     expected <span class="o">=</span> <span class="t">Rectangle</span>.<span class="k">new</span>(<span class="t">Point</span>.<span class="k">new</span>(<span class="n">0</span>, <span class="n">1</span>), <span class="n">4</span>, <span class="n">7</span>, <span class="s">&quot;One\nTwo\nFour&quot;</span>)
