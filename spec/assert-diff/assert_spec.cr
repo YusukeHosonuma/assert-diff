@@ -97,19 +97,43 @@ end
 
 describe "eq_diff" do
   it "works" do
-    x = {a: 1, b: 2}
-    y = {a: 1, b: 9}
+    x = {a: 1, b: 2, c: 3}
+    y = {a: 1, b: 2, c: 0}
     begin
       x.should eq_diff y
     rescue ex : Spec::AssertionFailed
       ex.line.should eq 103
       ex.message.not_nil!.gsub(/\e.+?m/, "").should eq <<-EOF
-      Expected: {a: 1, b: 9}
-           got: {a: 1, b: 2}
+      Expected: {a: 1, b: 2, c: 0}
+           got: {a: 1, b: 2, c: 3}
           diff:   {
                     ...
-                -   b: 2,
-                +   b: 9,
+                -   c: 3,
+                +   c: 0,
+                  }
+      EOF
+    else
+      fail "Nothing was raised"
+    end
+  end
+end
+
+describe "eq_diff_full" do
+  it "works" do
+    x = {a: 1, b: 2, c: 3}
+    y = {a: 1, b: 2, c: 0}
+    begin
+      x.should eq_diff_full y
+    rescue ex : Spec::AssertionFailed
+      ex.line.should eq 126
+      ex.message.not_nil!.gsub(/\e.+?m/, "").should eq <<-EOF
+      Expected: {a: 1, b: 2, c: 0}
+           got: {a: 1, b: 2, c: 3}
+          diff:   {
+                    a: 1,
+                    b: 2,
+                -   c: 3,
+                +   c: 0,
                   }
       EOF
     else

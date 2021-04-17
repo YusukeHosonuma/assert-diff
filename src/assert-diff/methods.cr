@@ -57,11 +57,3 @@ private def print_diff_to_io(before, after, ommit_consecutive, io : IO = STDOUT)
     io.puts(message)
   end
 end
-
-def eq_diff(value)
-  AssertDiff::EqualDiffExpectation.new(value, true)
-end
-
-def eq_diff_full(value)
-  AssertDiff::EqualDiffExpectation.new(value, false)
-end
