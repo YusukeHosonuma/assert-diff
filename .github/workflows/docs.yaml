@@ -1,0 +1,27 @@
+on:
+  push:
+    branches: [main]
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Download source
+        uses: actions/checkout@v2
+
+      - name: Install Crystal
+        uses: oprypin/install-crystal@v1
+
+      - name: Generate docs
+        run: crystal docs
+
+      - name: Commit and push
+        run: |
+          if ! git diff --exit-code --quiet
+          then
+            git config user.name github-actions
+            git config user.email github-actions@github.com
+            git add .
+            git commit -m "Update docs"
+            git push
+          fi
