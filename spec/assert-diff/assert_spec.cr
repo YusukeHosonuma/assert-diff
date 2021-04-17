@@ -97,8 +97,8 @@ end
 
 describe "eq_diff" do
   it "works" do
-    x = { a: 1, b: 2 }
-    y = { a: 1, b: 9 }
+    x = {a: 1, b: 2}
+    y = {a: 1, b: 9}
     begin
       x.should eq_diff y
     rescue ex : Spec::AssertionFailed
