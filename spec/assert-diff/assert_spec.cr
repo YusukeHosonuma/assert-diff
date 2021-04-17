@@ -94,3 +94,26 @@ describe "asssertions" do
     end
   end
 end
+
+describe "eq_diff" do
+  it "works" do
+    x = { a: 1, b: 2 }
+    y = { a: 1, b: 9 }
+    begin
+      x.should eq_diff y
+    rescue ex : Spec::AssertionFailed
+      ex.line.should eq 103
+      ex.message.not_nil!.gsub(/\e.+?m/, "").should eq <<-EOF
+      Expected: {a: 1, b: 9}
+           got: {a: 1, b: 2}
+          diff:   {
+                    ...
+                -   b: 2,
+                +   b: 9,
+                  }
+      EOF
+    else
+      fail "Nothing was raised"
+    end
+  end
+end
