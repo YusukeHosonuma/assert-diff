@@ -1,11 +1,11 @@
 require "../spec_helper"
 
-ACTUAL   = {a: 1, b: 2, c: 3}
-EXPECTED = {a: 1, b: 2, c: 0}
+EXPECTED = {a: 1, b: 2, c: 3}
+ACTUAL   = {a: 1, b: 2, c: 0}
 
 EXPECTED_MESSAGE = <<-EOF
-Expected: {a: 1, b: 2, c: 0}
-     got: {a: 1, b: 2, c: 3}
+Expected: {a: 1, b: 2, c: 3}
+     got: {a: 1, b: 2, c: 0}
     diff:   {
               ...
           -   c: 3,
@@ -14,8 +14,8 @@ Expected: {a: 1, b: 2, c: 0}
 EOF
 
 EXPECTED_MESSAGE_FULL = <<-EOF
-Expected: {a: 1, b: 2, c: 0}
-     got: {a: 1, b: 2, c: 3}
+Expected: {a: 1, b: 2, c: 3}
+     got: {a: 1, b: 2, c: 0}
     diff:   {
               a: 1,
               b: 2,
