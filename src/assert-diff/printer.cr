@@ -11,7 +11,6 @@ module AssertDiff
 
     private def dump(diff : Diff, key = nil, indent = "") : String
       indent = indent + "  "
-      prefix = key ? "#{indent}#{key}: " : indent
 
       case diff
       in Same
@@ -21,65 +20,82 @@ module AssertDiff
       in Deleted
         mark('-', key, diff.value, indent)
       in Changed
-        separater = diff.before.is_a?(RawString) ? "\n" : ",\n"
-        [
-          mark('-', key, diff.before, indent),
-          mark('+', key, diff.after, indent),
-        ].join(separater)
+        mark_changed(diff, key, indent)
       in Hash(String, Diff)
-        content = if @ommit_consecutive
-                    diff.keys.sort
-                      .map { |k| {k, diff[k]} }
-                      .grouped_by { |_, v| v.is_a?(Same) }
-                      .flat_map { |xs|
-                        if xs.first[1].is_a?(Same)
-                          "#{indent}  ..."
-                        else
-                          xs.map { |k, v| dump(v, k, indent) + "," }
-                        end
-                      }
-                      .join("\n")
-                  else
-                    diff.keys.sort.map { |k| dump(diff[k], k, indent) + "," }.join("\n")
-                  end
-        <<-HASH
-        #{prefix}#{"{"}
-        #{content}
-        #{indent}#{"}"}
-        HASH
+        dump_hash(diff, key, indent)
       in Array(Diff)
-        content = if @ommit_consecutive
-                    diff
-                      .grouped_by &.is_a?(Same)
-                      .flat_map { |xs|
-                        if xs.first.is_a?(Same)
-                          "#{indent}  ..."
-                        else
-                          xs.map { |s| dump(s, nil, indent) + "," }
-                        end
-                      }
-                      .join("\n")
-                  else
-                    diff.map { |s| dump(s, nil, indent) + "," }.join("\n")
-                  end
-        <<-ARRAY
-        #{prefix}[
-        #{content}
-        #{indent}]
-        ARRAY
+        dump_array(diff, key, indent)
       in MultilineDiff
-        content = diff
-          .map { |s|
-            dump(s, nil, indent)
-          }
-          .join("\n")
-        <<-EOF
-        #{indent}#{key}:
-        #{indent}  ```
-        #{content}
-        #{indent}  ```
-        EOF
+        dump_multiline(diff, key, indent)
       end
+    end
+
+    private def dump_hash(diff : Hash(String, Diff), key : String?, indent : String) : String
+      content = if @ommit_consecutive
+                  diff.keys.sort!
+                    .map { |k| {k, diff[k]} }
+                    .grouped_by { |_, v| v.is_a?(Same) }
+                    .flat_map { |xs|
+                      if xs.first[1].is_a?(Same)
+                        "#{indent}  ..."
+                      else
+                        xs.map { |k, v| dump(v, k, indent) + "," }
+                      end
+                    }
+                    .join("\n")
+                else
+                  diff.keys.sort!.join("\n") { |k| dump(diff[k], k, indent) + "," }
+                end
+      prefix = key ? "#{indent}#{key}: " : indent
+
+      <<-HASH
+      #{prefix}{
+      #{content}
+      #{indent}}
+      HASH
+    end
+
+    private def dump_array(diff : Array(Diff), key : String?, indent : String) : String
+      content = if @ommit_consecutive
+                  diff
+                    .grouped_by &.is_a?(Same)
+                    .flat_map { |xs|
+                      if xs.first.is_a?(Same)
+                        "#{indent}  ..."
+                      else
+                        xs.map { |s| dump(s, nil, indent) + "," }
+                      end
+                    }
+                    .join("\n")
+                else
+                  diff.join("\n") { |s| dump(s, nil, indent) + "," }
+                end
+      prefix = key ? "#{indent}#{key}: " : indent
+
+      <<-ARRAY
+      #{prefix}[
+      #{content}
+      #{indent}]
+      ARRAY
+    end
+
+    private def dump_multiline(diff : MultilineDiff, key : String?, indent : String) : String
+      content = diff.join("\n") { |s| dump(s, nil, indent) }
+
+      <<-EOF
+      #{indent}#{key}:
+      #{indent}  ```
+      #{content}
+      #{indent}  ```
+      EOF
+    end
+
+    private def mark_changed(changed : Changed, key : String?, indent : String) : String
+      separater = changed.before.is_a?(RawString) ? "\n" : ",\n"
+      [
+        mark('-', key, changed.before, indent),
+        mark('+', key, changed.after, indent),
+      ].join(separater)
     end
 
     private def mark(mark : Char, key : String?, value : Raw, indent : String)
@@ -99,16 +115,16 @@ module AssertDiff
                 head = key ? "#{key}: {" : "{"
                 content = <<-EOF
                 #{head}
-                #{value.map { |k, v| "  #{k}: #{v}," }.join("\n")}
+                #{value.join("\n") { |k, v| "  #{k}: #{v}," }}
                 }
                 EOF
-                return content.lines.map { |s| "#{mark} #{indent}#{s}" }.join("\n")
+                return content.lines.join("\n") { |s| "#{mark} #{indent}#{s}" }
               end
       "#{mark} #{prefix}#{value}"
     end
 
     private def colorize(content : String) : String
-      content.lines.map do |line|
+      content.lines.join("\n") do |line|
         case line
         when .starts_with?("-")
           line.colorize(:red)
@@ -119,7 +135,7 @@ module AssertDiff
         else
           line.colorize(:dark_gray)
         end
-      end.join("\n")
+      end
     end
   end
 end
