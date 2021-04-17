@@ -24,7 +24,7 @@ Use in specs:
 ```crystal
 require "assert-diff"
 
-describe Rectangle, focus: true do
+describe Rectangle do
   it "example" do
     actual = Rectangle.new(Point.new(0, 0), 4, 3, "One\nTwo\nThree")
     expected = Rectangle.new(Point.new(0, 1), 4, 7, "One\nTwo\nFour")
