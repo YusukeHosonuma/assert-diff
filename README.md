@@ -24,25 +24,21 @@ Use in specs:
 ```crystal
 require "assert-diff"
 
-struct Rectangle
-  def initialize(@origin : Point, @width : Int32, @height : Int32)
-  end
-end
+describe Rectangle, focus: true do
+  it "example" do
+    actual = Rectangle.new(Point.new(0, 0), 4, 3, "One\nTwo\nThree")
+    expected = Rectangle.new(Point.new(0, 1), 4, 7, "One\nTwo\nFour")
 
-struct Point
-  def initialize(@x : Int32, @y : Int32)
+    actual.should eq_diff expected # or use `eq_full_diff`
   end
 end
+```
 
-describe Rectangle do
-  describe "example" do
-    it "failed" do
-      a = Rectangle.new(Point.new(0, 0), 4, 3)
-      b = Rectangle.new(Point.new(0, 1), 4, 7)
-      assert_diff(a, b)
-    end
-  end
-end
+or use `assert_diff` and `assert_diff_full`.
+
+```crystal
+assert_diff(a, b)
+assert_diff_full(a, b)
 ```
 
 Use to output:
