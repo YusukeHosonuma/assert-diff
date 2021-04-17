@@ -28,7 +28,7 @@ module AssertDiff
         ].join(separater)
       in Hash(String, Diff)
         content = if @ommit_consecutive
-                    diff.keys.sort
+                    diff.keys.sort!
                       .map { |k| {k, diff[k]} }
                       .grouped_by { |_, v| v.is_a?(Same) }
                       .flat_map { |xs|
@@ -40,7 +40,7 @@ module AssertDiff
                       }
                       .join("\n")
                   else
-                    diff.keys.sort.map { |k| dump(diff[k], k, indent) + "," }.join("\n")
+                    diff.keys.sort!.join("\n") { |k| dump(diff[k], k, indent) + "," }
                   end
         <<-HASH
         #{prefix}#{"{"}
@@ -60,7 +60,7 @@ module AssertDiff
                       }
                       .join("\n")
                   else
-                    diff.map { |s| dump(s, nil, indent) + "," }.join("\n")
+                    diff.join("\n") { |s| dump(s, nil, indent) + "," }
                   end
         <<-ARRAY
         #{prefix}[
@@ -68,11 +68,7 @@ module AssertDiff
         #{indent}]
         ARRAY
       in MultilineDiff
-        content = diff
-          .map { |s|
-            dump(s, nil, indent)
-          }
-          .join("\n")
+        content = diff.join("\n") { |s| dump(s, nil, indent) }
         <<-EOF
         #{indent}#{key}:
         #{indent}  ```
@@ -99,16 +95,16 @@ module AssertDiff
                 head = key ? "#{key}: {" : "{"
                 content = <<-EOF
                 #{head}
-                #{value.map { |k, v| "  #{k}: #{v}," }.join("\n")}
+                #{value.join("\n") { |k, v| "  #{k}: #{v}," }}
                 }
                 EOF
-                return content.lines.map { |s| "#{mark} #{indent}#{s}" }.join("\n")
+                return content.lines.join("\n") { |s| "#{mark} #{indent}#{s}" }
               end
       "#{mark} #{prefix}#{value}"
     end
 
     private def colorize(content : String) : String
-      content.lines.map do |line|
+      content.lines.join("\n") do |line|
         case line
         when .starts_with?("-")
           line.colorize(:red)
@@ -119,7 +115,7 @@ module AssertDiff
         else
           line.colorize(:dark_gray)
         end
-      end.join("\n")
+      end
     end
   end
 end

@@ -17,8 +17,8 @@ module AssertDiff
 
       original_message + "\n" +
         <<-EOF
-          #{"diff:".colorize(:dark_gray).to_s} #{diff.[0]}
-      #{diff.[1..].map { |s| " " * 10 + s }.join("\n")}
+          #{"diff:".colorize(:dark_gray)} #{diff.[0]}
+      #{diff.[1..].join("\n") { |s| " " * 10 + s }}
       EOF
     end
 
