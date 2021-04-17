@@ -192,35 +192,76 @@ describe AssertDiff do
       DIFF
     end
 
-    it "diff Array" do
+    it "diff array" do
       before = [
-        1,
-        2, # to change
-        [10, 10],
-        [10, 20], # to change
-        [30, 30], # to delete
+        [1, 2, 3],
+        {
+          x: [1, 2, 3],
+        },
       ]
       after = [
-        1,
-        9, # changed
-        [10, 10],
-        [10, 90, 30],
-        3, # added
+        [1, 2, 0, 4],
+        {
+          x: [1, 2, 0, 4],
+          y: [1, 2],
+        },
+        [1, 2],
       ]
-      plain_diff(before, after).should eq <<-DIFF
+      plain_diff(before, after).should eq_diff <<-DIFF
         [
-          ...
-      -   2,
-      +   9,
-          ...
           [
             ...
-      -     20,
-      +     90,
-      +     30,
+      -     3,
+      +     0,
+      +     4,
           ],
-      -   [30, 30],
-      +   3,
+          {
+            x: [
+              ...
+      -       3,
+      +       0,
+      +       4,
+            ],
+      +     y: [
+      +       1,
+      +       2,
+      +     ],
+          },
+      +   [
+      +     1,
+      +     2,
+      +   ],
+        ]
+      DIFF
+    end
+
+    it "diff multiline string" do
+      before = [
+        "One\nTwo\nThree",
+        {x: "One\nTwo\nThree"},
+      ]
+      after = [
+        "One\nTwo\nFour",
+        {x: "One\nTwo\nFour"},
+      ]
+
+      plain_diff(before, after).should eq <<-DIFF
+        [
+            ```
+            One
+            Two
+      -     Three
+      +     Four
+            ```,
+          {
+            x:
+              ```
+              One
+              Two
+      -       Three
+      +       Four
+              ```,
+          },
         ]
       DIFF
     end

@@ -10,7 +10,7 @@ module AssertDiff
     end
 
     private def dump(diff : Diff, key = nil, indent = "") : String
-      indent = indent + "  "
+      indent += "  "
 
       case diff
       in Same
@@ -82,12 +82,14 @@ module AssertDiff
     private def dump_multiline(diff : MultilineDiff, key : String?, indent : String) : String
       content = diff.join("\n") { |s| dump(s, nil, indent) }
 
-      <<-EOF
-      #{indent}#{key}:
+      body = <<-EOF
       #{indent}  ```
       #{content}
       #{indent}  ```
       EOF
+
+      prefix = key ? "#{indent}#{key}:\n" : ""
+      prefix + body
     end
 
     private def mark_changed(changed : Changed, key : String?, indent : String) : String
@@ -100,27 +102,33 @@ module AssertDiff
 
     private def mark(mark : Char, key : String?, value : Raw, indent : String)
       indent = indent.lchop("  ")
-      prefix = key ? "#{indent}#{key}: " : indent
+      content = (key ? "#{key}: " : "") + dump_raw(value)
+      content.lines.join("\n") do |line|
+        "#{mark} #{indent}#{line}"
+      end
+    end
 
-      value = case value
-              in Bool, Int64, Float64, RawString
-                value.to_s
-              in String
-                "\"#{value}\""
-              in Nil
-                "nil"
-              in Array
-                value.to_s # TODO: fix
-              in Hash
-                head = key ? "#{key}: {" : "{"
-                content = <<-EOF
-                #{head}
-                #{value.join("\n") { |k, v| "  #{k}: #{v}," }}
-                }
-                EOF
-                return content.lines.join("\n") { |s| "#{mark} #{indent}#{s}" }
-              end
-      "#{mark} #{prefix}#{value}"
+    private def dump_raw(value : Raw)
+      case value
+      in Bool, Int64, Float64, RawString
+        value.to_s
+      in String
+        "\"#{value}\""
+      in Nil
+        "nil"
+      in Array
+        <<-EOF
+        [
+        #{value.join("\n") { |e| "  #{e}," }}
+        ]
+        EOF
+      in Hash
+        <<-EOF
+        {
+        #{value.join("\n") { |k, v| "  #{k}: #{v}," }}
+        }
+        EOF
+      end
     end
 
     private def colorize(content : String) : String
