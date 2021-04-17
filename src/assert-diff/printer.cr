@@ -82,12 +82,14 @@ module AssertDiff
     private def dump_multiline(diff : MultilineDiff, key : String?, indent : String) : String
       content = diff.join("\n") { |s| dump(s, nil, indent) }
 
-      <<-EOF
-      #{indent}#{key}:
+      body = <<-EOF
       #{indent}  ```
       #{content}
       #{indent}  ```
       EOF
+
+      prefix = key ? "#{indent}#{key}:\n" : ""
+      prefix + body
     end
 
     private def mark_changed(changed : Changed, key : String?, indent : String) : String

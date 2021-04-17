@@ -225,6 +225,37 @@ describe AssertDiff do
       DIFF
     end
 
+    it "diff multiline string" do
+      before = [
+        "One\nTwo\nThree",
+        {x: "One\nTwo\nThree"},
+      ]
+      after = [
+        "One\nTwo\nFour",
+        {x: "One\nTwo\nFour"},
+      ]
+
+      plain_diff(before, after).should eq <<-DIFF
+        [
+            ```
+            One
+            Two
+      -     Three
+      +     Four
+            ```,
+          {
+            x:
+              ```
+              One
+              Two
+      -       Three
+      +       Four
+              ```,
+          },
+        ]
+      DIFF
+    end
+
     it "diff struct and object" do
       before = ComplexStruct.new(
         42,
