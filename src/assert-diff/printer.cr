@@ -10,7 +10,7 @@ module AssertDiff
     end
 
     private def dump(diff : Diff, key = nil, indent = "") : String
-      indent = indent + "  "
+      indent += "  "
 
       case diff
       in Same
