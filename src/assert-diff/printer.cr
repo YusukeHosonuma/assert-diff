@@ -102,33 +102,32 @@ module AssertDiff
 
     private def mark(mark : Char, key : String?, value : Raw, indent : String)
       indent = indent.lchop("  ")
-      prefix = key ? "#{indent}#{key}: " : indent
+      prefix = key ? "#{mark} #{indent}#{key}: " : "#{mark} #{indent}"
 
-      value = case value
-              in Bool, Int64, Float64, RawString
-                value.to_s
-              in String
-                "\"#{value}\""
-              in Nil
-                "nil"
-              in Array
-                head = key ? "#{key}: [" : "["
-                content = <<-EOF
-                #{head}
-                #{value.join("\n") { |e| "  #{e}," }}
-                ]
-                EOF
-                return content.lines.join("\n") { |s| "#{mark} #{indent}#{s}" }
-              in Hash
-                head = key ? "#{key}: {" : "{"
-                content = <<-EOF
-                #{head}
-                #{value.join("\n") { |k, v| "  #{k}: #{v}," }}
-                }
-                EOF
-                return content.lines.join("\n") { |s| "#{mark} #{indent}#{s}" }
-              end
-      "#{mark} #{prefix}#{value}"
+      case value
+      in Bool, Int64, Float64, RawString
+        prefix + value.to_s
+      in String
+        prefix + "\"#{value}\""
+      in Nil
+        prefix + "nil"
+      in Array
+        head = key ? "#{key}: [" : "["
+        content = <<-EOF
+        #{head}
+        #{value.join("\n") { |e| "  #{e}," }}
+        ]
+        EOF
+        content.lines.join("\n") { |s| "#{mark} #{indent}#{s}" }
+      in Hash
+        head = key ? "#{key}: {" : "{"
+        content = <<-EOF
+        #{head}
+        #{value.join("\n") { |k, v| "  #{k}: #{v}," }}
+        }
+        EOF
+        content.lines.join("\n") { |s| "#{mark} #{indent}#{s}" }
+      end
     end
 
     private def colorize(content : String) : String
