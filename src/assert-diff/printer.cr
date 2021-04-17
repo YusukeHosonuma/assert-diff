@@ -112,7 +112,13 @@ module AssertDiff
               in Nil
                 "nil"
               in Array
-                value.to_s # TODO: fix
+                head = key ? "#{key}: [" : "["
+                content = <<-EOF
+                #{head}
+                #{value.join("\n") { |e| "  #{e}," }}
+                ]
+                EOF
+                return content.lines.join("\n") { |s| "#{mark} #{indent}#{s}" }
               in Hash
                 head = key ? "#{key}: {" : "{"
                 content = <<-EOF
