@@ -1,3 +1,5 @@
+require "spec"
+
 # :nodoc:
 module AssertDiff
   struct EqualDiffExpectation(T)
