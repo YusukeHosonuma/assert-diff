@@ -1,6 +1,15 @@
 # :nodoc:
 struct AnyHash
-  alias Type = Nil | Bool | Int32 | Int64 | Float32 | Float64 | String | Array(AnyHash) | Hash(String, AnyHash)
+  alias Type = Nil |
+               Bool |
+               Int32 |
+               Int64 |
+               Float32 |
+               Float64 |
+               Char |
+               String |
+               Array(AnyHash) |
+               Hash(String, AnyHash)
 
   getter raw : Type
 

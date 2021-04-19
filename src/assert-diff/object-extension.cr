@@ -24,7 +24,7 @@ end
 # :nodoc:
 struct Char
   def __to_json_any : AnyHash
-    AnyHash.new("#{self}")
+    AnyHash.new(self)
   end
 end
 

@@ -134,7 +134,7 @@ describe Object do
       "string"   => AnyHash.new("Hello"),
       "path"     => AnyHash.new("foo/bar/baz.cr"),
       "symbol"   => AnyHash.new(":foo"),
-      "char"     => AnyHash.new("a"),
+      "char"     => AnyHash.new('a'),
       "array"    => AnyHash.new([
         AnyHash.new(1),
         AnyHash.new(2),

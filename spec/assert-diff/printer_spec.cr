@@ -129,8 +129,8 @@ describe AssertDiff do
         {
       -   bool: true,
       +   bool: false,
-      -   char: "a",
-      +   char: "b",
+      -   char: 'a',
+      +   char: 'b',
       -   float: 1.2,
       +   float: 1.3,
       -   int: 42,
@@ -315,8 +315,8 @@ describe AssertDiff do
           ],
       -   bool: true,
       +   bool: false,
-      -   char: "a",
-      +   char: "b",
+      -   char: 'a',
+      +   char: 'b',
       -   float: 1.2,
       +   float: 1.3,
           hash: {
@@ -333,8 +333,8 @@ describe AssertDiff do
             ],
       -     bool: true,
       +     bool: false,
-      -     char: "a",
-      +     char: "b",
+      -     char: 'a',
+      +     char: 'b',
       -     float: 1.2,
       +     float: 1.3,
             hash: {

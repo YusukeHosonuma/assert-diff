@@ -112,6 +112,8 @@ module AssertDiff
       case value
       in Bool, Int32, Int64, Float32, Float64, RawString
         value.to_s
+      in Char
+        "'#{value}'"
       in String
         "\"#{value}\""
       in Nil
