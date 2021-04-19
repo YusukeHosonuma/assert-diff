@@ -1,4 +1,5 @@
 # assert-diff
+[![CI](https://github.com/YusukeHosonuma/assert-diff/actions/workflows/main.yaml/badge.svg)](https://github.com/YusukeHosonuma/assert-diff/actions/workflows/main.yaml)
 [![Docs](https://img.shields.io/badge/docs-available-brightgreen.svg)](https://yusukehosonuma.github.io/assert-diff/)
 [![GitHub release](https://img.shields.io/github/release/YusukeHosonuma/assert-diff.svg)](https://github.com/YusukeHosonuma/assert-diff/releases)
 
