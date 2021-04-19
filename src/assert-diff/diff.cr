@@ -15,8 +15,8 @@ module AssertDiff
        a.is_a?(NamedTuple) && b.is_a?(JSON::Serializable) ||
        a.is_a?(NamedTuple) && b.is_a?(NamedTuple)
       json_any_diff(
-        JSON.parse(a.to_json),
-        JSON.parse(b.to_json)
+        JSON.parse(a.to_json).__to_json_any,
+        JSON.parse(b.to_json).__to_json_any
       )
     else
       json_any_diff(
@@ -67,7 +67,7 @@ module AssertDiff
     result
   end
 
-  private def self.json_any_diff(x : JSON::Any, y : JSON::Any) : Diff
+  private def self.json_any_diff(x : AnyHash, y : AnyHash) : Diff
     case
     when x == y             then Same.new(x.raw)
     when x.as_h? && y.as_h? then hash_diff(x.as_h, y.as_h)

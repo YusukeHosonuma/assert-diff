@@ -6,5 +6,5 @@ module AssertDiff
   record Deleted, value : Raw
   record Changed, before : Raw, after : Raw
 
-  alias Raw = JSON::Any::Type | RawString
+  alias Raw = AnyHash::Type | RawString
 end

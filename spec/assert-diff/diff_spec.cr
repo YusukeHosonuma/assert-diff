@@ -90,9 +90,9 @@ describe AssertDiff do
           c: {x: 5, y: 6}, # added
         }
         expected = {
-          "a" => AssertDiff::Same.new({"x" => JSON::Any.new(Int64.new(1)), "y" => JSON::Any.new(Int64.new(2))}),
-          "b" => AssertDiff::Deleted.new({"x" => JSON::Any.new(Int64.new(3)), "y" => JSON::Any.new(Int64.new(4))}),
-          "c" => AssertDiff::Added.new({"x" => JSON::Any.new(Int64.new(5)), "y" => JSON::Any.new(Int64.new(6))}),
+          "a" => AssertDiff::Same.new({"x" => AnyHash.new(Int64.new(1)), "y" => AnyHash.new(Int64.new(2))}),
+          "b" => AssertDiff::Deleted.new({"x" => AnyHash.new(Int64.new(3)), "y" => AnyHash.new(Int64.new(4))}),
+          "c" => AssertDiff::Added.new({"x" => AnyHash.new(Int64.new(5)), "y" => AnyHash.new(Int64.new(6))}),
         }
         AssertDiff.diff(before.to_h, after.to_h).should eq expected
       end

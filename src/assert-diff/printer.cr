@@ -110,7 +110,7 @@ module AssertDiff
 
     private def dump_raw(value : Raw)
       case value
-      in Bool, Int64, Float64, RawString
+      in Bool, Int32, Int64, Float32, Float64, RawString
         value.to_s
       in String
         "\"#{value}\""
