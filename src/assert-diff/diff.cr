@@ -26,7 +26,7 @@ module AssertDiff
   private def self.hash_diff(before : Hash, after : Hash) : Hash(String, Diff)
     result = {} of String => Diff
 
-    before.keys.each do |key|
+    before.each_key do |key|
       x = before[key]
       y = after[key]?
       status = if y.nil?
