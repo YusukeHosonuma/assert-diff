@@ -1,36 +1,6 @@
 require "../spec_helper"
 require "uri"
 
-private enum Color
-  Red
-  Green
-  Blue
-end
-
-private struct BasicTypesStruct
-  def initialize(
-    @int : Int32,
-    @float : Float64,
-    @bool : Bool,
-    @optional : String?,
-    @string : String,
-    @path : Path,
-    @symbol : Symbol,
-    @char : Char,
-    @array : Array(Int32),
-    @deque : Deque(Int32),
-    @set : Set(Int32),
-    @hash : Hash(String, Int32),
-    @tuple : Tuple(Int32, Bool),
-    @named_tuple : NamedTuple(one: Int32, two: Int32),
-    @time : Time,
-    @uri : URI,
-    @json : JSON::Any,
-    @color : Color
-  )
-  end
-end
-
 private class BasicTypesClass
   def initialize(
     @int : Int32,
