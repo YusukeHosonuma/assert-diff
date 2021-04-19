@@ -124,6 +124,12 @@ struct NamedTuple
   end
 end
 
+struct Time
+  def __to_json_any
+    JSON::Any.new(self.to_local.to_s)
+  end
+end
+
 # :nodoc:
 struct JSON::Any
   def __to_json_any
