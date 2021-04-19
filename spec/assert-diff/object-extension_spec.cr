@@ -55,6 +55,11 @@ private class BasicTypesClass
   end
 end
 
+private class X
+  def initialize(@x : A)
+  end
+end
+
 private abstract class A
   def initialize(@a : String)
   end
@@ -154,6 +159,15 @@ describe Object do
       B.new("B").__to_json_any.should eq ({
         "a" => "A",
         "b" => "B",
+      })
+    end
+
+    pending "has abstract class" do
+      X.new(B.new("B")).__to_json_any.should eq ({
+        "x" => {
+          "a" => "A",
+          "b" => "B", # TODO: Not included in result, why?
+        }
       })
     end
 

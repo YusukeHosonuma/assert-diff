@@ -3,16 +3,12 @@ require "json"
 # :nodoc:
 module AssertDiff::Extension
   private macro to_hash
-    {% if @type.abstract? %}
-      raise "abstract class is not supported yet."
-    {% else %}
-      hash = {
-        {% for m in @type.instance_vars %}
-        {{m.name.stringify}} => @{{m.name}}.__to_json_any,
-        {% end %}
-      }
-      JSON::Any.new(hash)
+    hash = {
+      {% for m in @type.instance_vars %}
+      {{m.name.stringify}} => @{{m.name}}.__to_json_any,
       {% end %}
+    }
+    JSON::Any.new(hash)
   end
 
   def __to_json_any : JSON::Any
