@@ -85,7 +85,7 @@ describe Object do
       hash: {"one" => 1, "two" => 2},
       tuple: {1, true},
       named_tuple: {one: 1, two: 2},
-      time: Time.utc(2016, 2, 15, 10, 20, 30),
+      time: Time.local(2016, 2, 15, 10, 20, 30, location: Time::Location.load("Asia/Tokyo")),
       json: JSON::Any.new({"one" => JSON::Any.new("1"), "two" => JSON::Any.new("2")})
     )
     klass = BasicTypesClass.new(
@@ -103,7 +103,7 @@ describe Object do
       hash: {"one" => 1, "two" => 2},
       tuple: {1, true},
       named_tuple: {one: 1, two: 2},
-      time: Time.utc(2016, 2, 15, 10, 20, 30),
+      time: Time.local(2016, 2, 15, 10, 20, 30, location: Time::Location.load("Asia/Tokyo")),
       json: JSON::Any.new({"one" => JSON::Any.new("1"), "two" => JSON::Any.new("2")})
     )
     expected = {
@@ -121,7 +121,7 @@ describe Object do
       "hash"        => {"one" => 1, "two" => 2},
       "tuple"       => [1, true],
       "named_tuple" => {"one" => 1, "two" => 2},
-      "time"        => "2016-02-15 19:20:30 +09:00",
+      "time"        => "2016-02-15 10:20:30 +09:00",
       "json"        => {"one" => "1", "two" => "2"},
     }
 

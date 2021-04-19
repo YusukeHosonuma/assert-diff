@@ -16,4 +16,4 @@ jobs:
         run: crystal tool format --check
 
       - name: Run tests
-        run: crystal spec
+        run: TZ="Asia/Tokyo" crystal spec
