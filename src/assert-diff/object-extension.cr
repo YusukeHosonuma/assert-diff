@@ -136,3 +136,9 @@ struct JSON::Any
     self
   end
 end
+
+struct Enum
+  def __to_json_any
+    JSON::Any.new(self.to_s)
+  end
+end

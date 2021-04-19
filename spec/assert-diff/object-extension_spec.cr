@@ -1,5 +1,11 @@
 require "../spec_helper"
 
+private enum Color
+  Red
+  Green
+  Blue
+end
+
 private struct BasicTypesStruct
   def initialize(
     @int : Int32,
@@ -17,7 +23,8 @@ private struct BasicTypesStruct
     @tuple : Tuple(Int32, Bool),
     @named_tuple : NamedTuple(one: Int32, two: Int32),
     @time : Time,
-    @json : JSON::Any
+    @json : JSON::Any,
+    @color : Color
   )
   end
 end
@@ -39,7 +46,8 @@ private class BasicTypesClass
     @tuple : Tuple(Int32, Bool),
     @named_tuple : NamedTuple(one: Int32, two: Int32),
     @time : Time,
-    @json : JSON::Any
+    @json : JSON::Any,
+    @color : Color
   )
   end
 end
@@ -86,7 +94,8 @@ describe Object do
       tuple: {1, true},
       named_tuple: {one: 1, two: 2},
       time: Time.local(2016, 2, 15, 10, 20, 30, location: Time::Location.load("Asia/Tokyo")),
-      json: JSON::Any.new({"one" => JSON::Any.new("1"), "two" => JSON::Any.new("2")})
+      json: JSON::Any.new({"one" => JSON::Any.new("1"), "two" => JSON::Any.new("2")}),
+      color: Color::Red
     )
     klass = BasicTypesClass.new(
       int: 42,
@@ -104,7 +113,8 @@ describe Object do
       tuple: {1, true},
       named_tuple: {one: 1, two: 2},
       time: Time.local(2016, 2, 15, 10, 20, 30, location: Time::Location.load("Asia/Tokyo")),
-      json: JSON::Any.new({"one" => JSON::Any.new("1"), "two" => JSON::Any.new("2")})
+      json: JSON::Any.new({"one" => JSON::Any.new("1"), "two" => JSON::Any.new("2")}),
+      color: Color::Red
     )
     expected = {
       "int"         => 42,
@@ -123,6 +133,7 @@ describe Object do
       "named_tuple" => {"one" => 1, "two" => 2},
       "time"        => "2016-02-15 10:20:30 +09:00",
       "json"        => {"one" => "1", "two" => "2"},
+      "color" => "Red"
     }
 
     it "struct" do
