@@ -44,6 +44,11 @@ private class B < A
 end
 
 private class NestedClass
+  include AssertDiff::Extension
+
+  property value : Int32
+  property nested : NestedClass?
+
   def initialize(
     @value : Int32,
     @nested : NestedClass?
@@ -52,18 +57,18 @@ private class NestedClass
 end
 
 describe Object do
-  describe "#__to_h" do
+  describe "#__to_json_any" do
     expected = {
-      int:         42,
-      float:       1.2,
-      bool:        true,
-      optional:    nil,
-      string:      "Hello",
-      char:        "a",
-      array:       [1, 2],
-      hash:        {"one" => 1, "two" => 2},
-      named_tuple: {:one => 1, :two => 2},
-      json:        {"one" => "1", "two" => "2"},
+      "int"         => 42,
+      "float"       => 1.2,
+      "bool"        => true,
+      "optional"    => nil,
+      "string"      => "Hello",
+      "char"        => "a",
+      "array"       => [1, 2],
+      "hash"        => {"one" => 1, "two" => 2},
+      "named_tuple" => {"one" => 1, "two" => 2},
+      "json"        => {"one" => "1", "two" => "2"},
     }
 
     it "struct" do
@@ -79,7 +84,7 @@ describe Object do
         {one: 1, two: 2},
         JSON::Any.new({"one" => JSON::Any.new("1"), "two" => JSON::Any.new("2")})
       )
-      object.__to_h.should eq expected
+      object.__to_json_any.should eq expected
     end
 
     it "class" do
@@ -95,31 +100,34 @@ describe Object do
         {one: 1, two: 2},
         JSON::Any.new({"one" => JSON::Any.new("1"), "two" => JSON::Any.new("2")})
       )
-      object.__to_h.should eq expected
+      object.__to_json_any.should eq expected
     end
 
     it "subclass" do
-      B.new("B").__to_h.should eq ({a: "A", b: "B"})
+      B.new("B").__to_json_any.should eq ({
+        "a" => "A",
+        "b" => "B",
+      })
     end
 
     # TODO: Not supported currently
-    pending "nested class" do
+    it "nested class" do
       object = NestedClass.new(1,
         NestedClass.new(2,
           NestedClass.new(3, nil)
         )
       )
       expected = {
-        value:  1,
-        nested: {
-          value:  2,
-          nested: {
-            value:  3,
-            nested: nil,
+        "value"  => 1,
+        "nested" => {
+          "value"  => 2,
+          "nested" => {
+            "value"  => 3,
+            "nested" => nil,
           },
         },
       }
-      object.__to_h.should eq expected
+      object.__to_json_any.should eq expected
     end
   end
 end
