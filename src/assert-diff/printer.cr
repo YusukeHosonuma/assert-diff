@@ -110,10 +110,14 @@ module AssertDiff
 
     private def dump_raw(value : Raw)
       case value
-      in Bool, Int64, Float64, RawString
+      in Bool, Int32, Int64, Float32, Float64, AnyTuple, Time, URI, RawString, AnyEnum
         value.to_s
+      in Char
+        "'#{value}'"
       in String
         "\"#{value}\""
+      in Symbol
+        ":#{value}"
       in Nil
         "nil"
       in Array
@@ -122,6 +126,8 @@ module AssertDiff
         #{value.join("\n") { |e| "  #{e}," }}
         ]
         EOF
+      in Set
+        "Set{" + value.join(", ", &.to_s) + "}"
       in Hash
         <<-EOF
         {

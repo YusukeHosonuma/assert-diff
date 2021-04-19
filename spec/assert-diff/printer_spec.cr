@@ -13,19 +13,6 @@ private def plain_diff_full(x, y)
   printer.print_diff(diff).gsub(/\e.+?m/, "")
 end
 
-private struct BasicTypes
-  def initialize(
-    @int : Int32,
-    @float : Float32,
-    @bool : Bool,
-    @optional : String?,
-    @string : String,
-    @multiline_string : String,
-    @char : Char
-  )
-  end
-end
-
 private struct ComplexStruct
   def initialize(
     @int : Int32,
@@ -107,47 +94,102 @@ describe AssertDiff do
     end
 
     it "diff basic types" do
-      before = BasicTypes.new(
-        42,
-        1.2,
-        true,
-        nil,
-        "Hello",
-        "Apple\nOrange\nBanana",
-        'a',
+      before = BasicTypesStruct.new(
+        int: 42,
+        float: 1.2,
+        bool: true,
+        optional: nil,
+        string: "Hello",
+        path: Path["foo/bar/baz.cr"],
+        symbol: :foo,
+        char: 'a',
+        array: [1, 2],
+        deque: Deque.new([1, 2]),
+        set: Set{1, 2},
+        hash: {"one" => 1, "two" => 2},
+        tuple: {1, true},
+        named_tuple: {one: 1, two: 2},
+        time: Time.local(2016, 2, 15, 10, 20, 30, location: Time::Location.load("Asia/Tokyo")),
+        uri: URI.parse("http://example.com/"),
+        json: JSON::Any.new({"one" => JSON::Any.new("1"), "two" => JSON::Any.new("2")}),
+        color: Color::Red
       )
-      after = BasicTypes.new(
-        49,
-        1.3,
-        false,
-        "not nil",
-        "Goodbye",
-        "Apple\nGrape\nBanana",
-        'b',
+      after = BasicTypesStruct.new(
+        int: 43,
+        float: 1.3,
+        bool: false,
+        optional: "string",
+        string: "Goodbye",
+        path: Path["foo/bar/hoge.cr"],
+        symbol: :bar,
+        char: 'b',
+        array: [1, 3],
+        deque: Deque.new([1, 3]),
+        set: Set{1, 3},
+        hash: {"one" => 1, "two" => 3},
+        tuple: {1, false},
+        named_tuple: {one: 1, two: 3},
+        time: Time.local(2017, 2, 15, 10, 20, 30, location: Time::Location.load("Asia/Tokyo")),
+        uri: URI.parse("http://example.com/foo"),
+        json: JSON::Any.new({"one" => JSON::Any.new("1"), "two" => JSON::Any.new("3")}),
+        color: Color::Blue
       )
-      plain_diff(before, after).should eq <<-DIFF
+      plain_diff(before, after).should eq_diff <<-DIFF
         {
+          array: [
+            ...
+      -     2,
+      +     3,
+          ],
       -   bool: true,
       +   bool: false,
-      -   char: "a",
-      +   char: "b",
+      -   char: 'a',
+      +   char: 'b',
+      -   color: Color::Red,
+      +   color: Color::Blue,
+          deque: [
+            ...
+      -     2,
+      +     3,
+          ],
       -   float: 1.2,
       +   float: 1.3,
+          hash: {
+            ...
+      -     two: 2,
+      +     two: 3,
+          },
       -   int: 42,
-      +   int: 49,
-          multiline_string:
-            ```
-            Apple
-      -     Orange
-      +     Grape
-            Banana
-            ```,
+      +   int: 43,
+          json: {
+            ...
+      -     two: "2",
+      +     two: "3",
+          },
+          named_tuple: {
+            ...
+      -     two: 2,
+      +     two: 3,
+          },
       -   optional: nil,
-      +   optional: "not nil",
+      +   optional: "string",
+      -   path: "foo/bar/baz.cr",
+      +   path: "foo/bar/hoge.cr",
+      -   set: Set{1, 2},
+      +   set: Set{1, 3},
       -   string: "Hello",
       +   string: "Goodbye",
+      -   symbol: :foo,
+      +   symbol: :bar,
+      -   time: 2016-02-15 10:20:30 +09:00,
+      +   time: 2017-02-15 10:20:30 +09:00,
+      -   tuple: {1, true},
+      +   tuple: {1, false},
+      -   uri: http://example.com/,
+      +   uri: http://example.com/foo,
         }
       DIFF
+      # TODO: Set は內部diffをとってもいい気がする。
     end
 
     it "diff Hash" do
@@ -315,8 +357,8 @@ describe AssertDiff do
           ],
       -   bool: true,
       +   bool: false,
-      -   char: "a",
-      +   char: "b",
+      -   char: 'a',
+      +   char: 'b',
       -   float: 1.2,
       +   float: 1.3,
           hash: {
@@ -333,8 +375,8 @@ describe AssertDiff do
             ],
       -     bool: true,
       +     bool: false,
-      -     char: "a",
-      +     char: "b",
+      -     char: 'a',
+      +     char: 'b',
       -     float: 1.2,
       +     float: 1.3,
             hash: {

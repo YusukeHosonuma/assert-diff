@@ -10,19 +10,16 @@ module AssertDiff
   alias MultilineDiff = Array(Status)
 
   def self.diff(a : A, b : B) : Diff forall A, B
-    if a.is_a?(JSON::Serializable) && b.is_a?(JSON::Serializable) ||
-       a.is_a?(JSON::Serializable) && b.is_a?(NamedTuple) ||
-       a.is_a?(NamedTuple) && b.is_a?(JSON::Serializable) ||
-       a.is_a?(NamedTuple) && b.is_a?(NamedTuple)
-      json_any_diff(
-        JSON.parse(a.to_json),
-        JSON.parse(b.to_json)
-      )
-    else
-      json_any_diff(
-        a.__to_json_any,
-        b.__to_json_any
-      )
+    any_diff(a.__to_json_any, b.__to_json_any)
+  end
+
+  private def self.any_diff(x : AnyHash, y : AnyHash) : Diff
+    case
+    when x == y             then Same.new(x.raw)
+    when x.as_h? && y.as_h? then hash_diff(x.as_h, y.as_h)
+    when x.as_a? && y.as_a? then array_diff(x.as_a, y.as_a)
+    when x.as_s? && y.as_s? then string_diff(x.as_s, y.as_s)
+    else                         Changed.new(x.raw, y.raw)
     end
   end
 
@@ -35,7 +32,7 @@ module AssertDiff
       status = if y.nil?
                  Deleted.new(x.raw)
                else
-                 json_any_diff(x, y)
+                 any_diff(x, y)
                end
       result[key] = status
     end
@@ -54,7 +51,7 @@ module AssertDiff
 
     xs.zip?(ys) do |x, y|
       break if !x || !y
-      result << json_any_diff(x, y)
+      result << any_diff(x, y)
     end
 
     case
@@ -65,16 +62,6 @@ module AssertDiff
     end
 
     result
-  end
-
-  private def self.json_any_diff(x : JSON::Any, y : JSON::Any) : Diff
-    case
-    when x == y             then Same.new(x.raw)
-    when x.as_h? && y.as_h? then hash_diff(x.as_h, y.as_h)
-    when x.as_a? && y.as_a? then array_diff(x.as_a, y.as_a)
-    when x.as_s? && y.as_s? then string_diff(x.as_s, y.as_s)
-    else                         Changed.new(x.raw, y.raw)
-    end
   end
 
   private def self.string_diff(x : String, y : String) : Status | MultilineDiff
