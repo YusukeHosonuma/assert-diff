@@ -7,6 +7,7 @@ private struct BasicTypesStruct
     @bool : Bool,
     @optional : String?,
     @string : String,
+    @path : Path,
     @char : Char,
     @array : Array(Int32),
     @hash : Hash(String, Int32),
@@ -23,6 +24,7 @@ private class BasicTypesClass
     @bool : Bool,
     @optional : String?,
     @string : String,
+    @path : Path,
     @char : Char,
     @array : Array(Int32),
     @hash : Hash(String, Int32),
@@ -58,12 +60,39 @@ end
 
 describe Object do
   describe "#__to_json_any" do
+    object = BasicTypesStruct.new(
+      int: 42,
+      float: 1.2,
+      bool: true,
+      optional: nil,
+      string: "Hello",
+      path: Path["foo/bar/baz.cr"],
+      char: 'a',
+      array: [1, 2],
+      hash: {"one" => 1, "two" => 2},
+      named_tuple: {one: 1, two: 2},
+      json: JSON::Any.new({"one" => JSON::Any.new("1"), "two" => JSON::Any.new("2")})
+    )
+    klass = BasicTypesClass.new(
+      int: 42,
+      float: 1.2,
+      bool: true,
+      optional: nil,
+      string: "Hello",
+      path: Path["foo/bar/baz.cr"],
+      char: 'a',
+      array: [1, 2],
+      hash: {"one" => 1, "two" => 2},
+      named_tuple: {one: 1, two: 2},
+      json: JSON::Any.new({"one" => JSON::Any.new("1"), "two" => JSON::Any.new("2")})
+    )
     expected = {
       "int"         => 42,
       "float"       => 1.2,
       "bool"        => true,
       "optional"    => nil,
       "string"      => "Hello",
+      "path"        => "foo/bar/baz.cr",
       "char"        => "a",
       "array"       => [1, 2],
       "hash"        => {"one" => 1, "two" => 2},
@@ -72,35 +101,11 @@ describe Object do
     }
 
     it "struct" do
-      object = BasicTypesStruct.new(
-        42,
-        1.2,
-        true,
-        nil,
-        "Hello",
-        'a',
-        [1, 2],
-        {"one" => 1, "two" => 2},
-        {one: 1, two: 2},
-        JSON::Any.new({"one" => JSON::Any.new("1"), "two" => JSON::Any.new("2")})
-      )
       object.__to_json_any.should eq expected
     end
 
     it "class" do
-      object = BasicTypesClass.new(
-        42,
-        1.2,
-        true,
-        nil,
-        "Hello",
-        'a',
-        [1, 2],
-        {"one" => 1, "two" => 2},
-        {one: 1, two: 2},
-        JSON::Any.new({"one" => JSON::Any.new("1"), "two" => JSON::Any.new("2")})
-      )
-      object.__to_json_any.should eq expected
+      klass.__to_json_any.should eq expected
     end
 
     it "subclass" do
@@ -110,7 +115,6 @@ describe Object do
       })
     end
 
-    # TODO: Not supported currently
     it "nested class" do
       object = NestedClass.new(1,
         NestedClass.new(2,
