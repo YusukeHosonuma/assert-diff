@@ -11,6 +11,7 @@ private struct BasicTypesStruct
     @symbol : Symbol,
     @char : Char,
     @array : Array(Int32),
+    @deque : Deque(Int32),
     @hash : Hash(String, Int32),
     @named_tuple : NamedTuple(one: Int32, two: Int32),
     @json : JSON::Any
@@ -29,6 +30,7 @@ private class BasicTypesClass
     @symbol : Symbol,
     @char : Char,
     @array : Array(Int32),
+    @deque : Deque(Int32),
     @hash : Hash(String, Int32),
     @named_tuple : NamedTuple(one: Int32, two: Int32),
     @json : JSON::Any
@@ -72,6 +74,7 @@ describe Object do
       symbol: :foo,
       char: 'a',
       array: [1, 2],
+      deque: Deque.new([1, 2]),
       hash: {"one" => 1, "two" => 2},
       named_tuple: {one: 1, two: 2},
       json: JSON::Any.new({"one" => JSON::Any.new("1"), "two" => JSON::Any.new("2")})
@@ -86,6 +89,7 @@ describe Object do
       symbol: :foo,
       char: 'a',
       array: [1, 2],
+      deque: Deque.new([1, 2]),
       hash: {"one" => 1, "two" => 2},
       named_tuple: {one: 1, two: 2},
       json: JSON::Any.new({"one" => JSON::Any.new("1"), "two" => JSON::Any.new("2")})
@@ -100,6 +104,7 @@ describe Object do
       "symbol"      => ":foo",
       "char"        => "a",
       "array"       => [1, 2],
+      "deque"       => [1, 2],
       "hash"        => {"one" => 1, "two" => 2},
       "named_tuple" => {"one" => 1, "two" => 2},
       "json"        => {"one" => "1", "two" => "2"},
