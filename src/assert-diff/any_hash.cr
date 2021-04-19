@@ -13,6 +13,25 @@ struct AnyTuple(T)
 end
 
 # :nodoc:
+class AnyEnum
+  getter type : String
+  getter value : AnyHash
+
+  def initialize(value : Enum)
+    @type = typeof(value).to_s
+    @value = AnyHash.new(value.to_s)
+  end
+
+  def ==(other : AnyEnum)
+    value == other.value
+  end
+
+  def to_s(io : IO) : Nil
+    io << @type << "::" << @value.to_s
+  end
+end
+
+# :nodoc:
 struct AnyHash
   alias Type = Nil |
                Bool |
@@ -28,7 +47,8 @@ struct AnyHash
                Hash(String, AnyHash) |
                AnyTuple(AnyHash) |
                Time |
-               URI
+               URI |
+               AnyEnum
 
   getter raw : Type
 

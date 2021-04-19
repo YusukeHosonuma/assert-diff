@@ -145,8 +145,8 @@ describe AssertDiff do
       +   bool: false,
       -   char: 'a',
       +   char: 'b',
-      -   color: "Red",
-      +   color: "Blue",
+      -   color: Color::Red,
+      +   color: Color::Blue,
           deque: [
             ...
       -     2,

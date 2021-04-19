@@ -126,7 +126,7 @@ describe Object do
       "time"        => AnyHash.new(Time.local(2016, 2, 15, 10, 20, 30, location: Time::Location.load("Asia/Tokyo"))),
       "uri"         => AnyHash.new(URI.parse("http://example.com/")),
       "json"        => AnyHash.new({"one" => AnyHash.new("1"), "two" => AnyHash.new("2")}),
-      "color"       => AnyHash.new("Red"),
+      "color"       => AnyHash.new(AnyEnum.new(Color::Red)),
     })
 
     it "struct" do
