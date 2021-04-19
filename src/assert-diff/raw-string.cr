@@ -4,8 +4,8 @@ module AssertDiff
     def initialize(@raw : String)
     end
 
-    def to_s
-      @raw
+    def to_s(io : IO) : Nil
+      io << @raw
     end
   end
 end

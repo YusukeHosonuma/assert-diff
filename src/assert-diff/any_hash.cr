@@ -6,9 +6,7 @@ struct AnyTuple(T)
   end
 
   def to_s(io : IO) : Nil
-    io << "{"
-    io << @raw.join(", ", &.to_s)
-    io << "}"
+    io << "{" << @raw.join(", ", &.to_s) << "}"
   end
 end
 
