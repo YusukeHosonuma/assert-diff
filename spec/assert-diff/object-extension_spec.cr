@@ -143,10 +143,10 @@ describe Object do
         AnyHash.new(1),
         AnyHash.new(2),
       ]),
-      "set" => AnyHash.new([
+      "set" => AnyHash.new(Set{
         AnyHash.new(1),
         AnyHash.new(2),
-      ]),
+      }),
       "hash" => AnyHash.new({
         "one" => AnyHash.new(1),
         "two" => AnyHash.new(2),

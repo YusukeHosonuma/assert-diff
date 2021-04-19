@@ -124,6 +124,8 @@ module AssertDiff
         #{value.join("\n") { |e| "  #{e}," }}
         ]
         EOF
+      in Set
+        "Set{" + value.join(", ", &.to_s) + "}"
       in Hash
         <<-EOF
         {

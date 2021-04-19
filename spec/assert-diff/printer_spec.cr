@@ -21,7 +21,8 @@ private struct BasicTypes
     @optional : String?,
     @string : String,
     @multiline_string : String,
-    @char : Char
+    @char : Char,
+    @set : Set(Int32)
   )
   end
 end
@@ -108,24 +109,26 @@ describe AssertDiff do
 
     it "diff basic types" do
       before = BasicTypes.new(
-        42,
-        1.2,
-        true,
-        nil,
-        "Hello",
-        "Apple\nOrange\nBanana",
-        'a',
+        int: 42,
+        float: 1.2,
+        bool: true,
+        optional: nil,
+        string: "Hello",
+        multiline_string: "Apple\nOrange\nBanana",
+        char: 'a',
+        set: Set{1, 2}
       )
       after = BasicTypes.new(
-        49,
-        1.3,
-        false,
-        "not nil",
-        "Goodbye",
-        "Apple\nGrape\nBanana",
-        'b',
+        int: 49,
+        float: 1.3,
+        bool: false,
+        optional: "not nil",
+        string: "Goodbye",
+        multiline_string: "Apple\nGrape\nBanana",
+        char: 'b',
+        set: Set{1, 3}
       )
-      plain_diff(before, after).should eq <<-DIFF
+      plain_diff(before, after).should eq_diff <<-DIFF
         {
       -   bool: true,
       +   bool: false,
@@ -144,6 +147,8 @@ describe AssertDiff do
             ```,
       -   optional: nil,
       +   optional: "not nil",
+      -   set: Set{1, 2},
+      +   set: Set{1, 3},
       -   string: "Hello",
       +   string: "Goodbye",
         }

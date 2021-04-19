@@ -105,7 +105,8 @@ end
 # :nodoc:
 struct Set
   def __to_json_any : AnyHash
-    self.to_a.__to_json_any
+    AnyHash.new(self.map(&.__to_json_any).to_set)
+    # AnyHash.new(self.to_a.__to_json_any.to_set)
   end
 end
 
