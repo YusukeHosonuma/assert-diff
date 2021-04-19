@@ -127,7 +127,7 @@ module AssertDiff
         ]
         EOF
       in Set
-        "Set{" + value.join(", ", &.to_s) + "}"
+        "Set{" + value.join(", ") + "}"
       in Hash
         <<-EOF
         {

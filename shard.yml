@@ -1,5 +1,6 @@
 name: assert-diff
 version: 0.3.0
+description: Assert equals with readable diff report.
 
 authors:
   - Yusuke Hosonuma <tobi462@gmail.com>

@@ -6,7 +6,7 @@ struct AnyTuple(T)
   end
 
   def to_s(io : IO) : Nil
-    io << "{" << @raw.join(", ", &.to_s) << "}"
+    io << "{" << @raw.join(", ") << "}"
   end
 end
 
@@ -25,7 +25,7 @@ class AnyEnum
   end
 
   def to_s(io : IO) : Nil
-    io << @type << "::" << @value.to_s
+    io << @type << "::" << @value
   end
 end
 

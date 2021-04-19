@@ -1,4 +1,6 @@
 # assert-diff
+[![Docs](https://img.shields.io/badge/docs-available-brightgreen.svg)](https://yusukehosonuma.github.io/assert-diff/)
+[![GitHub release](https://img.shields.io/github/release/YusukeHosonuma/assert-diff.svg)](https://github.com/YusukeHosonuma/assert-diff/releases)
 
 Assert equals with readable diff report.
 
