@@ -12,6 +12,12 @@ jobs:
       - name: Install Crystal
         uses: oprypin/install-crystal@v1
 
+      - name: Check formatting
+        run: crystal tool format --check
+
+      - name: Run tests
+        run: TZ="Asia/Tokyo" crystal spec
+
       - name: Generate docs
         run: crystal docs
 
