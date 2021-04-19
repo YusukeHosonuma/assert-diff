@@ -20,8 +20,8 @@ module AssertDiff
       )
     else
       value_diff(
-        JSON.parse(a.__to_h.to_json),
-        JSON.parse(b.__to_h.to_json)
+        a.__to_json_any,
+        b.__to_json_any
       )
     end
   end
