@@ -14,12 +14,12 @@ module AssertDiff
        a.is_a?(JSON::Serializable) && b.is_a?(NamedTuple) ||
        a.is_a?(NamedTuple) && b.is_a?(JSON::Serializable) ||
        a.is_a?(NamedTuple) && b.is_a?(NamedTuple)
-      value_diff(
+      json_any_diff(
         JSON.parse(a.to_json),
         JSON.parse(b.to_json)
       )
     else
-      value_diff(
+      json_any_diff(
         a.__to_json_any,
         b.__to_json_any
       )
@@ -35,7 +35,7 @@ module AssertDiff
       status = if y.nil?
                  Deleted.new(x.raw)
                else
-                 value_diff(x, y)
+                 json_any_diff(x, y)
                end
       result[key] = status
     end
@@ -54,7 +54,7 @@ module AssertDiff
 
     xs.zip?(ys) do |x, y|
       break if !x || !y
-      result << value_diff(x, y)
+      result << json_any_diff(x, y)
     end
 
     case
@@ -67,7 +67,7 @@ module AssertDiff
     result
   end
 
-  private def self.value_diff(x : JSON::Any, y : JSON::Any) : Diff
+  private def self.json_any_diff(x : JSON::Any, y : JSON::Any) : Diff
     case
     when x == y             then Same.new(x.raw)
     when x.as_h? && y.as_h? then hash_diff(x.as_h, y.as_h)
