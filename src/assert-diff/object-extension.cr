@@ -39,9 +39,17 @@ class String
   end
 end
 
+# :nodoc:
 struct Path
   def __to_json_any
     JSON::Any.new(self.to_s)
+  end
+end
+
+# :nodoc:
+struct Symbol
+  def __to_json_any
+    JSON::Any.new(":" + self.to_s)
   end
 end
 
