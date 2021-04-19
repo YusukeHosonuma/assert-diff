@@ -167,7 +167,7 @@ describe Object do
         "x" => {
           "a" => "A",
           "b" => "B", # TODO: Not included in result, why?
-        }
+        },
       })
     end
 
