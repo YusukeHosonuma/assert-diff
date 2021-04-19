@@ -2,7 +2,6 @@ require "json"
 
 # :nodoc:
 module AssertDiff::Extension
-
   private macro to_hash
     {% if @type.abstract? %}
       raise "abstract class is not supported yet."
