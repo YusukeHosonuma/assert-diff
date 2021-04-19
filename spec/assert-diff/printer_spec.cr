@@ -181,8 +181,8 @@ describe AssertDiff do
       +   string: "Goodbye",
       -   symbol: :foo,
       +   symbol: :bar,
-      -   time: "2016-02-15 10:20:30 +09:00",
-      +   time: "2017-02-15 10:20:30 +09:00",
+      -   time: 2016-02-15 10:20:30 +09:00,
+      +   time: 2017-02-15 10:20:30 +09:00,
           tuple: [
             ...
       -     true,

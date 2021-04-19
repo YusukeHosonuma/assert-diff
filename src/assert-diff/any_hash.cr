@@ -11,7 +11,8 @@ struct AnyHash
                Symbol |
                Set(AnyHash) |
                Array(AnyHash) |
-               Hash(String, AnyHash)
+               Hash(String, AnyHash) |
+               Time
 
   getter raw : Type
 
