@@ -183,15 +183,13 @@ describe AssertDiff do
       +   symbol: :bar,
       -   time: 2016-02-15 10:20:30 +09:00,
       +   time: 2017-02-15 10:20:30 +09:00,
-          tuple: [
-            ...
-      -     true,
-      +     false,
-          ],
+      -   tuple: {1, true},
+      +   tuple: {1, false},
       -   uri: http://example.com/,
       +   uri: http://example.com/foo,
         }
       DIFF
+      # TODO: Set は內部diffをとってもいい気がする。
     end
 
     it "diff Hash" do

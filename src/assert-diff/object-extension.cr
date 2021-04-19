@@ -124,7 +124,7 @@ end
 # :nodoc:
 struct Tuple
   def __to_json_any : AnyHash
-    self.to_a.__to_json_any
+    AnyHash.new(AnyTuple.new(self.to_a.map(&.__to_json_any)))
   end
 end
 

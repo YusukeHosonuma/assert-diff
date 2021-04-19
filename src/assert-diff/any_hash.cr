@@ -1,4 +1,18 @@
 # :nodoc:
+struct AnyTuple(T)
+  getter raw : Array(T)
+
+  def initialize(@raw : Array(T))
+  end
+
+  def to_s(io : IO) : Nil
+    io << "{"
+    io << @raw.join(", ", &.to_s)
+    io << "}"
+  end
+end
+
+# :nodoc:
 struct AnyHash
   alias Type = Nil |
                Bool |
@@ -12,6 +26,7 @@ struct AnyHash
                Set(AnyHash) |
                Array(AnyHash) |
                Hash(String, AnyHash) |
+               AnyTuple(AnyHash) |
                Time |
                URI
 
