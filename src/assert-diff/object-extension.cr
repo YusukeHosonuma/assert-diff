@@ -40,6 +40,20 @@ class String
 end
 
 # :nodoc:
+struct Path
+  def __to_json_any
+    JSON::Any.new(self.to_s)
+  end
+end
+
+# :nodoc:
+struct Symbol
+  def __to_json_any
+    JSON::Any.new(":" + self.to_s)
+  end
+end
+
+# :nodoc:
 struct Bool
   def __to_json_any
     JSON::Any.new(self)
@@ -68,6 +82,20 @@ class Array
 end
 
 # :nodoc:
+class Deque
+  def __to_json_any
+    self.to_a.__to_json_any
+  end
+end
+
+# :nodoc:
+struct Set
+  def __to_json_any
+    self.to_a.__to_json_any
+  end
+end
+
+# :nodoc:
 class Hash
   def __to_json_any
     hash = {} of String => JSON::Any
@@ -75,6 +103,13 @@ class Hash
       hash["#{key}"] = value.__to_json_any
     end
     JSON::Any.new(hash)
+  end
+end
+
+# :nodoc:
+struct Tuple
+  def __to_json_any
+    self.to_a.__to_json_any
   end
 end
 
@@ -90,8 +125,27 @@ struct NamedTuple
 end
 
 # :nodoc:
+struct Time
+  def __to_json_any
+    JSON::Any.new(self.to_local.to_s)
+  end
+end
+
+class URI
+  def __to_json_any
+    JSON::Any.new(self.to_s)
+  end
+end
+
+# :nodoc:
 struct JSON::Any
   def __to_json_any
     self
+  end
+end
+
+struct Enum
+  def __to_json_any
+    JSON::Any.new(self.to_s)
   end
 end
