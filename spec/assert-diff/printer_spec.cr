@@ -188,8 +188,8 @@ describe AssertDiff do
       -     true,
       +     false,
           ],
-      -   uri: "http://example.com/",
-      +   uri: "http://example.com/foo",
+      -   uri: http://example.com/,
+      +   uri: http://example.com/foo,
         }
       DIFF
     end

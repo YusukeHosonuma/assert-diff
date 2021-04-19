@@ -12,7 +12,8 @@ struct AnyHash
                Set(AnyHash) |
                Array(AnyHash) |
                Hash(String, AnyHash) |
-               Time
+               Time |
+               URI
 
   getter raw : Type
 

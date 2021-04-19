@@ -148,7 +148,7 @@ end
 
 class URI
   def __to_json_any : AnyHash
-    AnyHash.new(self.to_s)
+    AnyHash.new(self)
   end
 end
 
