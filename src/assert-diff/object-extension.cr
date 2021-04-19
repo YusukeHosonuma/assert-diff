@@ -89,6 +89,13 @@ class Deque
 end
 
 # :nodoc:
+struct Set
+  def __to_json_any
+    self.to_a.__to_json_any
+  end
+end
+
+# :nodoc:
 class Hash
   def __to_json_any
     hash = {} of String => JSON::Any
