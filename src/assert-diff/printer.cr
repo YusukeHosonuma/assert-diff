@@ -116,6 +116,8 @@ module AssertDiff
         "'#{value}'"
       in String
         "\"#{value}\""
+      in Symbol
+        ":#{value}"
       in Nil
         "nil"
       in Array

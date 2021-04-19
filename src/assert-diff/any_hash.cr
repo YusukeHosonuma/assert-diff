@@ -8,6 +8,7 @@ struct AnyHash
                Float64 |
                Char |
                String |
+               Symbol |
                Set(AnyHash) |
                Array(AnyHash) |
                Hash(String, AnyHash)

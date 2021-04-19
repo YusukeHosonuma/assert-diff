@@ -103,7 +103,7 @@ describe Object do
       "optional" => AnyHash.new(nil),
       "string"   => AnyHash.new("Hello"),
       "path"     => AnyHash.new("foo/bar/baz.cr"),
-      "symbol"   => AnyHash.new(":foo"),
+      "symbol"   => AnyHash.new(:foo),
       "char"     => AnyHash.new('a'),
       "array"    => AnyHash.new([
         AnyHash.new(1),
