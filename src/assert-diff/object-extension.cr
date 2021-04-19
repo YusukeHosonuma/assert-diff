@@ -107,6 +107,13 @@ class Hash
 end
 
 # :nodoc:
+struct Tuple
+  def __to_json_any
+    self.to_a.__to_json_any
+  end
+end
+
+# :nodoc:
 struct NamedTuple
   def __to_json_any
     hash = {} of String => JSON::Any

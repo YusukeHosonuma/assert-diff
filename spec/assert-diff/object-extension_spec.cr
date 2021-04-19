@@ -14,6 +14,7 @@ private struct BasicTypesStruct
     @deque : Deque(Int32),
     @set : Set(Int32),
     @hash : Hash(String, Int32),
+    @tuple : Tuple(Int32, Bool),
     @named_tuple : NamedTuple(one: Int32, two: Int32),
     @json : JSON::Any
   )
@@ -34,6 +35,7 @@ private class BasicTypesClass
     @deque : Deque(Int32),
     @set : Set(Int32),
     @hash : Hash(String, Int32),
+    @tuple : Tuple(Int32, Bool),
     @named_tuple : NamedTuple(one: Int32, two: Int32),
     @json : JSON::Any
   )
@@ -79,6 +81,7 @@ describe Object do
       deque: Deque.new([1, 2]),
       set: Set{1, 2},
       hash: {"one" => 1, "two" => 2},
+      tuple: {1, true},
       named_tuple: {one: 1, two: 2},
       json: JSON::Any.new({"one" => JSON::Any.new("1"), "two" => JSON::Any.new("2")})
     )
@@ -95,6 +98,7 @@ describe Object do
       deque: Deque.new([1, 2]),
       set: Set{1, 2},
       hash: {"one" => 1, "two" => 2},
+      tuple: {1, true},
       named_tuple: {one: 1, two: 2},
       json: JSON::Any.new({"one" => JSON::Any.new("1"), "two" => JSON::Any.new("2")})
     )
@@ -111,6 +115,7 @@ describe Object do
       "deque"       => [1, 2],
       "set"         => [1, 2],
       "hash"        => {"one" => 1, "two" => 2},
+      "tuple"       => [1, true],
       "named_tuple" => {"one" => 1, "two" => 2},
       "json"        => {"one" => "1", "two" => "2"},
     }
