@@ -1,0 +1,326 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="generator" content="Crystal Docs 0.36.1">
+<meta name="crystal_docs.project_version" content="main">
+<meta name="crystal_docs.project_name" content="assert-diff">
+
+
+
+<link href="css/style.css" rel="stylesheet" type="text/css" />
+<script type="text/javascript" src="js/doc.js"></script>
+
+  <meta name="repository-name" content="assert-diff">
+  <title>Enum - assert-diff main</title>
+  <script type="text/javascript">
+    CrystalDocs.base_path = "";
+  </script>
+</head>
+<body>
+
+<svg class="hidden">
+  <symbol id="octicon-link" viewBox="0 0 16 16">
+    <path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path>
+  </symbol>
+</svg>
+<div class="sidebar">
+  <div class="sidebar-header">
+    <div class="search-box">
+      <input type="search" class="search-input" placeholder="Search..." spellcheck="false" aria-label="Search">
+    </div>
+
+    <div class="project-summary">
+      <h1 class="project-name">
+        <a href="index.html">
+          assert-diff
+        </a>
+      </h1>
+
+      <span class="project-version">
+        main
+      </span>
+    </div>
+  </div>
+
+  <div class="search-results hidden">
+    <ul class="search-list"></ul>
+  </div>
+
+  <div class="types-list">
+    <ul>
+  
+  <li class=" " data-id="assert-diff/toplevel" data-name="top level namespace">
+      <a href="toplevel.html">Top Level Namespace</a>
+      
+    </li>
+  
+  <li class=" current" data-id="assert-diff/Enum" data-name="enum">
+      <a href="Enum.html">Enum</a>
+      
+    </li>
+  
+  <li class=" " data-id="assert-diff/URI" data-name="uri">
+      <a href="URI.html">URI</a>
+      
+    </li>
+  
+</ul>
+
+  </div>
+</div>
+
+
+<div class="main-content">
+<h1 class="type-name">
+
+  <span class="kind">abstract struct</span> Enum
+
+</h1>
+
+
+  <ul class="superclass-hierarchy"><li class="superclass"><a href="Enum.html">Enum</a></li><li class="superclass">Value</li><li class="superclass">Object</li></ul>
+
+
+
+
+  <h2>
+    <a id="overview" class="anchor" href="#overview">
+  <svg class="octicon-link" aria-hidden="true">
+    <use href="#octicon-link"/>
+  </svg>
+</a>
+    Overview
+  </h2>
+
+  <p>Enum is the base type of all enums.</p>
+
+<p>An enum is a set of integer values, where each value has an associated name. For example:</p>
+
+<pre><code class="language-crystal"><span class="k">enum</span> <span class="t">Color</span>
+  <span class="t">Red</span>   <span class="c"># 0</span>
+  <span class="t">Green</span> <span class="c"># 1</span>
+  <span class="t">Blue</span>  <span class="c"># 2</span>
+<span class="k">end</span></code></pre>
+
+<p>Values start with the value <code>0</code> and are incremented by one, but can be overwritten.</p>
+
+<p>To get the underlying value you invoke value on it:</p>
+
+<pre><code class="language-crystal"><span class="t">Color</span><span class="t">::</span><span class="t">Green</span>.value <span class="c"># =&gt; 1</span></code></pre>
+
+<p>Each constant (member) in the enum has the type of the enum:</p>
+
+<pre><code class="language-crystal"><span class="k">typeof</span>(<span class="t">Color</span><span class="t">::</span><span class="t">Red</span>) <span class="c"># =&gt; Color</span></code></pre>
+
+<h3><a id="flags-enum" class="anchor" href="#flags-enum">
+  <svg class="octicon-link" aria-hidden="true">
+    <use href="#octicon-link"/>
+  </svg>
+</a>Flags enum</h3>
+
+<p>An enum can be marked with the <code>@[Flags]</code> annotation. This changes the default values:</p>
+
+<pre><code class="language-crystal">@[<span class="t">Flags</span>]
+<span class="k">enum</span> <span class="t">IOMode</span>
+  <span class="t">Read</span>  <span class="c"># 1</span>
+  <span class="t">Write</span> <span class="c"># 2</span>
+  <span class="t">Async</span> <span class="c"># 4</span>
+<span class="k">end</span></code></pre>
+
+<p>Additionally, some methods change their behaviour.</p>
+
+<h3><a id="enums-from-integers" class="anchor" href="#enums-from-integers">
+  <svg class="octicon-link" aria-hidden="true">
+    <use href="#octicon-link"/>
+  </svg>
+</a>Enums from integers</h3>
+
+<p>An enum can be created from an integer:</p>
+
+<pre><code class="language-crystal"><span class="t">Color</span>.<span class="k">new</span>(<span class="n">1</span>).to_s <span class="c"># =&gt; &quot;Green&quot;</span></code></pre>
+
+<p>Values that don't correspond to enum's constants are allowed: the value
+will still be of type Color, but when printed you will get the underlying value:</p>
+
+<pre><code class="language-crystal"><span class="t">Color</span>.<span class="k">new</span>(<span class="n">10</span>).to_s <span class="c"># =&gt; &quot;10&quot;</span></code></pre>
+
+<p>This method is mainly intended to convert integers from C to enums in Crystal.</p>
+
+<h3><a id="question-methods" class="anchor" href="#question-methods">
+  <svg class="octicon-link" aria-hidden="true">
+    <use href="#octicon-link"/>
+  </svg>
+</a>Question methods</h3>
+
+<p>An enum automatically defines question methods for each member, using
+<code>String#underscore</code> for the method name.</p>
+
+<ul><li>In the case of regular enums, this compares by equality (<code>==</code>).</li><li>In the case of flags enums, this invokes <code>includes?</code>.</li></ul>
+
+<p>For example:</p>
+
+<pre><code class="language-crystal">color <span class="o">=</span> <span class="t">Color</span><span class="t">::</span><span class="t">Blue</span>
+color.red?  <span class="c"># =&gt; false</span>
+color.blue? <span class="c"># =&gt; true</span>
+
+mode <span class="o">=</span> <span class="t">IOMode</span><span class="t">::</span><span class="t">Read</span> <span class="o">|</span> <span class="t">IOMode</span><span class="t">::</span><span class="t">Async</span>
+mode.read?  <span class="c"># =&gt; true</span>
+mode.write? <span class="c"># =&gt; false</span>
+mode.async? <span class="c"># =&gt; true</span></code></pre>
+
+<p>This is very convenient in <code>case</code> expressions:</p>
+
+<pre><code class="language-crystal"><span class="k">case</span> color
+<span class="k">when</span> .red?
+  puts <span class="s">&quot;Got red&quot;</span>
+<span class="k">when</span> .blue?
+  puts <span class="s">&quot;Got blue&quot;</span>
+<span class="k">end</span></code></pre>
+
+
+
+
+
+  <h2>
+    <a id="included-modules" class="anchor" href="#included-modules">
+  <svg class="octicon-link" aria-hidden="true">
+    <use href="#octicon-link"/>
+  </svg>
+</a>
+    Included Modules
+  </h2>
+  <ul class="other-types-list">
+    
+      <li class="other-type">Comparable(<a href="Enum.html">Enum</a>)</li>
+    
+  </ul>
+
+
+
+
+
+
+
+
+
+
+  <h2>
+    <a id="defined-in" class="anchor" href="#defined-in">
+  <svg class="octicon-link" aria-hidden="true">
+    <use href="#octicon-link"/>
+  </svg>
+</a>
+    Defined in:
+  </h2>
+  
+    
+      <a href="https://github.com/YusukeHosonuma/assert-diff/blob/0f0da91b43148949e2b293cbb3cac3722159c146/src/assert-diff/object-extension.cr#L147" target="_blank">
+        assert-diff/object-extension.cr
+      </a>
+    
+    <br/>
+  
+
+
+
+
+
+
+
+
+
+  <h2>
+    <a id="instance-method-summary" class="anchor" href="#instance-method-summary">
+  <svg class="octicon-link" aria-hidden="true">
+    <use href="#octicon-link"/>
+  </svg>
+</a>
+    Instance Method Summary
+  </h2>
+  <ul class="list-summary">
+    
+      <li class="entry-summary">
+        <a href="#__to_json_any-instance-method" class="signature"><strong>#__to_json_any</strong></a>
+        
+      </li>
+    
+  </ul>
+
+
+
+
+
+<div class="methods-inherited">
+  
+    
+
+
+    
+
+
+    
+
+
+  
+    
+
+
+    
+
+
+    
+
+
+  
+    
+
+
+    
+
+
+    
+
+
+  
+</div>
+
+
+
+
+
+
+  <h2>
+    <a id="instance-method-detail" class="anchor" href="#instance-method-detail">
+  <svg class="octicon-link" aria-hidden="true">
+    <use href="#octicon-link"/>
+  </svg>
+</a>
+    Instance Method Detail
+  </h2>
+  
+    <div class="entry-detail" id="__to_json_any-instance-method">
+      <div class="signature">
+        
+        def <strong>__to_json_any</strong>
+
+        <a class="method-permalink" href="#__to_json_any-instance-method">#</a>
+      </div>
+      
+      <br/>
+      <div>
+        
+          [<a href="https://github.com/YusukeHosonuma/assert-diff/blob/0f0da91b43148949e2b293cbb3cac3722159c146/src/assert-diff/object-extension.cr#L148" target="_blank">View source</a>]
+        
+      </div>
+    </div>
+  
+
+
+
+
+</div>
+
+</body>
+</html>
