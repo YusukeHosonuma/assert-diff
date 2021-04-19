@@ -1,4 +1,5 @@
 require "../spec_helper"
+require "uri"
 
 private enum Color
   Red
@@ -23,6 +24,7 @@ private struct BasicTypesStruct
     @tuple : Tuple(Int32, Bool),
     @named_tuple : NamedTuple(one: Int32, two: Int32),
     @time : Time,
+    @uri : URI,
     @json : JSON::Any,
     @color : Color
   )
@@ -46,6 +48,7 @@ private class BasicTypesClass
     @tuple : Tuple(Int32, Bool),
     @named_tuple : NamedTuple(one: Int32, two: Int32),
     @time : Time,
+    @uri : URI,
     @json : JSON::Any,
     @color : Color
   )
@@ -94,6 +97,7 @@ describe Object do
       tuple: {1, true},
       named_tuple: {one: 1, two: 2},
       time: Time.local(2016, 2, 15, 10, 20, 30, location: Time::Location.load("Asia/Tokyo")),
+      uri: URI.parse("http://example.com/"),
       json: JSON::Any.new({"one" => JSON::Any.new("1"), "two" => JSON::Any.new("2")}),
       color: Color::Red
     )
@@ -113,6 +117,7 @@ describe Object do
       tuple: {1, true},
       named_tuple: {one: 1, two: 2},
       time: Time.local(2016, 2, 15, 10, 20, 30, location: Time::Location.load("Asia/Tokyo")),
+      uri: URI.parse("http://example.com/"),
       json: JSON::Any.new({"one" => JSON::Any.new("1"), "two" => JSON::Any.new("2")}),
       color: Color::Red
     )
@@ -132,8 +137,9 @@ describe Object do
       "tuple"       => [1, true],
       "named_tuple" => {"one" => 1, "two" => 2},
       "time"        => "2016-02-15 10:20:30 +09:00",
+      "uri"         => "http://example.com/",
       "json"        => {"one" => "1", "two" => "2"},
-      "color" => "Red"
+      "color"       => "Red",
     }
 
     it "struct" do
