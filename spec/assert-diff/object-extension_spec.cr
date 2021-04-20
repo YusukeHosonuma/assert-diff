@@ -129,7 +129,7 @@ describe Object do
       "color"       => AnyHash.new(AnyEnum.new(Color::Red)),
     })
 
-    it "struct" do
+    pending "struct" do
       object.__to_json_any.should eq_diff expected
     end
 

@@ -27,7 +27,35 @@ module AssertDiff
         dump_array(diff, key, indent)
       in MultilineDiff
         dump_multiline(diff, key, indent)
+      in ObjectDiff
+        dump_object(diff, key, indent)
       end
+    end
+
+    private def dump_object(object_diff : ObjectDiff, key : String?, indent : String) : String
+      diff = object_diff.properties
+      content = if @ommit_consecutive
+                  diff.keys.sort!
+                    .map { |k| {k, diff[k]} }
+                    .grouped_by { |_, v| v.is_a?(Same) }
+                    .flat_map { |xs|
+                      if xs.first[1].is_a?(Same)
+                        "#{indent}  ..."
+                      else
+                        xs.map { |k, v| dump(v, k, indent) + "," }
+                      end
+                    }
+                    .join("\n")
+                else
+                  diff.keys.sort!.join("\n") { |k| dump(diff[k], k, indent) + "," }
+                end
+      prefix = key ? "#{indent}#{key}: " : indent
+
+      <<-HASH
+      #{prefix}#{object_diff.typename} {
+      #{content}
+      #{indent}}
+      HASH
     end
 
     private def dump_hash(diff : Hash(String, Diff), key : String?, indent : String) : String
@@ -134,6 +162,13 @@ module AssertDiff
         #{value.join("\n") { |k, v| "  #{k}: #{v}," }}
         }
         EOF
+      in AnyObject
+        dump_raw(value.properties)
+        # <<-EOF
+        # {
+        # #{value.properties.join("\n") { |k, v| "  #{k}: #{v}," }}
+        # }
+        # EOF
       end
     end
 

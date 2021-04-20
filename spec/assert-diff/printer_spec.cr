@@ -135,7 +135,7 @@ describe AssertDiff do
         color: Color::Blue
       )
       plain_diff(before, after).should eq_diff <<-DIFF
-        {
+        BasicTypesStruct {
           array: [
             ...
       -     2,
@@ -349,8 +349,8 @@ describe AssertDiff do
           {"a" => 1, "b" => 3},
         )
       )
-      plain_diff(before, after).should eq <<-DIFF
-        {
+      plain_diff(before, after).should eq_diff <<-DIFF
+        ComplexStruct {
           array: [
             ...
       +     4,

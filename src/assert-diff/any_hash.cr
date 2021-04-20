@@ -1,3 +1,5 @@
+require "uri"
+
 # :nodoc:
 struct AnyTuple(T)
   getter raw : Array(T)
@@ -29,6 +31,20 @@ class AnyEnum
   end
 end
 
+struct AnyObject
+  getter typename : String
+  getter properties : Hash(String, AnyHash)
+
+  def initialize(@typename : String, @properties : Hash(String, AnyHash))
+  end
+
+  # def to_s(io : IO) : Nil
+  #   puts "🍎"
+  #   io << "🍊"
+  #   properties.to_s(io)
+  # end
+end
+
 # :nodoc:
 struct AnyHash
   alias Type = Nil |
@@ -46,7 +62,8 @@ struct AnyHash
                AnyTuple(AnyHash) |
                Time |
                URI |
-               AnyEnum
+               AnyEnum |
+               AnyObject
 
   getter raw : Type
 
@@ -75,6 +92,14 @@ struct AnyHash
 
   def as_h? : Hash(String, AnyHash)?
     as_h if @raw.is_a?(Hash)
+  end
+
+  def as_o : AnyObject
+    @raw.as(AnyObject)
+  end
+
+  def as_o? : AnyObject?
+    as_o if @raw.is_a?(AnyObject)
   end
 
   def to_s(io : IO) : Nil

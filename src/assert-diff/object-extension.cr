@@ -21,6 +21,22 @@ class Object
   include AssertDiff::Extension
 end
 
+struct Struct
+  private macro properties
+    {
+      {% for m in @type.instance_vars %}
+      {{m.name.stringify}} => @{{m.name}}.__to_json_any,
+      {% end %}
+    }
+  end
+
+  def __to_json_any : AnyHash
+    hash = properties
+    name = {{@type.name.stringify}}
+    AnyHash.new(AnyObject.new(name, hash))
+  end
+end
+
 # :nodoc:
 struct Char
   def __to_json_any : AnyHash
