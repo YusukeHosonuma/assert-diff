@@ -28,12 +28,11 @@ module AssertDiff
       in MultilineDiff
         dump_multiline(diff, key, indent)
       in ObjectDiff
-        dump_object(diff, key, indent)
+        dump_hash(diff.properties, key, indent, diff.typename)
       end
     end
 
-    private def dump_object(object_diff : ObjectDiff, key : String?, indent : String) : String
-      diff = object_diff.properties
+    private def dump_hash(diff : Hash(String, Diff), key : String?, indent : String, typename : String? = nil) : String
       content = if @ommit_consecutive
                   diff.keys.sort!
                     .map { |k| {k, diff[k]} }
@@ -50,31 +49,7 @@ module AssertDiff
                   diff.keys.sort!.join("\n") { |k| dump(diff[k], k, indent) + "," }
                 end
       prefix = key ? "#{indent}#{key}: " : indent
-
-      <<-HASH
-      #{prefix}#{object_diff.typename} {
-      #{content}
-      #{indent}}
-      HASH
-    end
-
-    private def dump_hash(diff : Hash(String, Diff), key : String?, indent : String) : String
-      content = if @ommit_consecutive
-                  diff.keys.sort!
-                    .map { |k| {k, diff[k]} }
-                    .grouped_by { |_, v| v.is_a?(Same) }
-                    .flat_map { |xs|
-                      if xs.first[1].is_a?(Same)
-                        "#{indent}  ..."
-                      else
-                        xs.map { |k, v| dump(v, k, indent) + "," }
-                      end
-                    }
-                    .join("\n")
-                else
-                  diff.keys.sort!.join("\n") { |k| dump(diff[k], k, indent) + "," }
-                end
-      prefix = key ? "#{indent}#{key}: " : indent
+      prefix += "#{typename} " if typename
 
       <<-HASH
       #{prefix}{
