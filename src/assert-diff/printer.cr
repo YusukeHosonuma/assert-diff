@@ -138,12 +138,7 @@ module AssertDiff
         }
         EOF
       in AnyObject
-        dump_raw(value.properties)
-        # <<-EOF
-        # {
-        # #{value.properties.join("\n") { |k, v| "  #{k}: #{v}," }}
-        # }
-        # EOF
+        "#{value.typename} #{dump_raw(value.properties)}"
       end
     end
 

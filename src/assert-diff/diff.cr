@@ -11,7 +11,7 @@ module AssertDiff
   alias MultilineDiff = Array(Status)
 
   struct ObjectDiff
-    getter typename : String # TODO:
+    getter typename : String
     getter properties : Hash(String, Diff)
 
     def initialize(@typename : String, @properties : Hash(String, Diff))
@@ -25,14 +25,21 @@ module AssertDiff
   private def self.any_diff(x : AnyHash, y : AnyHash) : Diff
     case
     when x == y             then Same.new(x.raw)
+    when x.as_o? && y.as_o? then object_diff(x.as_o, y.as_o)
     when x.as_h? && y.as_h? then hash_diff(x.as_h, y.as_h)
     when x.as_a? && y.as_a? then array_diff(x.as_a, y.as_a)
     when x.as_s? && y.as_s? then string_diff(x.as_s, y.as_s)
-    when x.as_o? && y.as_o?
-      properties_diff = hash_diff(x.as_o.properties, y.as_o.properties)
-      ObjectDiff.new(x.as_o.typename, properties_diff)
     else
       Changed.new(x.raw, y.raw)
+    end
+  end
+
+  private def self.object_diff(x : AnyObject, y : AnyObject)
+    if x.typename == y.typename
+      properties_diff = hash_diff(x.properties, y.properties)
+      ObjectDiff.new(x.typename, properties_diff)
+    else
+      Changed.new(x, y)
     end
   end
 
