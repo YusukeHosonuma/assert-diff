@@ -368,7 +368,7 @@ describe AssertDiff do
           },
       -   int: 42,
       +   int: 49,
-          object: {
+          object: ComplexObject {
             array: [
               ...
       +       4,

@@ -2,27 +2,7 @@ require "json"
 
 # :nodoc:
 module AssertDiff::Extension
-  private macro to_hash
-    hash = {
-      {% for m in @type.instance_vars %}
-      {{m.name.stringify}} => @{{m.name}}.__to_json_any,
-      {% end %}
-    }
-    AnyHash.new(hash)
-  end
-
-  def __to_json_any : AnyHash
-    to_hash
-  end
-end
-
-# :nodoc:
-class Object
-  include AssertDiff::Extension
-end
-
-struct Struct
-  private macro properties
+  private macro instance_vars_hash
     {
       {% for m in @type.instance_vars %}
       {{m.name.stringify}} => @{{m.name}}.__to_json_any,
@@ -31,10 +11,15 @@ struct Struct
   end
 
   def __to_json_any : AnyHash
-    hash = properties
-    name = {{@type.name.stringify}}
-    AnyHash.new(AnyObject.new(name, hash))
+    AnyHash.new(
+      AnyObject.new({{@type.name.stringify}}, instance_vars_hash)
+    )
   end
+end
+
+# :nodoc:
+class Object
+  include AssertDiff::Extension
 end
 
 # :nodoc:
