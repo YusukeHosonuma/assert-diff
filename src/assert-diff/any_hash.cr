@@ -31,18 +31,13 @@ class AnyEnum
   end
 end
 
+# :nodoc:
 struct AnyObject
   getter typename : String
   getter properties : Hash(String, AnyHash)
 
   def initialize(@typename : String, @properties : Hash(String, AnyHash))
   end
-
-  # def to_s(io : IO) : Nil
-  #   puts "🍎"
-  #   io << "🍊"
-  #   properties.to_s(io)
-  # end
 end
 
 # :nodoc:
