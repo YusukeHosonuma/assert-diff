@@ -49,12 +49,12 @@ module AssertDiff
                   diff.keys.sort!.join("\n") { |k| dump(diff[k], k, indent) + "," }
                 end
       prefix = key ? "#{indent}#{key}: " : indent
-      prefix += "#{typename} " if typename
+      prefix += "#{typename.colorize.mode(:bold)} " if typename
 
       <<-HASH
-      #{prefix}{
+      #{prefix}#{"{".colorize(:dark_gray)}
       #{content}
-      #{indent}}
+      #{indent}#{"}"}
       HASH
     end
 
