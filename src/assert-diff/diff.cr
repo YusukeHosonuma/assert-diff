@@ -28,12 +28,11 @@ module AssertDiff
     when x.as_h? && y.as_h? then hash_diff(x.as_h, y.as_h)
     when x.as_a? && y.as_a? then array_diff(x.as_a, y.as_a)
     when x.as_s? && y.as_s? then string_diff(x.as_s, y.as_s)
-    when x.as_o? && y.as_o? then
+    when x.as_o? && y.as_o?
       properties_diff = hash_diff(x.as_o.properties, y.as_o.properties)
       ObjectDiff.new(x.as_o.typename, properties_diff)
-      # when x.raw.is_a?(AnyObject) && y.raw.is_a?(AnyObject)
-      #   hash_diff(x.raw.properties, y.raw.propertie)
-    else Changed.new(x.raw, y.raw)
+    else
+      Changed.new(x.raw, y.raw)
     end
   end
 
