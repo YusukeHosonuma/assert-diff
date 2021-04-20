@@ -27,10 +27,10 @@ describe ".print_diff" do
     b = Rectangle.new(Point.new(0, 1), 4, 7)
     print_diff(a, b, io)
     io.to_s.gsub(/\e.+?m/, "").should eq <<-EOF
-      {
+      Rectangle {
     -   height: 3,
     +   height: 7,
-        origin: {
+        origin: Point {
           ...
     -     y: 0,
     +     y: 1,
@@ -58,10 +58,10 @@ describe ".print_diff_full" do
     b = Rectangle.new(Point.new(0, 1), 4, 7)
     print_diff_full(a, b, io)
     io.to_s.gsub(/\e.+?m/, "").should eq <<-EOF
-      {
+      Rectangle {
     -   height: 3,
     +   height: 7,
-        origin: {
+        origin: Point {
           x: 0,
     -     y: 0,
     +     y: 1,

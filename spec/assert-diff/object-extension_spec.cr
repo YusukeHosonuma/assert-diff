@@ -54,6 +54,43 @@ private class NestedClass
   end
 end
 
+private def expected(typename)
+  AnyHash.new(
+    AnyObject.new(typename, {
+      "int"      => AnyHash.new(42),
+      "float"    => AnyHash.new(1.2),
+      "bool"     => AnyHash.new(true),
+      "optional" => AnyHash.new(nil),
+      "string"   => AnyHash.new("Hello"),
+      "path"     => AnyHash.new("foo/bar/baz.cr"),
+      "symbol"   => AnyHash.new(:foo),
+      "char"     => AnyHash.new('a'),
+      "array"    => AnyHash.new([
+        AnyHash.new(1),
+        AnyHash.new(2),
+      ]),
+      "deque" => AnyHash.new([
+        AnyHash.new(1),
+        AnyHash.new(2),
+      ]),
+      "set" => AnyHash.new(Set{
+        AnyHash.new(1),
+        AnyHash.new(2),
+      }),
+      "hash" => AnyHash.new({
+        "one" => AnyHash.new(1),
+        "two" => AnyHash.new(2),
+      }),
+      "tuple"       => AnyHash.new(AnyTuple.new([AnyHash.new(1), AnyHash.new(true)])),
+      "named_tuple" => AnyHash.new({"one" => AnyHash.new(1), "two" => AnyHash.new(2)}),
+      "time"        => AnyHash.new(Time.local(2016, 2, 15, 10, 20, 30, location: Time::Location.load("Asia/Tokyo"))),
+      "uri"         => AnyHash.new(URI.parse("http://example.com/")),
+      "json"        => AnyHash.new({"one" => AnyHash.new("1"), "two" => AnyHash.new("2")}),
+      "color"       => AnyHash.new(AnyEnum.new(Color::Red)),
+    })
+  )
+end
+
 describe Object do
   describe "#__to_json_any" do
     object = BasicTypesStruct.new(
@@ -96,52 +133,24 @@ describe Object do
       json: JSON::Any.new({"one" => JSON::Any.new("1"), "two" => JSON::Any.new("2")}),
       color: Color::Red
     )
-    expected = AnyHash.new({
-      "int"      => AnyHash.new(42),
-      "float"    => AnyHash.new(1.2),
-      "bool"     => AnyHash.new(true),
-      "optional" => AnyHash.new(nil),
-      "string"   => AnyHash.new("Hello"),
-      "path"     => AnyHash.new("foo/bar/baz.cr"),
-      "symbol"   => AnyHash.new(:foo),
-      "char"     => AnyHash.new('a'),
-      "array"    => AnyHash.new([
-        AnyHash.new(1),
-        AnyHash.new(2),
-      ]),
-      "deque" => AnyHash.new([
-        AnyHash.new(1),
-        AnyHash.new(2),
-      ]),
-      "set" => AnyHash.new(Set{
-        AnyHash.new(1),
-        AnyHash.new(2),
-      }),
-      "hash" => AnyHash.new({
-        "one" => AnyHash.new(1),
-        "two" => AnyHash.new(2),
-      }),
-      "tuple"       => AnyHash.new(AnyTuple.new([AnyHash.new(1), AnyHash.new(true)])),
-      "named_tuple" => AnyHash.new({"one" => AnyHash.new(1), "two" => AnyHash.new(2)}),
-      "time"        => AnyHash.new(Time.local(2016, 2, 15, 10, 20, 30, location: Time::Location.load("Asia/Tokyo"))),
-      "uri"         => AnyHash.new(URI.parse("http://example.com/")),
-      "json"        => AnyHash.new({"one" => AnyHash.new("1"), "two" => AnyHash.new("2")}),
-      "color"       => AnyHash.new(AnyEnum.new(Color::Red)),
-    })
 
     it "struct" do
-      object.__to_json_any.should eq_diff expected
+      object.__to_json_any.should eq_diff expected(typename: "BasicTypesStruct")
     end
 
     it "class" do
-      klass.__to_json_any.should eq expected
+      klass.__to_json_any.should eq expected(typename: "BasicTypesClass")
     end
 
     it "subclass" do
-      B.new("B").__to_json_any.should eq AnyHash.new({
-        "a" => AnyHash.new("A"),
-        "b" => AnyHash.new("B"),
-      })
+      B.new("B").__to_json_any.should eq AnyHash.new(
+        AnyObject.new("B",
+          {
+            "a" => AnyHash.new("A"),
+            "b" => AnyHash.new("B"),
+          }
+        )
+      )
     end
 
     pending "has abstract class" do
@@ -159,16 +168,22 @@ describe Object do
           NestedClass.new(3, nil)
         )
       )
-      expected = AnyHash.new({
-        "value"  => AnyHash.new(1),
-        "nested" => AnyHash.new({
-          "value"  => AnyHash.new(2),
-          "nested" => AnyHash.new({
-            "value"  => AnyHash.new(3),
-            "nested" => AnyHash.new(nil),
-          }),
-        }),
-      })
+      expected = AnyHash.new(
+        AnyObject.new("NestedClass", {
+          "value"  => AnyHash.new(1),
+          "nested" => AnyHash.new(
+            AnyObject.new("NestedClass", {
+              "value"  => AnyHash.new(2),
+              "nested" => AnyHash.new(
+                AnyObject.new("NestedClass", {
+                  "value"  => AnyHash.new(3),
+                  "nested" => AnyHash.new(nil),
+                })
+              ),
+            })
+          ),
+        })
+      )
       object.__to_json_any.should eq expected
     end
   end

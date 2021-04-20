@@ -27,10 +27,12 @@ module AssertDiff
         dump_array(diff, key, indent)
       in MultilineDiff
         dump_multiline(diff, key, indent)
+      in ObjectDiff
+        dump_hash(diff.properties, key, indent, diff.typename)
       end
     end
 
-    private def dump_hash(diff : Hash(String, Diff), key : String?, indent : String) : String
+    private def dump_hash(diff : Hash(String, Diff), key : String?, indent : String, typename : String? = nil) : String
       content = if @ommit_consecutive
                   diff.keys.sort!
                     .map { |k| {k, diff[k]} }
@@ -47,6 +49,7 @@ module AssertDiff
                   diff.keys.sort!.join("\n") { |k| dump(diff[k], k, indent) + "," }
                 end
       prefix = key ? "#{indent}#{key}: " : indent
+      prefix += "#{typename} " if typename
 
       <<-HASH
       #{prefix}{
@@ -134,6 +137,8 @@ module AssertDiff
         #{value.join("\n") { |k, v| "  #{k}: #{v}," }}
         }
         EOF
+      in AnyObject
+        "#{value.typename} #{dump_raw(value.properties)}"
       end
     end
 

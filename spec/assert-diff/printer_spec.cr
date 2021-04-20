@@ -42,6 +42,16 @@ class ComplexObject
   end
 end
 
+struct A
+  def initialize(@x : Int32)
+  end
+end
+
+struct B
+  def initialize(@x : Int32)
+  end
+end
+
 describe AssertDiff do
   describe ".print_diff" do
     it "consecutive same are ommitted" do
@@ -135,7 +145,7 @@ describe AssertDiff do
         color: Color::Blue
       )
       plain_diff(before, after).should eq_diff <<-DIFF
-        {
+        BasicTypesStruct {
           array: [
             ...
       -     2,
@@ -190,6 +200,55 @@ describe AssertDiff do
         }
       DIFF
       # TODO: Set は內部diffをとってもいい気がする。
+    end
+
+    context "object" do
+      it "different type" do
+        before = [
+          A.new(1),
+        ]
+        after = [
+          B.new(1),
+        ]
+        plain_diff(before, after).should eq <<-DIFF
+          [
+        -   A {
+        -     x: 1,
+        -   },
+        +   B {
+        +     x: 1,
+        +   },
+          ]
+        DIFF
+      end
+
+      it "added" do
+        before = [] of B
+        after = [
+          B.new(1),
+        ]
+        plain_diff(before, after).should eq <<-DIFF
+          [
+        +   B {
+        +     x: 1,
+        +   },
+          ]
+        DIFF
+      end
+
+      it "deleted" do
+        before = [
+          A.new(1),
+        ]
+        after = [] of A
+        plain_diff(before, after).should eq <<-DIFF
+          [
+        -   A {
+        -     x: 1,
+        -   },
+          ]
+        DIFF
+      end
     end
 
     it "diff Hash" do
@@ -349,8 +408,8 @@ describe AssertDiff do
           {"a" => 1, "b" => 3},
         )
       )
-      plain_diff(before, after).should eq <<-DIFF
-        {
+      plain_diff(before, after).should eq_diff <<-DIFF
+        ComplexStruct {
           array: [
             ...
       +     4,
@@ -368,7 +427,7 @@ describe AssertDiff do
           },
       -   int: 42,
       +   int: 49,
-          object: {
+          object: ComplexObject {
             array: [
               ...
       +       4,
