@@ -95,6 +95,79 @@
 
 
 
+  <h2>
+    <a id="overview" class="anchor" href="#overview">
+  <svg class="octicon-link" aria-hidden="true">
+    <use href="#octicon-link"/>
+  </svg>
+</a>
+    Overview
+  </h2>
+
+  <p>This class represents a URI reference as defined by <a href="https://www.ietf.org/rfc/rfc3986.txt">RFC 3986: Uniform Resource Identifier
+(URI): Generic Syntax</a>.</p>
+
+<p>This class provides constructors for creating URI instances from
+their components or by parsing their string forms and methods for accessing the various
+components of an instance.</p>
+
+<p>Basic example:</p>
+
+<pre><code class="language-crystal"><span class="k">require</span> <span class="s">&quot;uri&quot;</span>
+
+uri <span class="o">=</span> <span class="t">URI</span>.parse <span class="s">&quot;http://foo.com/posts?id=30&amp;limit=5#time=1305298413&quot;</span>
+<span class="c"># =&gt; #&lt;URI:0x1003f1e40 @scheme=&quot;http&quot;, @host=&quot;foo.com&quot;, @port=nil, @path=&quot;/posts&quot;, @query=&quot;id=30&amp;limit=5&quot;, ... &gt;</span>
+uri.scheme <span class="c"># =&gt; &quot;http&quot;</span>
+uri.host   <span class="c"># =&gt; &quot;foo.com&quot;</span>
+uri.query  <span class="c"># =&gt; &quot;id=30&amp;limit=5&quot;</span>
+uri.to_s   <span class="c"># =&gt; &quot;http://foo.com/posts?id=30&amp;limit=5#time=1305298413&quot;</span></code></pre>
+
+<h2><a id="resolution-and-relativization" class="anchor" href="#resolution-and-relativization">
+  <svg class="octicon-link" aria-hidden="true">
+    <use href="#octicon-link"/>
+  </svg>
+</a>Resolution and Relativization</h2>
+
+<p><em>Resolution</em> is the process of resolving one URI against another, <em>base</em> URI.
+The resulting URI is constructed from components of both URIs in the manner specified by
+<a href="https://tools.ietf.org/html/rfc3986#section-5.2.2">RFC 3986 section 5.2</a>, taking components
+from the base URI for those not specified in the original.
+For hierarchical URIs, the path of the original is resolved against the path of the base
+and then normalized. See <code>#resolve</code> for examples.</p>
+
+<p><em>Relativization</em> is the inverse of resolution as that it procures an URI that
+resolves to the original when resolved against the base.</p>
+
+<p>For normalized URIs, the following is true:</p>
+
+<pre><code class="language-crystal">a.relativize(a.resolve(b)) <span class="c"># =&gt; b</span>
+a.resolve(a.relativize(b)) <span class="c"># =&gt; b</span></code></pre>
+
+<p>This operation is often useful when constructing a document containing URIs that must
+be made relative to the base URI of the document wherever possible.</p>
+
+<h1><a id="url-encoding" class="anchor" href="#url-encoding">
+  <svg class="octicon-link" aria-hidden="true">
+    <use href="#octicon-link"/>
+  </svg>
+</a>URL Encoding</h1>
+
+<p>This class provides a number of methods for encoding and decoding strings using
+URL Encoding (also known as Percent Encoding) as defined in <a href="https://www.ietf.org/rfc/rfc3986.txt">RFC 3986</a>
+as well as <a href="https://url.spec.whatwg.org/#urlencoded-serializing"><code>x-www-form-urlencoded</code></a>.</p>
+
+<p>Each method has two variants, one returns a string, the other writes directly
+to an IO.</p>
+
+<ul><li><code>.decode(string : String, *, plus_to_space : Bool = false) : String</code>: Decodes a URL-encoded string.</li><li><code>.decode(string : String, io : IO, *, plus_to_space : Bool = false) : Nil</code>: Decodes a URL-encoded string to an IO.</li><li><code>.encode(string : String, *, space_to_plus : Bool = false) : String</code>: URL-encodes a string.</li><li><code>.encode(string : String, io : IO, *, space_to_plus : Bool = false) : Nil</code>: URL-encodes a string to an IO.</li><li><code>.decode_www_form(string : String, *, plus_to_space : Bool = true) : String</code>: Decodes an <code>x-www-form-urlencoded</code> string component.</li><li><code>.decode_www_form(string : String, io : IO, *, plus_to_space : Bool = true) : Nil</code>: Decodes an <code>x-www-form-urlencoded</code> string component to an IO.</li><li><code>.encode_www_form(string : String, *, space_to_plus : Bool = true) : String</code>: Encodes a string as a <code>x-www-form-urlencoded</code> component.</li><li><code>.encode_www_form(string : String, io : IO, *, space_to_plus : Bool = true) : Nil</code>: Encodes a string as a <code>x-www-form-urlencoded</code> component to an IO.</li></ul>
+
+<p>The main difference is that <code>.encode_www_form</code> encodes reserved characters
+(see <code>.reserved?</code>), while <code>.encode</code> does not. The decode methods are
+identical except for the handling of <code>+</code> characters.</p>
+
+<p><span class="flag purple">NOTE</span>  <code>URI::Params</code> provides a higher-level API for handling <code>x-www-form-urlencoded</code>
+serialized data.</p>
+
 
 
 
@@ -118,7 +191,7 @@
   </h2>
   
     
-      <a href="https://github.com/YusukeHosonuma/assert-diff/blob/d0b2f8a958dbd99797e1aa6f690e7ad11db37866/src/assert-diff/object-extension.cr#L149" target="_blank">
+      <a href="https://github.com/YusukeHosonuma/assert-diff/blob/77b0e01b41d70a34c95d599245b46d702695e6b2/src/assert-diff/object-extension.cr#L150" target="_blank">
         assert-diff/object-extension.cr
       </a>
     
@@ -203,7 +276,7 @@
       <br/>
       <div>
         
-          [<a href="https://github.com/YusukeHosonuma/assert-diff/blob/d0b2f8a958dbd99797e1aa6f690e7ad11db37866/src/assert-diff/object-extension.cr#L150" target="_blank">View source</a>]
+          [<a href="https://github.com/YusukeHosonuma/assert-diff/blob/77b0e01b41d70a34c95d599245b46d702695e6b2/src/assert-diff/object-extension.cr#L151" target="_blank">View source</a>]
         
       </div>
     </div>
