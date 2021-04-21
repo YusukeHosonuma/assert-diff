@@ -28,7 +28,7 @@ Use in specs:
 require "assert-diff"
 
 describe "README.md" do
-  pending "example" do
+  it "example" do
     expected = Rectangle.new(Point.new(0, 1), 4, 7, "One\nTwo\nThree\nFour")
     actual = Rectangle.new(Point.new(0, 0), 4, 3, "Zero\nOne\nTwo!!\nThree")
 
