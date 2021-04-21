@@ -25,7 +25,7 @@ Expected: {a: 1, b: 2, c: 3}
 EOF
 
 describe "expectations" do
-  it "eq_diff" do
+  it ".eq_diff" do
     begin
       ACTUAL.should eq_diff EXPECTED
     rescue ex : Spec::AssertionFailed
@@ -37,7 +37,7 @@ describe "expectations" do
     end
   end
 
-  it "eq_diff_full" do
+  it ".eq_diff_full" do
     begin
       ACTUAL.should eq_diff_full EXPECTED
     rescue ex : Spec::AssertionFailed
@@ -51,9 +51,9 @@ describe "expectations" do
 end
 
 describe "assertions" do
-  it "assert_diff" do
+  it ".assert_diff" do
     begin
-      assert_diff(ACTUAL, EXPECTED)
+      assert_diff(EXPECTED, ACTUAL)
     rescue ex : Spec::AssertionFailed
       ex.line.should eq 56
       ex.file.should eq __FILE__
@@ -63,9 +63,9 @@ describe "assertions" do
     end
   end
 
-  it "assert_diff_full" do
+  it ".assert_diff_full" do
     begin
-      assert_diff_full(ACTUAL, EXPECTED)
+      assert_diff_full(EXPECTED, ACTUAL)
     rescue ex : Spec::AssertionFailed
       ex.line.should eq 68
       ex.file.should eq __FILE__

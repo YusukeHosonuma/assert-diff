@@ -44,7 +44,7 @@ end
 # The same as `.eq_diff`, but this can be used independently.
 #
 # ```
-# assert_diff(x, y)
+# assert_diff(before, after)
 # ```
 def assert_diff(before : A, after : B, file = __FILE__, line = __LINE__) forall A, B
   assert_diff_internal(before, after, file, line, true)
@@ -53,16 +53,16 @@ end
 # The same as `.eq_diff_full`, but this can be used independently.
 #
 # ```
-# assert_diff_full(x, y)
+# assert_diff_full(before, after)
 # ```
 def assert_diff_full(before : A, after : B, file = __FILE__, line = __LINE__) forall A, B
   assert_diff_internal(before, after, file, line, false)
 end
 
 private def assert_diff_internal(before, after, file, line, ommit_consecutive)
-  expectation = AssertDiff::EqualDiffExpectation.new(after, ommit_consecutive)
-  unless expectation.match before
-    failure_message = expectation.failure_message(before)
+  expectation = AssertDiff::EqualDiffExpectation.new(before, ommit_consecutive)
+  unless expectation.match after
+    failure_message = expectation.failure_message(after)
     fail(failure_message, file, line)
   end
 end
