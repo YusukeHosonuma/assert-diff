@@ -29,3 +29,13 @@ struct BasicTypesStruct
   )
   end
 end
+
+struct Rectangle
+  def initialize(@origin : Point, @width : Int32, @height : Int32, @comment : String)
+  end
+end
+
+struct Point
+  def initialize(@x : Int32, @y : Int32)
+  end
+end
