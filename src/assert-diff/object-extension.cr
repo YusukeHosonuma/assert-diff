@@ -2,14 +2,6 @@ require "json"
 
 # :nodoc:
 module AssertDiff::Extension
-  private macro instance_vars_hash
-    {
-      {% for m in @type.instance_vars %}
-      {{m.name.stringify}} => @{{m.name}}.__to_json_any,
-      {% end %}
-    }
-  end
-
   private macro instance_vars_array
     [
       {% for m in @type.instance_vars %}

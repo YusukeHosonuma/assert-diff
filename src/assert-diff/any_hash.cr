@@ -2,7 +2,7 @@ require "uri"
 
 # :nodoc:
 struct AnyTuple(T)
-  getter raw : Array(T)
+  getter raw
 
   def initialize(@raw : Array(T))
   end
@@ -33,19 +33,18 @@ end
 
 # :nodoc:
 struct KeyValue(K, V)
-  getter key : K
-  getter value : V
+  getter key, value
 
   def initialize(@key : K, @value : V)
   end
 end
 
+# :nodoc:
 alias AnyProperty = KeyValue(String, AnyHash)
 
 # :nodoc:
 struct AnyObject
-  getter typename : String
-  getter properties : Array(AnyProperty)
+  getter typename, properties
 
   def initialize(@typename : String, @properties : Array(AnyProperty))
   end

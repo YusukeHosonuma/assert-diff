@@ -14,8 +14,7 @@ module AssertDiff
   alias PropertyDiff = KeyValue(String, Diff)
 
   struct ObjectDiff
-    getter typename : String
-    getter properties : Array(PropertyDiff)
+    getter typename, properties
 
     def initialize(@typename : String, @properties : Array(PropertyDiff))
     end
@@ -38,18 +37,14 @@ module AssertDiff
   end
 
   private def self.object_diff(x : AnyObject, y : AnyObject)
-    if x.typename == y.typename
-      props_diff = [] of PropertyDiff
+    return Changed.new(x, y) if x.typename != y.typename
 
-      x.properties.zip(y.properties).each do |px, py|
-        diff = any_diff(px.value, py.value)
-        props_diff << PropertyDiff.new(px.key, diff)
+    ObjectDiff.new(
+      x.typename,
+      x.properties.zip(y.properties).map do |px, py|
+        PropertyDiff.new(px.key, any_diff(px.value, py.value))
       end
-
-      ObjectDiff.new(x.typename, props_diff)
-    else
-      Changed.new(x, y)
-    end
+    )
   end
 
   private def self.hash_diff(before : Hash, after : Hash) : Hash(String, Diff)
