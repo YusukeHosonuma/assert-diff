@@ -56,38 +56,44 @@ end
 
 private def expected(typename)
   AnyHash.new(
-    AnyObject.new(typename, {
-      "int"      => AnyHash.new(42),
-      "float"    => AnyHash.new(1.2),
-      "bool"     => AnyHash.new(true),
-      "optional" => AnyHash.new(nil),
-      "string"   => AnyHash.new("Hello"),
-      "path"     => AnyHash.new("foo/bar/baz.cr"),
-      "symbol"   => AnyHash.new(:foo),
-      "char"     => AnyHash.new('a'),
-      "array"    => AnyHash.new([
+    AnyObject.new(typename, [
+      AnyProperty.new("int", AnyHash.new(42)),
+      AnyProperty.new("float", AnyHash.new(1.2)),
+      AnyProperty.new("bool", AnyHash.new(true)),
+      AnyProperty.new("optional", AnyHash.new(nil)),
+      AnyProperty.new("string", AnyHash.new("Hello")),
+      AnyProperty.new("path", AnyHash.new("foo/bar/baz.cr")),
+      AnyProperty.new("symbol", AnyHash.new(:foo)),
+      AnyProperty.new("char", AnyHash.new('a')),
+      AnyProperty.new("array", AnyHash.new([
         AnyHash.new(1),
         AnyHash.new(2),
-      ]),
-      "deque" => AnyHash.new([
+      ])),
+      AnyProperty.new("deque", AnyHash.new([
         AnyHash.new(1),
         AnyHash.new(2),
-      ]),
-      "set" => AnyHash.new(Set{
+      ])),
+      AnyProperty.new("set", AnyHash.new(Set{
         AnyHash.new(1),
         AnyHash.new(2),
-      }),
-      "hash" => AnyHash.new({
+      })),
+      AnyProperty.new("hash", AnyHash.new({
         "one" => AnyHash.new(1),
         "two" => AnyHash.new(2),
-      }),
-      "tuple"       => AnyHash.new(AnyTuple.new([AnyHash.new(1), AnyHash.new(true)])),
-      "named_tuple" => AnyHash.new({"one" => AnyHash.new(1), "two" => AnyHash.new(2)}),
-      "time"        => AnyHash.new(Time.local(2016, 2, 15, 10, 20, 30, location: Time::Location.load("Asia/Tokyo"))),
-      "uri"         => AnyHash.new(URI.parse("http://example.com/")),
-      "json"        => AnyHash.new({"one" => AnyHash.new("1"), "two" => AnyHash.new("2")}),
-      "color"       => AnyHash.new(AnyEnum.new(Color::Red)),
-    })
+      })),
+      AnyProperty.new("tuple", AnyHash.new(
+        AnyTuple.new([AnyHash.new(1), AnyHash.new(true)])
+      )),
+      AnyProperty.new("named_tuple", AnyHash.new(
+        {"one" => AnyHash.new(1), "two" => AnyHash.new(2)}
+      )),
+      AnyProperty.new("time", AnyHash.new(
+        Time.local(2016, 2, 15, 10, 20, 30, location: Time::Location.load("Asia/Tokyo"))
+      )),
+      AnyProperty.new("uri", AnyHash.new(URI.parse("http://example.com/"))),
+      AnyProperty.new("json", AnyHash.new({"one" => AnyHash.new("1"), "two" => AnyHash.new("2")})),
+      AnyProperty.new("color", AnyHash.new(AnyEnum.new(Color::Red))),
+    ])
   )
 end
 
@@ -144,12 +150,10 @@ describe Object do
 
     it "subclass" do
       B.new("B").__to_json_any.should eq AnyHash.new(
-        AnyObject.new("B",
-          {
-            "a" => AnyHash.new("A"),
-            "b" => AnyHash.new("B"),
-          }
-        )
+        AnyObject.new("B", [
+          AnyProperty.new("a", AnyHash.new("A")),
+          AnyProperty.new("b", AnyHash.new("B")),
+        ])
       )
     end
 
@@ -169,20 +173,20 @@ describe Object do
         )
       )
       expected = AnyHash.new(
-        AnyObject.new("NestedClass", {
-          "value"  => AnyHash.new(1),
-          "nested" => AnyHash.new(
-            AnyObject.new("NestedClass", {
-              "value"  => AnyHash.new(2),
-              "nested" => AnyHash.new(
-                AnyObject.new("NestedClass", {
-                  "value"  => AnyHash.new(3),
-                  "nested" => AnyHash.new(nil),
-                })
-              ),
-            })
-          ),
-        })
+        AnyObject.new("NestedClass", [
+          AnyProperty.new("value", AnyHash.new(1)),
+          AnyProperty.new("nested", AnyHash.new(
+            AnyObject.new("NestedClass", [
+              AnyProperty.new("value", AnyHash.new(2)),
+              AnyProperty.new("nested", AnyHash.new(
+                AnyObject.new("NestedClass", [
+                  AnyProperty.new("value", AnyHash.new(3)),
+                  AnyProperty.new("nested", AnyHash.new(nil)),
+                ])
+              )),
+            ])
+          )),
+        ])
       )
       object.__to_json_any.should eq expected
     end

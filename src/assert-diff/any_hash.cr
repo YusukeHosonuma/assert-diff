@@ -32,11 +32,22 @@ class AnyEnum
 end
 
 # :nodoc:
+struct KeyValue(K, V)
+  getter key : K
+  getter value : V
+
+  def initialize(@key : K, @value : V)
+  end
+end
+
+alias AnyProperty = KeyValue(String, AnyHash)
+
+# :nodoc:
 struct AnyObject
   getter typename : String
-  getter properties : Hash(String, AnyHash)
+  getter properties : Array(AnyProperty)
 
-  def initialize(@typename : String, @properties : Hash(String, AnyHash))
+  def initialize(@typename : String, @properties : Array(AnyProperty))
   end
 end
 

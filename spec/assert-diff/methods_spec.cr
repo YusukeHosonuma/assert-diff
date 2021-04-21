@@ -18,6 +18,14 @@ describe ".print_diff" do
     print_diff(a, b, io)
     io.to_s.gsub(/\e.+?m/, "").should eq_diff <<-EOF
       Rectangle {
+        origin: Point {
+          ...
+    -     y: 0,
+    +     y: 1,
+        },
+        ...
+    -   height: 3,
+    +   height: 7,
         comment:
           ```
     +     Zero
@@ -27,14 +35,6 @@ describe ".print_diff" do
           Three
     -     Four
           ```,
-    -   height: 3,
-    +   height: 7,
-        origin: Point {
-          ...
-    -     y: 0,
-    +     y: 1,
-        },
-        ...
       }\n
     EOF
   end
@@ -56,8 +56,16 @@ describe ".print_diff_full" do
     a = Rectangle.new(Point.new(0, 0), 4, 3, "One\nTwo\nThree\nFour")
     b = Rectangle.new(Point.new(0, 1), 4, 7, "Zero\nOne\nTwo!!\nThree")
     print_diff_full(a, b, io)
-    io.to_s.gsub(/\e.+?m/, "").should eq <<-EOF
+    io.to_s.gsub(/\e.+?m/, "").should eq_diff <<-EOF
       Rectangle {
+        origin: Point {
+          x: 0,
+    -     y: 0,
+    +     y: 1,
+        },
+        width: 4,
+    -   height: 3,
+    +   height: 7,
         comment:
           ```
     +     Zero
@@ -67,14 +75,6 @@ describe ".print_diff_full" do
           Three
     -     Four
           ```,
-    -   height: 3,
-    +   height: 7,
-        origin: Point {
-          x: 0,
-    -     y: 0,
-    +     y: 1,
-        },
-        width: 4,
       }\n
     EOF
   end

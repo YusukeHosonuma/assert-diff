@@ -28,34 +28,18 @@ module AssertDiff
       in MultilineDiff
         dump_multiline(diff, key, indent)
       in ObjectDiff
-        dump_hash(diff.properties, key, indent, diff.typename)
+        dump_properties(diff.properties, key, indent, diff.typename)
       end
     end
 
-    private def dump_hash(diff : Hash(String, Diff), key : String?, indent : String, typename : String? = nil) : String
-      content = if @ommit_consecutive
-                  diff.keys.sort!
-                    .map { |k| {k, diff[k]} }
-                    .grouped_by { |_, v| v.is_a?(Same) }
-                    .flat_map { |xs|
-                      if xs.first[1].is_a?(Same)
-                        "#{indent}  ..."
-                      else
-                        xs.map { |k, v| dump(v, k, indent) + "," }
-                      end
-                    }
-                    .join("\n")
-                else
-                  diff.keys.sort!.join("\n") { |k| dump(diff[k], k, indent) + "," }
-                end
-      prefix = key ? "#{indent}#{key}: " : indent
-      prefix += "#{typename.colorize.mode(:bold)} " if typename
+    private def dump_hash(diff : Hash(String, Diff), key : String?, indent : String) : String
+      properties = [] of PropertyDiff
 
-      <<-HASH
-      #{prefix}#{"{".colorize(:dark_gray)}
-      #{content}
-      #{indent}#{"}"}
-      HASH
+      diff.keys.sort!.each do |k|
+        properties << PropertyDiff.new(k, diff[k])
+      end
+
+      dump_properties(properties, key, indent)
     end
 
     private def dump_array(diff : Array(Diff), key : String?, indent : String) : String
@@ -138,8 +122,37 @@ module AssertDiff
         }
         EOF
       in AnyObject
-        "#{value.typename} #{dump_raw(value.properties)}"
+        <<-EOF
+        #{value.typename} {
+        #{value.properties.join("\n") { |p| "  #{p.key}: #{p.value}," }}
+        }
+        EOF
       end
+    end
+
+    private def dump_properties(diff : Array(PropertyDiff), key : String?, indent : String, typename : String? = nil) : String
+      content = if @ommit_consecutive
+                  diff
+                    .grouped_by { |p| p.value.is_a?(Same) }
+                    .flat_map { |xs|
+                      if xs.first.value.is_a?(Same)
+                        "#{indent}  ..."
+                      else
+                        xs.map { |p| dump(p.value, p.key, indent) + "," }
+                      end
+                    }
+                    .join("\n")
+                else
+                  diff.join("\n") { |p| dump(p.value, p.key, indent) + "," }
+                end
+      prefix = key ? "#{indent}#{key}: " : indent
+      prefix += "#{typename.colorize.mode(:bold)} " if typename
+
+      <<-HASH
+      #{prefix}#{"{".colorize(:dark_gray)}
+      #{content}
+      #{indent}#{"}"}
+      HASH
     end
 
     private def colorize(content : String) : String
