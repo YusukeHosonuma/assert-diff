@@ -41,8 +41,8 @@ describe ".print_diff" do
           ```
     +     Zero
           One
-    +     Two!!
     -     Two
+    +     Two!!
           Three
     -     Four
           ```,
@@ -81,8 +81,8 @@ describe ".print_diff_full" do
           ```
     +     Zero
           One
-    +     Two!!
     -     Two
+    +     Two!!
           Three
     -     Four
           ```,
