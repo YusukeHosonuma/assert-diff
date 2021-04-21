@@ -1,4 +1,5 @@
 require "colorize"
+require "diff"
 
 # :nodoc:
 module AssertDiff
@@ -99,24 +100,16 @@ module AssertDiff
   private def self.multiline_string_diff(before : String, after : String) : MultilineDiff
     result = MultilineDiff.new
 
-    xs = before.lines
-    ys = after.lines
+    ::Diff.diff(before.lines, after.lines).each do |chunk|
+      next unless data = chunk.data
 
-    xs.zip?(ys) do |x, y|
-      break if !x || !y
-
-      if x == y
-        result << Same.new(RawString.new(x))
-      else
-        result << Changed.new(RawString.new(x), RawString.new(y))
-      end
-    end
-
-    case
-    when xs.size < ys.size
-      result.concat(ys.skip(xs.size).map { |line| Added.new(RawString.new(line)) })
-    when xs.size > ys.size
-      result.concat(xs.skip(ys.size).map { |line| Deleted.new(RawString.new(line)) })
+      diff_type = case chunk
+                  when .append? then Added
+                  when .delete? then Deleted
+                  else               Same
+                  end
+      string = RawString.new(data.join("\n"))
+      result << diff_type.new(string)
     end
 
     result
