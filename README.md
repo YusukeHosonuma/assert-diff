@@ -27,10 +27,10 @@ Use in specs:
 ```crystal
 require "assert-diff"
 
-describe Rectangle do
-  it "example" do
-    actual = Rectangle.new(Point.new(0, 0), 4, 3, "One\nTwo\nThree")
-    expected = Rectangle.new(Point.new(0, 1), 4, 7, "One\nTwo\nFour")
+describe "README.md" do
+  pending "example" do
+    expected = Rectangle.new(Point.new(0, 1), 4, 7, "One\nTwo\nThree\nFour")
+    actual = Rectangle.new(Point.new(0, 0), 4, 3, "Zero\nOne\nTwo!!\nThree")
 
     actual.should eq_diff expected # or use `eq_full_diff`
   end
@@ -40,15 +40,15 @@ end
 or use `assert_diff` and `assert_diff_full`.
 
 ```crystal
-assert_diff(a, b)
-assert_diff_full(a, b)
+assert_diff(before, after)
+assert_diff_full(before, after)
 ```
 
 Use to output:
 
 ```crystal
-print_diff(a, b)
-print_diff_full(a, b)
+print_diff(before, after)
+print_diff_full(before, after)
 ```
 
 ## Contributing

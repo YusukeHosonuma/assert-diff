@@ -100,12 +100,14 @@ module AssertDiff
   private def self.multiline_string_diff(before : String, after : String) : MultilineDiff
     result = MultilineDiff.new
 
-    ::Diff.diff(before.lines, after.lines).each do |chunk|
+    # Note:
+    # diff の順を Deleted -> Added に揃えるために、あえて逆に比較している。
+    ::Diff.diff(after.lines, before.lines).each do |chunk|
       next unless data = chunk.data
 
       diff_type = case chunk
-                  when .append? then Added
-                  when .delete? then Deleted
+                  when .append? then Deleted
+                  when .delete? then Added
                   else               Same
                   end
       string = RawString.new(data.join("\n"))

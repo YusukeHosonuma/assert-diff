@@ -357,8 +357,8 @@ describe AssertDiff do
           ```
       +   Zero
           One
-      +   Two!!
       -   Two
+      +   Two!!
           Three
       -   Four
           ```
