@@ -2,7 +2,7 @@ require "uri"
 
 # :nodoc:
 struct AnyTuple(T)
-  getter raw : Array(T)
+  getter raw
 
   def initialize(@raw : Array(T))
   end
@@ -32,11 +32,21 @@ class AnyEnum
 end
 
 # :nodoc:
-struct AnyObject
-  getter typename : String
-  getter properties : Hash(String, AnyHash)
+struct KeyValue(K, V)
+  getter key, value
 
-  def initialize(@typename : String, @properties : Hash(String, AnyHash))
+  def initialize(@key : K, @value : V)
+  end
+end
+
+# :nodoc:
+alias AnyProperty = KeyValue(String, AnyHash)
+
+# :nodoc:
+struct AnyObject
+  getter typename, properties
+
+  def initialize(@typename : String, @properties : Array(AnyProperty))
   end
 end
 

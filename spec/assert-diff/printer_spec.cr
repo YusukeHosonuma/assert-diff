@@ -44,12 +44,12 @@ class ComplexObject
 end
 
 struct A
-  def initialize(@x : Int32)
+  def initialize(@x : Int32, @y : Int32)
   end
 end
 
 struct B
-  def initialize(@x : Int32)
+  def initialize(@x : Int32, @y : Int32)
   end
 end
 
@@ -147,57 +147,57 @@ describe AssertDiff do
       )
       plain_diff(before, after).should eq_diff <<-DIFF
         BasicTypesStruct {
+      -   int: 42,
+      +   int: 43,
+      -   float: 1.2,
+      +   float: 1.3,
+      -   bool: true,
+      +   bool: false,
+      -   optional: nil,
+      +   optional: "string",
+      -   string: "Hello",
+      +   string: "Goodbye",
+      -   path: "foo/bar/baz.cr",
+      +   path: "foo/bar/hoge.cr",
+      -   symbol: :foo,
+      +   symbol: :bar,
+      -   char: 'a',
+      +   char: 'b',
           array: [
             ...
       -     2,
       +     3,
           ],
-      -   bool: true,
-      +   bool: false,
-      -   char: 'a',
-      +   char: 'b',
-      -   color: Color::Red,
-      +   color: Color::Blue,
           deque: [
             ...
       -     2,
       +     3,
           ],
-      -   float: 1.2,
-      +   float: 1.3,
+      -   set: Set{1, 2},
+      +   set: Set{1, 3},
           hash: {
             ...
       -     two: 2,
       +     two: 3,
           },
-      -   int: 42,
-      +   int: 43,
-          json: {
-            ...
-      -     two: "2",
-      +     two: "3",
-          },
+      -   tuple: {1, true},
+      +   tuple: {1, false},
           named_tuple: {
             ...
       -     two: 2,
       +     two: 3,
           },
-      -   optional: nil,
-      +   optional: "string",
-      -   path: "foo/bar/baz.cr",
-      +   path: "foo/bar/hoge.cr",
-      -   set: Set{1, 2},
-      +   set: Set{1, 3},
-      -   string: "Hello",
-      +   string: "Goodbye",
-      -   symbol: :foo,
-      +   symbol: :bar,
       -   time: 2016-02-15 10:20:30 +09:00,
       +   time: 2017-02-15 10:20:30 +09:00,
-      -   tuple: {1, true},
-      +   tuple: {1, false},
       -   uri: http://example.com/,
       +   uri: http://example.com/foo,
+          json: {
+            ...
+      -     two: "2",
+      +     two: "3",
+          },
+      -   color: Color::Red,
+      +   color: Color::Blue,
         }
       DIFF
       # TODO: Set は內部diffをとってもいい気がする。
@@ -206,18 +206,20 @@ describe AssertDiff do
     context "object" do
       it "different type" do
         before = [
-          A.new(1),
+          A.new(1, 2),
         ]
         after = [
-          B.new(1),
+          B.new(1, 2),
         ]
         plain_diff(before, after).should eq <<-DIFF
           [
         -   A {
         -     x: 1,
+        -     y: 2,
         -   },
         +   B {
         +     x: 1,
+        +     y: 2,
         +   },
           ]
         DIFF
@@ -226,12 +228,13 @@ describe AssertDiff do
       it "added" do
         before = [] of B
         after = [
-          B.new(1),
+          B.new(1, 2),
         ]
         plain_diff(before, after).should eq <<-DIFF
           [
         +   B {
         +     x: 1,
+        +     y: 2,
         +   },
           ]
         DIFF
@@ -239,13 +242,14 @@ describe AssertDiff do
 
       it "deleted" do
         before = [
-          A.new(1),
+          A.new(1, 2),
         ]
         after = [] of A
         plain_diff(before, after).should eq <<-DIFF
           [
         -   A {
         -     x: 1,
+        -     y: 2,
         -   },
           ]
         DIFF
@@ -408,50 +412,50 @@ describe AssertDiff do
       )
       plain_diff(before, after).should eq_diff <<-DIFF
         ComplexStruct {
+      -   int: 42,
+      +   int: 49,
+      -   float: 1.2,
+      +   float: 1.3,
+      -   bool: true,
+      +   bool: false,
+      -   optional: nil,
+      +   optional: "not_nil",
+      -   string: "Hello",
+      +   string: "Goodbye",
+      -   char: 'a',
+      +   char: 'b',
           array: [
             ...
       +     4,
           ],
-      -   bool: true,
-      +   bool: false,
-      -   char: 'a',
-      +   char: 'b',
-      -   float: 1.2,
-      +   float: 1.3,
           hash: {
             ...
       -     b: 2,
       +     b: 3,
           },
-      -   int: 42,
-      +   int: 49,
           object: ComplexObject {
+      -     int: 42,
+      +     int: 49,
+      -     float: 1.2,
+      +     float: 1.3,
+      -     bool: true,
+      +     bool: false,
+      -     optional: nil,
+      +     optional: "not_nil",
+      -     string: "Hello",
+      +     string: "Goodbye",
+      -     char: 'a',
+      +     char: 'b',
             array: [
               ...
       +       4,
             ],
-      -     bool: true,
-      +     bool: false,
-      -     char: 'a',
-      +     char: 'b',
-      -     float: 1.2,
-      +     float: 1.3,
             hash: {
               ...
       -       b: 2,
       +       b: 3,
             },
-      -     int: 42,
-      +     int: 49,
-      -     optional: nil,
-      +     optional: "not_nil",
-      -     string: "Hello",
-      +     string: "Goodbye",
           },
-      -   optional: nil,
-      +   optional: "not_nil",
-      -   string: "Hello",
-      +   string: "Goodbye",
         }
       DIFF
     end
