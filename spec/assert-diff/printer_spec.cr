@@ -1,5 +1,6 @@
 require "../spec_helper"
 require "json"
+require "diff"
 
 private def plain_diff(x, y)
   diff = AssertDiff.diff(x, y)
@@ -337,33 +338,30 @@ describe AssertDiff do
     end
 
     it "diff multiline string" do
-      before = [
-        "One\nTwo\nThree",
-        {x: "One\nTwo\nThree"},
-      ]
-      after = [
-        "One\nTwo\nFour",
-        {x: "One\nTwo\nFour"},
-      ]
+      before =
+        <<-EOF
+        One
+        Two
+        Three
+        Four
+        EOF
+      after =
+        <<-EOF
+        Zero
+        One
+        Two!!
+        Three
+        EOF
 
       plain_diff(before, after).should eq <<-DIFF
-        [
-            ```
-            One
-            Two
-      -     Three
-      +     Four
-            ```,
-          {
-            x:
-              ```
-              One
-              Two
-      -       Three
-      +       Four
-              ```,
-          },
-        ]
+          ```
+      +   Zero
+          One
+      +   Two!!
+      -   Two
+          Three
+      -   Four
+          ```
       DIFF
     end
 
