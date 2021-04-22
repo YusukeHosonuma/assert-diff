@@ -33,14 +33,15 @@ module AssertDiff
   end
 
   private def self.any_diff(x : AnyHash, y : AnyHash) : Diff
-    case
-    when x == y             then Same.new(x.raw)
-    when x.as_o? && y.as_o? then object_diff(x.as_o, y.as_o)
-    when x.as_h? && y.as_h? then hash_diff(x.as_h, y.as_h)
-    when x.as_a? && y.as_a? then array_diff(x.as_a, y.as_a)
-    when x.as_s? && y.as_s? then string_diff(x.as_s, y.as_s)
-    else
-      Changed.new(x.raw, y.raw)
+    return Same.new(x.raw) if x == y
+
+    x, y = x.raw, y.raw
+    case {x, y}
+    when {AnyObject, AnyObject} then object_diff(x, y)
+    when {Hash, Hash}           then hash_diff(x, y)
+    when {Array, Array}         then array_diff(x, y)
+    when {String, String}       then string_diff(x, y)
+    else                             Changed.new(x, y)
     end
   end
 
