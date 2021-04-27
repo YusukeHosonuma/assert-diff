@@ -51,9 +51,10 @@ private def print_diff_to_io(before, after, ommit_consecutive, io : IO = STDOUT)
   if before == after
     io.print("No diffs.".colorize(:yellow))
   else
-    printer = AssertDiff::Printer.new(ommit_consecutive)
+    formatter = AssertDiff::DefaultFormatter.new
+    formatter.option = AssertDiff::Option.new(ommit_consecutive)
     diff = AssertDiff.diff(before, after)
-    message = printer.print_diff(diff)
+    message = formatter.report(diff)
     io.puts(message)
   end
 end

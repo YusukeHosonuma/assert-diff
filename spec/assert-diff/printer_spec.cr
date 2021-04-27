@@ -2,16 +2,20 @@ require "../spec_helper"
 require "json"
 require "diff"
 
+# TODO: formatter_spec.cr で賄えてそうなら削除する
+
 private def plain_diff(x, y)
   diff = AssertDiff.diff(x, y)
-  printer = AssertDiff::Printer.new(true)
-  printer.print_diff(diff).gsub(/\e.+?m/, "")
+  printer = AssertDiff::DefaultFormatter.new
+  printer.option = AssertDiff::Option.new(true)
+  printer.report(diff).gsub(/\e.+?m/, "")
 end
 
 private def plain_diff_full(x, y)
   diff = AssertDiff.diff(x, y)
-  printer = AssertDiff::Printer.new(false)
-  printer.print_diff(diff).gsub(/\e.+?m/, "")
+  printer = AssertDiff::DefaultFormatter.new
+  printer.option = AssertDiff::Option.new(false)
+  printer.report(diff).gsub(/\e.+?m/, "")
 end
 
 private struct ComplexStruct
@@ -43,12 +47,12 @@ class ComplexObject
   end
 end
 
-struct A
+private struct A
   def initialize(@x : Int32, @y : Int32)
   end
 end
 
-struct B
+private struct B
   def initialize(@x : Int32, @y : Int32)
   end
 end

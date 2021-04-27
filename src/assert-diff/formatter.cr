@@ -1,15 +1,116 @@
-# :nodoc:
+require "colorize"
+
 module AssertDiff
-  class Printer
-    def initialize(@ommit_consecutive : Bool)
+  class_property formatter
+  @@formatter : Formatter = DefaultFormatter.new
+
+  abstract struct Formatter
+    property option : Option? = nil
+
+    abstract def report(diff : Diff) : String
+  end
+
+  struct SimpleFormatter < Formatter
+    alias DiffValue = Changed | Added | Deleted
+    alias DiffRecord = {String, DiffValue}
+
+    def initialize
+      @diffs = [] of DiffRecord
     end
 
-    def print_diff(diff : Diff) : String
+    def report(diff : Diff) : String
+      extract_diffs(diff)
+      report_diffs
+    end
+
+    private def extract_diffs(diff : Diff, key = "")
+      case diff
+      in Same
+        # do nothing
+      in Added
+        @diffs << {key, diff}
+      in Deleted
+        @diffs << {key, diff}
+      in Changed
+        @diffs << {key, diff}
+      in Hash(String, Diff)
+        diff.each do |k, d|
+          extract_diffs(d, "#{key}.#{k}")
+        end
+      in Array(Diff)
+        diff.each_with_index do |d, i|
+          extract_diffs(d, "#{key}[#{i}]")
+        end
+      in ObjectDiff
+        diff.properties.each do |p|
+          extract_diffs(p.value, "#{key}.#{p.key}")
+        end
+      in MultilineDiff
+        before = diff.before.gsub("\n", "\\n")
+        after = diff.after.gsub("\n", "\\n")
+        extract_diffs(Changed.new(before, after), key)
+      end
+    end
+
+    private def report_diffs
+      indent_size = @diffs.max_of do |key, _|
+        key == "" ? 0 : key.size + 2
+      end
+      indent = " " * indent_size
+
+      @diffs.join("\n") do |key, status|
+        label = key == "" ? "" : "#{key}: "
+        prefix = label.ljust(indent_size).colorize(:white)
+
+        case status
+        in Added
+          s = "+ #{raw_string(status.value)}".colorize(:green)
+          "#{prefix}#{s}"
+        in Deleted
+          s = "- #{raw_string(status.value)}".colorize(:red)
+          "#{prefix}#{s}"
+        in Changed
+          a = "- #{raw_string(status.before)}".colorize(:red)
+          b = "+ #{raw_string(status.after)}".colorize(:green)
+          <<-EOF
+          #{prefix}#{a}
+          #{indent}#{b}
+          EOF
+        end
+      end
+    end
+
+    private def raw_string(value : Raw)
+      case value
+      in Bool, Int32, Int64, Float32, Float64, AnyTuple, Time, URI, RawString, AnyEnum
+        value.to_s
+      in Char
+        "'#{value}'"
+      in String
+        "\"#{value}\""
+      in Symbol
+        ":#{value}"
+      in Nil
+        "nil"
+      in Array
+        raise "Not reachable."
+      in Set
+        "Set{" + value.join(", ") + "}"
+      in Hash
+        raise "Not reachable."
+      in AnyObject
+        raise "Not reachable."
+      end
+    end
+  end
+
+  struct DefaultFormatter < Formatter
+    def report(diff : Diff) : String
       content = dump(diff)
       colorize(content)
     end
 
-    private def dump(diff : Diff, key = nil, indent = "") : String
+    def dump(diff : Diff, key = nil, indent = "") : String
       indent += "  "
 
       case diff
@@ -43,7 +144,7 @@ module AssertDiff
     end
 
     private def dump_array(diff : Array(Diff), key : String?, indent : String) : String
-      content = if @ommit_consecutive
+      content = if @option.try &.ommit_consecutive
                   diff
                     .grouped_by &.is_a?(Same)
                     .flat_map { |xs|
@@ -67,7 +168,7 @@ module AssertDiff
     end
 
     private def dump_multiline(diff : MultilineDiff, key : String?, indent : String) : String
-      content = diff.join("\n") { |s| dump(s, nil, indent) }
+      content = diff.diffs.join("\n") { |s| dump(s, nil, indent) }
 
       body = <<-EOF
       #{indent}  ```
@@ -131,7 +232,7 @@ module AssertDiff
     end
 
     private def dump_properties(diff : Array(PropertyDiff), key : String?, indent : String, typename : String? = nil) : String
-      content = if @ommit_consecutive
+      content = if @option.try &.ommit_consecutive
                   diff
                     .grouped_by { |p| p.value.is_a?(Same) }
                     .flat_map { |xs|
