@@ -345,10 +345,10 @@ describe AssertDiff::SimpleFormatter do
       <<-EOF
       .origin.y: - 0
                  + 1
-      .height: - 3
-               + 7
-      .comment: - "One\\nTwo\\nThree\\nFour"
-                + "Zero\\nOne\\nTwo!!\\nThree"
+      .height:   - 3
+                 + 7
+      .comment:  - "One\\nTwo\\nThree\\nFour"
+                 + "Zero\\nOne\\nTwo!!\\nThree"
       EOF
     )
 
@@ -417,42 +417,42 @@ describe AssertDiff::SimpleFormatter do
       BasicTypesStruct.before,
       BasicTypesStruct.after,
       <<-EOF
-      .int: - 42
-            + 43
-      .float: - 1.2
-              + 1.3
-      .bool: - true
-             + false
-      .optional: - nil
-                 + "string"
-      .string: - "Hello"
-               + "Goodbye"
-      .path: - "foo/bar/baz.cr"
-             + "foo/bar/hoge.cr"
-      .symbol: - :foo
-               + :bar
-      .char: - 'a'
-             + 'b'
-      .array[1]: - 2
-                 + 3
-      .deque[1]: - 2
-                 + 3
-      .set: - Set{1, 2}
-            + Set{1, 3}
-      .hash.two: - 2
-                 + 3
-      .tuple: - {1, true}
-              + {1, false}
+      .int:             - 42
+                        + 43
+      .float:           - 1.2
+                        + 1.3
+      .bool:            - true
+                        + false
+      .optional:        - nil
+                        + "string"
+      .string:          - "Hello"
+                        + "Goodbye"
+      .path:            - "foo/bar/baz.cr"
+                        + "foo/bar/hoge.cr"
+      .symbol:          - :foo
+                        + :bar
+      .char:            - 'a'
+                        + 'b'
+      .array[1]:        - 2
+                        + 3
+      .deque[1]:        - 2
+                        + 3
+      .set:             - Set{1, 2}
+                        + Set{1, 3}
+      .hash.two:        - 2
+                        + 3
+      .tuple:           - {1, true}
+                        + {1, false}
       .named_tuple.two: - 2
                         + 3
-      .time: - 2016-02-15 10:20:30 +09:00
-             + 2017-02-15 10:20:30 +09:00
-      .uri: - http://example.com/
-            + http://example.com/foo
-      .json.two: - "2"
-                 + "3"
-      .color: - Color::Red
-              + Color::Blue
+      .time:            - 2016-02-15 10:20:30 +09:00
+                        + 2017-02-15 10:20:30 +09:00
+      .uri:             - http://example.com/
+                        + http://example.com/foo
+      .json.two:        - "2"
+                        + "3"
+      .color:           - Color::Red
+                        + Color::Blue
       EOF
     )
   end
@@ -472,8 +472,8 @@ describe AssertDiff::SimpleFormatter do
     option = AssertDiff::Formatter::Option.new(true)
     report = AssertDiff::SimpleFormatter.new.report(diff, option)
     report.to_s.should eq_diff <<-DIFF
-    #{".a: ".colorize(:white)}#{"- 1".colorize(:red)}
-        #{"+ 2".colorize(:green)}
+    #{".a:    ".colorize(:white)}#{"- 1".colorize(:red)}
+           #{"+ 2".colorize(:green)}
     #{".b[1]: ".colorize(:white)}#{"+ 2".colorize(:green)}
     #{".c[1]: ".colorize(:white)}#{"- 2".colorize(:red)}
     DIFF

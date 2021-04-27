@@ -12,55 +12,76 @@ module AssertDiff
   end
 
   struct SimpleFormatter < Formatter
+    alias DiffValue = Changed | Added | Deleted
+    alias DiffRecord = {String, DiffValue}
+
     def initialize
-      @result = [] of String
+      @diffs = [] of DiffRecord
     end
 
     def report(diff : Diff, option : Option) : String
-      parse(diff)
-      @result.join("\n")
+      extract_diffs(diff)
+      report_diffs
     end
 
-    def parse(diff : Diff, key = "")
-      prefix = key == "" ? "" : "#{key}: "
-
+    private def extract_diffs(diff : Diff, key = "")
       case diff
       in Same
-        # nothing to print
+        # do nothing
       in Added
-        added = "+ #{raw_string(diff.value)}".colorize(:green)
-        @result << "#{prefix.colorize(:white)}#{added}"
+        @diffs << {key, diff}
       in Deleted
-        deleted = "- #{raw_string(diff.value)}".colorize(:red)
-        @result << "#{prefix.colorize(:white)}#{deleted}"
+        @diffs << {key, diff}
       in Changed
-        indent = " " * prefix.size
-        before = "- #{raw_string(diff.before)}".colorize(:red)
-        after = "+ #{raw_string(diff.after)}".colorize(:green)
-        @result << <<-EOF
-        #{prefix.colorize(:white)}#{before}
-        #{indent}#{after}
-        EOF
+        @diffs << {key, diff}
       in Hash(String, Diff)
         diff.each do |k, d|
-          parse(d, "#{key}.#{k}")
+          extract_diffs(d, "#{key}.#{k}")
         end
       in Array(Diff)
-        diff.each_with_index do |d, index|
-          parse(d, "#{key}[#{index}]")
+        diff.each_with_index do |d, i|
+          extract_diffs(d, "#{key}[#{i}]")
         end
       in ObjectDiff
         diff.properties.each do |p|
-          parse(p.value, "#{key}.#{p.key}")
+          extract_diffs(p.value, "#{key}.#{p.key}")
         end
       in MultilineDiff
         before = diff.before.gsub("\n", "\\n")
         after = diff.after.gsub("\n", "\\n")
-        parse(Changed.new(before, after), key)
+        extract_diffs(Changed.new(before, after), key)
       end
     end
 
-    def raw_string(value : Raw)
+    private def report_diffs
+      indent_size = @diffs.max_of do |key, _|
+        key == "" ? 0 : key.size + 2
+      end
+      indent = " " * indent_size
+
+      @diffs.join("\n") do |key, status|
+        label = key == "" ? "" : "#{key}: "
+        prefix = label.ljust(indent_size).colorize(:white)
+
+        case status
+        in Added
+          s = "+ #{raw_string(status.value)}".colorize(:green)
+          "#{prefix}#{s}"
+        in Deleted
+          s = "- #{raw_string(status.value)}".colorize(:red)
+          "#{prefix}#{s}"
+        in Changed
+          a = "- #{raw_string(status.before)}".colorize(:red)
+          b = "+ #{raw_string(status.after)}".colorize(:green)
+          <<-EOF
+          #{prefix}#{a}
+          #{indent}#{b}
+          EOF
+        end
+      end
+    end
+
+    private def raw_string(value : Raw)
       case value
       in Bool, Int32, Int64, Float32, Float64, AnyTuple, Time, URI, RawString, AnyEnum
         value.to_s
