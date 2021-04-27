@@ -4,14 +4,16 @@ require "diff"
 
 private def plain_diff(x, y)
   diff = AssertDiff.diff(x, y)
-  printer = AssertDiff::Printer.new(true)
-  printer.print_diff(diff).gsub(/\e.+?m/, "")
+  printer = AssertDiff::DefaultFormatter.new
+  option = AssertDiff::Formatter::Option.new(true)
+  printer.report(diff, option).gsub(/\e.+?m/, "")
 end
 
 private def plain_diff_full(x, y)
   diff = AssertDiff.diff(x, y)
-  printer = AssertDiff::Printer.new(false)
-  printer.print_diff(diff).gsub(/\e.+?m/, "")
+  printer = AssertDiff::DefaultFormatter.new
+  option = AssertDiff::Formatter::Option.new(false)
+  printer.report(diff, option).gsub(/\e.+?m/, "")
 end
 
 private struct ComplexStruct

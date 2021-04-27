@@ -17,7 +17,12 @@ module AssertDiff
                MultilineDiff |
                ObjectDiff
 
-  alias MultilineDiff = Array(Status)
+  record MultilineDiff,
+    before : String,
+    after : String,
+    diffs : Array(Status)
+
+  # alias MultilineDiff = Array(Status)
 
   alias PropertyDiff = KeyValue(String, Diff)
 
@@ -110,7 +115,7 @@ module AssertDiff
   end
 
   private def self.multiline_string_diff(before : String, after : String) : MultilineDiff
-    result = MultilineDiff.new
+    result = [] of Status
 
     # Note:
     # diff の順を Deleted -> Added に揃えるために、あえて逆に比較している。
@@ -126,6 +131,6 @@ module AssertDiff
       result << diff_type.new(string)
     end
 
-    result
+    MultilineDiff.new(before, after, result)
   end
 end

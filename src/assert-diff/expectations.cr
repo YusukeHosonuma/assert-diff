@@ -12,13 +12,15 @@ module AssertDiff
     def failure_message(actual_value)
       original_message = @original_expectation.failure_message(actual_value)
 
-      printer = Printer.new(@ommit_consecutive)
-      diff = printer.print_diff(AssertDiff.diff(@expected_value, actual_value)).split("\n")
+      diff = AssertDiff.diff(@expected_value, actual_value)
+
+      report = AssertDiff.formatter.report(diff, Formatter::Option.new(@ommit_consecutive))
+      lines = report.lines
 
       original_message + "\n" +
         <<-EOF
-          #{"diff:".colorize(:dark_gray)} #{diff.[0]}
-      #{diff.[1..].join("\n") { |s| " " * 10 + s }}
+          #{"diff:".colorize(:dark_gray)} #{lines[0]}
+      #{lines[1..].join("\n") { |s| " " * 10 + s }}
       EOF
     end
 
