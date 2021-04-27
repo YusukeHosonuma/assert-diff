@@ -16,7 +16,7 @@
 # #           }
 # ```
 def eq_diff(value)
-  AssertDiff::EqualDiffExpectation.new(value, true)
+  AssertDiff::EqualDiffExpectation.new(value)
 end
 
 # The same as `.eq_diff`, but this print full diff report.
@@ -38,7 +38,8 @@ end
 # #           }
 # ```
 def eq_diff_full(value)
-  AssertDiff::EqualDiffExpectation.new(value, false)
+  option = AssertDiff::Option.new(ommit_consecutive: false)
+  AssertDiff::EqualDiffExpectation.new(value, option)
 end
 
 # The same as `.eq_diff`, but this can be used independently.
@@ -47,7 +48,7 @@ end
 # assert_diff(before, after)
 # ```
 def assert_diff(before : A, after : B, file = __FILE__, line = __LINE__) forall A, B
-  assert_diff_internal(before, after, file, line, true)
+  assert_diff_internal(before, after, file, line)
 end
 
 # The same as `.eq_diff_full`, but this can be used independently.
@@ -56,11 +57,12 @@ end
 # assert_diff_full(before, after)
 # ```
 def assert_diff_full(before : A, after : B, file = __FILE__, line = __LINE__) forall A, B
-  assert_diff_internal(before, after, file, line, false)
+  option = AssertDiff::Option.new(ommit_consecutive: false)
+  assert_diff_internal(before, after, file, line, option)
 end
 
-private def assert_diff_internal(before, after, file, line, ommit_consecutive)
-  expectation = AssertDiff::EqualDiffExpectation.new(before, ommit_consecutive)
+private def assert_diff_internal(before, after, file, line, option = nil)
+  expectation = AssertDiff::EqualDiffExpectation.new(before, option)
   unless expectation.match after
     failure_message = expectation.failure_message(after)
     fail(failure_message, file, line)

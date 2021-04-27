@@ -7,15 +7,15 @@ require "diff"
 private def plain_diff(x, y)
   diff = AssertDiff.diff(x, y)
   printer = AssertDiff::DefaultFormatter.new
-  option = AssertDiff::Formatter::Option.new(true)
-  printer.report(diff, option).gsub(/\e.+?m/, "")
+  printer.option = AssertDiff::Option.new(true)
+  printer.report(diff).gsub(/\e.+?m/, "")
 end
 
 private def plain_diff_full(x, y)
   diff = AssertDiff.diff(x, y)
   printer = AssertDiff::DefaultFormatter.new
-  option = AssertDiff::Formatter::Option.new(false)
-  printer.report(diff, option).gsub(/\e.+?m/, "")
+  printer.option = AssertDiff::Option.new(false)
+  printer.report(diff).gsub(/\e.+?m/, "")
 end
 
 private struct ComplexStruct

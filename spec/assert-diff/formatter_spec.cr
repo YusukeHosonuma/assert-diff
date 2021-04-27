@@ -3,16 +3,17 @@ require "../spec_helper"
 private def assert_default_formatter(title, before, after, option, expected, file = __FILE__, line = __LINE__)
   it "#{title}", file, line do
     diff = AssertDiff.diff(before, after)
-    report = AssertDiff::DefaultFormatter.new.report(diff, option)
-    report.gsub(/\e.+?m/, "").to_s.should eq_diff expected
+    formatter = AssertDiff::DefaultFormatter.new
+    formatter.option = option
+    plain_report = formatter.report(diff).gsub(/\e.+?m/, "")
+    plain_report.to_s.should eq_diff expected
   end
 end
 
 private def assert_simple_formatter(title, before, after, expected, file = __FILE__, line = __LINE__)
   it "#{title}", file, line do
     diff = AssertDiff.diff(before, after)
-    option = AssertDiff::Formatter::Option.new(true)
-    report = AssertDiff::SimpleFormatter.new.report(diff, option)
+    report = AssertDiff::SimpleFormatter.new.report(diff)
     report.gsub(/\e.+?m/, "").to_s.should eq_diff expected
   end
 end
@@ -63,7 +64,7 @@ describe AssertDiff::DefaultFormatter do
     assert_default_formatter("true",
       before,
       after,
-      AssertDiff::Formatter::Option.new(true),
+      AssertDiff::Option.new(true),
       <<-DIFF
         {
           ...
@@ -85,7 +86,7 @@ describe AssertDiff::DefaultFormatter do
     assert_default_formatter("false",
       before,
       after,
-      AssertDiff::Formatter::Option.new(false),
+      AssertDiff::Option.new(false),
       <<-DIFF
         {
           a: 1,
@@ -112,7 +113,7 @@ describe AssertDiff::DefaultFormatter do
   assert_default_formatter("basic types",
     BasicTypesStruct.before,
     BasicTypesStruct.after,
-    AssertDiff::Formatter::Option.new(true),
+    AssertDiff::Option.new(true),
     <<-DIFF
       BasicTypesStruct {
     -   int: 42,
@@ -175,7 +176,7 @@ describe AssertDiff::DefaultFormatter do
     assert_default_formatter("different type",
       [A.new(1, 2)],
       [B.new(1, 2)],
-      AssertDiff::Formatter::Option.new(true),
+      AssertDiff::Option.new(true),
       <<-DIFF
         [
       -   A {
@@ -193,7 +194,7 @@ describe AssertDiff::DefaultFormatter do
     assert_default_formatter("added",
       [] of B,
       [B.new(1, 2)],
-      AssertDiff::Formatter::Option.new(true),
+      AssertDiff::Option.new(true),
       <<-DIFF
         [
       +   B {
@@ -207,7 +208,7 @@ describe AssertDiff::DefaultFormatter do
     assert_default_formatter("deleted",
       [A.new(1, 2)],
       [] of A,
-      AssertDiff::Formatter::Option.new(true),
+      AssertDiff::Option.new(true),
       <<-DIFF
         [
       -   A {
@@ -236,7 +237,7 @@ describe AssertDiff::DefaultFormatter do
       xc: {a: 3, b: 9}, # changed
       xd: {a: 5, b: 5}, # added
     },
-    AssertDiff::Formatter::Option.new(true),
+    AssertDiff::Option.new(true),
     <<-DIFF
       {
         ...
@@ -277,7 +278,7 @@ describe AssertDiff::DefaultFormatter do
       },
       [1, 2],
     ],
-    AssertDiff::Formatter::Option.new(true),
+    AssertDiff::Option.new(true),
     <<-DIFF
       [
         [
@@ -323,7 +324,7 @@ describe AssertDiff::DefaultFormatter do
       Three
       EOF
     ),
-    AssertDiff::Formatter::Option.new(true),
+    AssertDiff::Option.new(true),
     <<-DIFF
         ```
     +   Zero
@@ -469,8 +470,7 @@ describe AssertDiff::SimpleFormatter do
       c: [1],    # deleted
     }
     diff = AssertDiff.diff(before, after)
-    option = AssertDiff::Formatter::Option.new(true)
-    report = AssertDiff::SimpleFormatter.new.report(diff, option)
+    report = AssertDiff::SimpleFormatter.new.report(diff)
     report.to_s.should eq_diff <<-DIFF
     #{".a:    ".colorize(:white)}#{"- 1".colorize(:red)}
            #{"+ 2".colorize(:green)}

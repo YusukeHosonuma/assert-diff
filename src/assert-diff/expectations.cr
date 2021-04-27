@@ -5,7 +5,7 @@ module AssertDiff
   struct EqualDiffExpectation(T)
     @original_expectation : Spec::EqualExpectation(T)
 
-    def initialize(@expected_value : T, @ommit_consecutive : Bool)
+    def initialize(@expected_value : T, @option : Option? = nil)
       @original_expectation = Spec::EqualExpectation.new(@expected_value)
     end
 
@@ -13,17 +13,21 @@ module AssertDiff
       original_message = @original_expectation.failure_message(actual_value)
 
       diff = AssertDiff.diff(@expected_value, actual_value)
+      report = formatter.report(diff).lines
 
-      report = AssertDiff.formatter.report(diff, Formatter::Option.new(@ommit_consecutive))
-      lines = report.lines
-
-      original_message + "\n" +
-        <<-EOF
-          #{"diff:".colorize(:dark_gray)} #{lines[0]}
-      #{lines[1..].join("\n") { |s| " " * 10 + s }}
+      <<-EOF
+      #{original_message}
+          #{"diff:".colorize(:dark_gray)} #{report[0]}
+      #{report[1..].join("\n") { |s| " " * 10 + s }}
       EOF
     end
 
     forward_missing_to @original_expectation
+
+    private def formatter
+      formatter = AssertDiff.formatter
+      formatter.option = @option || AssertDiff.option
+      formatter
+    end
   end
 end
