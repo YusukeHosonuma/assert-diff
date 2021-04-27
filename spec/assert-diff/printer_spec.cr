@@ -2,6 +2,8 @@ require "../spec_helper"
 require "json"
 require "diff"
 
+# TODO: formatter_spec.cr で賄えてそうなら削除する
+
 private def plain_diff(x, y)
   diff = AssertDiff.diff(x, y)
   printer = AssertDiff::DefaultFormatter.new
@@ -45,12 +47,12 @@ class ComplexObject
   end
 end
 
-struct A
+private struct A
   def initialize(@x : Int32, @y : Int32)
   end
 end
 
-struct B
+private struct B
   def initialize(@x : Int32, @y : Int32)
   end
 end

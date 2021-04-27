@@ -1,6 +1,6 @@
 require "../spec_helper"
 
-private def test_diff(title, before, after, expected, file = __FILE__, line = __LINE__)
+private def assert_simple_formatter(title, before, after, expected, file = __FILE__, line = __LINE__)
   it "#{title}", file, line do
     diff = AssertDiff.diff(before, after)
     option = AssertDiff::Formatter::Option.new(true)
@@ -9,9 +9,337 @@ private def test_diff(title, before, after, expected, file = __FILE__, line = __
   end
 end
 
+private def assert_default_formatter(title, before, after, option, expected, file = __FILE__, line = __LINE__)
+  it "#{title}", file, line do
+    diff = AssertDiff.diff(before, after)
+    report = AssertDiff::DefaultFormatter.new.report(diff, option)
+    report.gsub(/\e.+?m/, "").to_s.should eq_diff expected
+  end
+end
+
+private struct A
+  def initialize(@x : Int32, @y : Int32)
+  end
+end
+
+private struct B
+  def initialize(@x : Int32, @y : Int32)
+  end
+end
+
+describe AssertDiff::DefaultFormatter do
+  context "Option#ommit_consecutive" do
+    before = {
+      a:  1,
+      b:  2,
+      c:  3, # to change
+      d:  4, # to delete
+      e:  5,
+      f:  6,
+      xs: [
+        1,
+        2,
+        3,
+        4,
+        5,
+      ],
+    }
+    after = {
+      a:  1,
+      b:  2,
+      c:  30, # changed
+      e:  5,
+      f:  6,
+      xs: [
+        1,
+        2,
+        30, # changed
+        4,
+        5,
+        6,
+      ],
+    }
+
+    assert_default_formatter("true",
+      before,
+      after,
+      AssertDiff::Formatter::Option.new(true),
+      <<-DIFF
+        {
+          ...
+      -   c: 3,
+      +   c: 30,
+      -   d: 4,
+          ...
+          xs: [
+            ...
+      -     3,
+      +     30,
+            ...
+      +     6,
+          ],
+        }
+      DIFF
+    )
+
+    assert_default_formatter("false",
+      before,
+      after,
+      AssertDiff::Formatter::Option.new(false),
+      <<-DIFF
+        {
+          a: 1,
+          b: 2,
+      -   c: 3,
+      +   c: 30,
+      -   d: 4,
+          e: 5,
+          f: 6,
+          xs: [
+            1,
+            2,
+      -     3,
+      +     30,
+            4,
+            5,
+      +     6,
+          ],
+        }
+      DIFF
+    )
+  end
+
+  assert_default_formatter("basic types",
+    BasicTypesStruct.before,
+    BasicTypesStruct.after,
+    AssertDiff::Formatter::Option.new(true),
+    <<-DIFF
+      BasicTypesStruct {
+    -   int: 42,
+    +   int: 43,
+    -   float: 1.2,
+    +   float: 1.3,
+    -   bool: true,
+    +   bool: false,
+    -   optional: nil,
+    +   optional: "string",
+    -   string: "Hello",
+    +   string: "Goodbye",
+    -   path: "foo/bar/baz.cr",
+    +   path: "foo/bar/hoge.cr",
+    -   symbol: :foo,
+    +   symbol: :bar,
+    -   char: 'a',
+    +   char: 'b',
+        array: [
+          ...
+    -     2,
+    +     3,
+        ],
+        deque: [
+          ...
+    -     2,
+    +     3,
+        ],
+    -   set: Set{1, 2},
+    +   set: Set{1, 3},
+        hash: {
+          ...
+    -     two: 2,
+    +     two: 3,
+        },
+    -   tuple: {1, true},
+    +   tuple: {1, false},
+        named_tuple: {
+          ...
+    -     two: 2,
+    +     two: 3,
+        },
+    -   time: 2016-02-15 10:20:30 +09:00,
+    +   time: 2017-02-15 10:20:30 +09:00,
+    -   uri: http://example.com/,
+    +   uri: http://example.com/foo,
+        json: {
+          ...
+    -     two: "2",
+    +     two: "3",
+        },
+    -   color: Color::Red,
+    +   color: Color::Blue,
+      }
+    DIFF
+    # TODO: Set は內部diffをとってもいい気がする。
+  )
+
+  context "object" do
+    assert_default_formatter("different type",
+      [A.new(1, 2)],
+      [B.new(1, 2)],
+      AssertDiff::Formatter::Option.new(true),
+      <<-DIFF
+        [
+      -   A {
+      -     x: 1,
+      -     y: 2,
+      -   },
+      +   B {
+      +     x: 1,
+      +     y: 2,
+      +   },
+        ]
+      DIFF
+    )
+
+    assert_default_formatter("added",
+      [] of B,
+      [B.new(1, 2)],
+      AssertDiff::Formatter::Option.new(true),
+      <<-DIFF
+        [
+      +   B {
+      +     x: 1,
+      +     y: 2,
+      +   },
+        ]
+      DIFF
+    )
+
+    assert_default_formatter("deleted",
+      [A.new(1, 2)],
+      [] of A,
+      AssertDiff::Formatter::Option.new(true),
+      <<-DIFF
+        [
+      -   A {
+      -     x: 1,
+      -     y: 2,
+      -   },
+        ]
+      DIFF
+    )
+  end
+
+  assert_default_formatter("Hash",
+    {
+      a:  1,
+      b:  2, # to delete
+      c:  3, # to change
+      xa: {a: 1, b: 1},
+      xb: {a: 2, b: 2}, # to delete
+      xc: {a: 3, b: 3}, # to change
+    },
+    {
+      a:  1,
+      c:  4,
+      d:  5, # added
+      xa: {a: 1, b: 1},
+      xc: {a: 3, b: 9}, # changed
+      xd: {a: 5, b: 5}, # added
+    },
+    AssertDiff::Formatter::Option.new(true),
+    <<-DIFF
+      {
+        ...
+    -   b: 2,
+    -   c: 3,
+    +   c: 4,
+    +   d: 5,
+        ...
+    -   xb: {
+    -     a: 2,
+    -     b: 2,
+    -   },
+        xc: {
+          ...
+    -     b: 3,
+    +     b: 9,
+        },
+    +   xd: {
+    +     a: 5,
+    +     b: 5,
+    +   },
+      }
+    DIFF
+  )
+
+  assert_default_formatter("Array",
+    [
+      [1, 2, 3],
+      {
+        x: [1, 2, 3],
+      },
+    ],
+    [
+      [1, 2, 0, 4],
+      {
+        x: [1, 2, 0, 4],
+        y: [1, 2],
+      },
+      [1, 2],
+    ],
+    AssertDiff::Formatter::Option.new(true),
+    <<-DIFF
+      [
+        [
+          ...
+    -     3,
+    +     0,
+    +     4,
+        ],
+        {
+          x: [
+            ...
+    -       3,
+    +       0,
+    +       4,
+          ],
+    +     y: [
+    +       1,
+    +       2,
+    +     ],
+        },
+    +   [
+    +     1,
+    +     2,
+    +   ],
+      ]
+    DIFF
+  )
+
+  assert_default_formatter("Multi-line string",
+    (
+      <<-EOF
+      One
+      Two
+      Three
+      Four
+      EOF
+    ),
+    (
+      <<-EOF
+      Zero
+      One
+      Two!!
+      Three
+      EOF
+    ),
+    AssertDiff::Formatter::Option.new(true),
+    <<-DIFF
+        ```
+    +   Zero
+        One
+    -   Two
+    +   Two!!
+        Three
+    -   Four
+        ```
+    DIFF
+  )
+end
+
 describe AssertDiff::SimpleFormatter do
   describe "#report" do
-    test_diff("README",
+    assert_simple_formatter("README",
       Rectangle.new(Point.new(0, 0), 4, 3, "One\nTwo\nThree\nFour"),
       Rectangle.new(Point.new(0, 1), 4, 7, "Zero\nOne\nTwo!!\nThree"),
       <<-EOF
@@ -25,7 +353,7 @@ describe AssertDiff::SimpleFormatter do
     )
 
     context "array" do
-      test_diff("change and add",
+      assert_simple_formatter("change and add",
         [1, 2],
         [1, 9, 3],
         <<-EOF
@@ -35,7 +363,7 @@ describe AssertDiff::SimpleFormatter do
         EOF
       )
 
-      test_diff("array delete element",
+      assert_simple_formatter("array delete element",
         [1, 2],
         [1],
         <<-EOF
@@ -45,7 +373,7 @@ describe AssertDiff::SimpleFormatter do
     end
 
     context "hash" do
-      test_diff("change and add",
+      assert_simple_formatter("change and add",
         {
           a: 1,
           b: 2,
@@ -62,7 +390,7 @@ describe AssertDiff::SimpleFormatter do
         EOF
       )
 
-      test_diff("deleted",
+      assert_simple_formatter("deleted",
         {
           a: 1,
           b: 2, # to delete
@@ -76,7 +404,7 @@ describe AssertDiff::SimpleFormatter do
       )
     end
 
-    test_diff("multi-line string",
+    assert_simple_formatter("multi-line string",
       "One\nTwo\nThree\nFour",
       "Zero\nOne\nTwo!!\nThree",
       <<-EOF
@@ -85,48 +413,7 @@ describe AssertDiff::SimpleFormatter do
       EOF
     )
 
-    before = BasicTypesStruct.new(
-      int: 42,
-      float: 1.2,
-      bool: true,
-      optional: nil,
-      string: "Hello",
-      path: Path["foo/bar/baz.cr"],
-      symbol: :foo,
-      char: 'a',
-      array: [1, 2],
-      deque: Deque.new([1, 2]),
-      set: Set{1, 2},
-      hash: {"one" => 1, "two" => 2},
-      tuple: {1, true},
-      named_tuple: {one: 1, two: 2},
-      time: Time.local(2016, 2, 15, 10, 20, 30, location: Time::Location.load("Asia/Tokyo")),
-      uri: URI.parse("http://example.com/"),
-      json: JSON::Any.new({"one" => JSON::Any.new("1"), "two" => JSON::Any.new("2")}),
-      color: Color::Red
-    )
-    after = BasicTypesStruct.new(
-      int: 43,
-      float: 1.3,
-      bool: false,
-      optional: "string",
-      string: "Goodbye",
-      path: Path["foo/bar/hoge.cr"],
-      symbol: :bar,
-      char: 'b',
-      array: [1, 3],
-      deque: Deque.new([1, 3]),
-      set: Set{1, 3},
-      hash: {"one" => 1, "two" => 3},
-      tuple: {1, false},
-      named_tuple: {one: 1, two: 3},
-      time: Time.local(2017, 2, 15, 10, 20, 30, location: Time::Location.load("Asia/Tokyo")),
-      uri: URI.parse("http://example.com/foo"),
-      json: JSON::Any.new({"one" => JSON::Any.new("1"), "two" => JSON::Any.new("3")}),
-      color: Color::Blue
-    )
-
-    test_diff("basic types",
+    assert_simple_formatter("basic types",
       BasicTypesStruct.before,
       BasicTypesStruct.after,
       <<-EOF
