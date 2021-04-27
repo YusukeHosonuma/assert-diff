@@ -28,16 +28,18 @@ module AssertDiff
       in Same
         # nothing to print
       in Added
-        @result << "#{prefix}+ #{raw_string(diff.value)}"
+        added = "+ #{raw_string(diff.value)}".colorize(:green)
+        @result << "#{prefix.colorize(:white)}#{added}"
       in Deleted
-        @result << "#{prefix}- #{raw_string(diff.value)}"
+        deleted = "- #{raw_string(diff.value)}".colorize(:red)
+        @result << "#{prefix.colorize(:white)}#{deleted}"
       in Changed
         indent = " " * prefix.size
-        before = "- #{raw_string(diff.before)}"
-        after = "+ #{raw_string(diff.after)}"
+        before = "- #{raw_string(diff.before)}".colorize(:red)
+        after = "+ #{raw_string(diff.after)}".colorize(:green)
         @result << <<-EOF
-        #{prefix.colorize(:white)}#{before.colorize(:red)}
-        #{indent}#{after.colorize(:green)}
+        #{prefix.colorize(:white)}#{before}
+        #{indent}#{after}
         EOF
       in Hash(String, Diff)
         diff.each do |k, d|

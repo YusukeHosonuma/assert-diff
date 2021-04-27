@@ -1,18 +1,18 @@
 require "../spec_helper"
 
+private def assert_default_formatter(title, before, after, option, expected, file = __FILE__, line = __LINE__)
+  it "#{title}", file, line do
+    diff = AssertDiff.diff(before, after)
+    report = AssertDiff::DefaultFormatter.new.report(diff, option)
+    report.gsub(/\e.+?m/, "").to_s.should eq_diff expected
+  end
+end
+
 private def assert_simple_formatter(title, before, after, expected, file = __FILE__, line = __LINE__)
   it "#{title}", file, line do
     diff = AssertDiff.diff(before, after)
     option = AssertDiff::Formatter::Option.new(true)
     report = AssertDiff::SimpleFormatter.new.report(diff, option)
-    report.gsub(/\e.+?m/, "").to_s.should eq_diff expected
-  end
-end
-
-private def assert_default_formatter(title, before, after, option, expected, file = __FILE__, line = __LINE__)
-  it "#{title}", file, line do
-    diff = AssertDiff.diff(before, after)
-    report = AssertDiff::DefaultFormatter.new.report(diff, option)
     report.gsub(/\e.+?m/, "").to_s.should eq_diff expected
   end
 end
@@ -168,7 +168,7 @@ describe AssertDiff::DefaultFormatter do
     +   color: Color::Blue,
       }
     DIFF
-    # TODO: Set は內部diffをとってもいい気がする。
+  # TODO: Set は內部diffをとってもいい気がする。
   )
 
   context "object" do
@@ -455,5 +455,27 @@ describe AssertDiff::SimpleFormatter do
               + Color::Blue
       EOF
     )
+  end
+
+  it "colorize" do
+    before = {
+      a: 1,
+      b: [1],
+      c: [1, 2],
+    }
+    after = {
+      a: 2,      # changed
+      b: [1, 2], # added
+      c: [1],    # deleted
+    }
+    diff = AssertDiff.diff(before, after)
+    option = AssertDiff::Formatter::Option.new(true)
+    report = AssertDiff::SimpleFormatter.new.report(diff, option)
+    report.to_s.should eq_diff <<-DIFF
+    #{".a: ".colorize(:white)}#{"- 1".colorize(:red)}
+        #{"+ 2".colorize(:green)}
+    #{".b[1]: ".colorize(:white)}#{"+ 2".colorize(:green)}
+    #{".c[1]: ".colorize(:white)}#{"- 2".colorize(:red)}
+    DIFF
   end
 end
