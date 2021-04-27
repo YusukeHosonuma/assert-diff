@@ -4,14 +4,14 @@ module AssertDiff
   class_property formatter
   @@formatter : Formatter = DefaultFormatter.new
 
-  abstract class Formatter
+  abstract struct Formatter
     record Option,
       ommit_consecutive : Bool
 
     abstract def report(diff : Diff, option : Option) : String
   end
 
-  class SimpleFormatter < Formatter
+  struct SimpleFormatter < Formatter
     def initialize
       @result = [] of String
     end
@@ -82,7 +82,7 @@ module AssertDiff
     end
   end
 
-  class DefaultFormatter < Formatter
+  struct DefaultFormatter < Formatter
     def report(diff : Diff, option : Option) : String
       InnerFormatter.new(option).report(diff)
     end
