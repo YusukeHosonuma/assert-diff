@@ -14,51 +14,51 @@ module AssertDiff
     alias DiffValue = Changed | Added | Deleted
     alias DiffRecord = {String, DiffValue}
 
-    def initialize
-      @diffs = [] of DiffRecord
-    end
-
     def report(diff : Diff) : String
-      extract_diffs(diff)
-      report_diffs
+      diffs = extract_diffs(diff)
+      report_diffs(diffs)
     end
 
-    private def extract_diffs(diff : Diff, key = "")
+    private def extract_diffs(diff : Diff, key = "") : Array(DiffRecord)
+      diffs = [] of DiffRecord
+
       case diff
       in Same
         # do nothing
       in Added
-        @diffs << {key, diff}
+        diffs << {key, diff}
       in Deleted
-        @diffs << {key, diff}
+        diffs << {key, diff}
       in Changed
-        @diffs << {key, diff}
+        diffs << {key, diff}
       in Hash(String, Diff)
         diff.each do |k, d|
-          extract_diffs(d, "#{key}.#{k}")
+          diffs.concat extract_diffs(d, "#{key}.#{k}")
         end
       in Array(Diff)
         diff.each_with_index do |d, i|
-          extract_diffs(d, "#{key}[#{i}]")
+          diffs.concat extract_diffs(d, "#{key}[#{i}]")
         end
       in ObjectDiff
         diff.properties.each do |p|
-          extract_diffs(p.value, "#{key}.#{p.key}")
+          diffs.concat extract_diffs(p.value, "#{key}.#{p.key}")
         end
       in MultilineDiff
         before = diff.before.gsub("\n", "\\n")
         after = diff.after.gsub("\n", "\\n")
-        extract_diffs(Changed.new(before, after), key)
+        diffs.concat extract_diffs(Changed.new(before, after), key)
       end
+
+      diffs
     end
 
-    private def report_diffs
-      indent_size = @diffs.max_of do |key, _|
+    private def report_diffs(diffs : Array(DiffRecord))
+      indent_size = diffs.max_of do |key, _|
         key == "" ? 0 : key.size + 2
       end
       indent = " " * indent_size
 
-      @diffs.join("\n") do |key, status|
+      diffs.join("\n") do |key, status|
         label = key == "" ? "" : "#{key}: "
         prefix = label.ljust(indent_size).colorize(:white)
 
@@ -93,13 +93,13 @@ module AssertDiff
       in Nil
         "nil"
       in Array
-        raise "Not reachable."
+        %Q([#{value.join(", ")}])
       in Set
         "Set{" + value.join(", ") + "}"
       in Hash
-        raise "Not reachable."
+        %Q({#{value.join(", ") { |k, v| "#{k}: #{v}" }}})
       in AnyObject
-        raise "Not reachable."
+        "#{value.typename} { #{value.properties.join(", ") { |p| "#{p.key}: #{p.value}" }} }"
       end
     end
   end
