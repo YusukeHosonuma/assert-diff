@@ -177,7 +177,7 @@ describe AssertDiff::DefaultFormatter do
         ],
       }
     DIFF
-    # TODO: Set は內部diffをとってもいい気がする。
+  # TODO: Set は內部diffをとってもいい気がする。
   )
 
   assert_default_formatter("Hash",

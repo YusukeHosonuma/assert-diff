@@ -99,7 +99,7 @@ module AssertDiff
       in Hash
         %Q({#{value.join(", ") { |k, v| "#{k}: #{v}" }}})
       in AnyObject
-        "#{value.typename} { #{value.properties.join(", ") {|p| "#{p.key}: #{p.value}"}} }"
+        "#{value.typename} { #{value.properties.join(", ") { |p| "#{p.key}: #{p.value}" }} }"
       end
     end
   end
