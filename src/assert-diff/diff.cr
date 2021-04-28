@@ -22,8 +22,6 @@ module AssertDiff
     after : String,
     diffs : Array(Status)
 
-  # alias MultilineDiff = Array(Status)
-
   alias PropertyDiff = KeyValue(String, Diff)
 
   struct ObjectDiff
