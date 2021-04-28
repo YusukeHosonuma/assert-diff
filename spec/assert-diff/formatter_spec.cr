@@ -18,16 +18,6 @@ private def assert_simple_formatter(title, before, after, expected, file = __FIL
   end
 end
 
-private struct A
-  def initialize(@x : Int32, @y : Int32)
-  end
-end
-
-private struct B
-  def initialize(@x : Int32, @y : Int32)
-  end
-end
-
 describe AssertDiff::DefaultFormatter do
   context "Option#ommit_consecutive" do
     before = {
@@ -167,58 +157,28 @@ describe AssertDiff::DefaultFormatter do
         },
     -   color: Color::Red,
     +   color: Color::Blue,
+        array_of_hash: [
+    +     {
+    +       one: 1,
+    +       two: 2,
+    +     },
+        ],
+        array_of_array: [
+    +     [
+    +       1,
+    +       2,
+    +     ],
+        ],
+        array_of_object: [
+    +     A {
+    +       x: 1,
+    +       y: 2,
+    +     },
+        ],
       }
     DIFF
-  # TODO: Set は內部diffをとってもいい気がする。
+    # TODO: Set は內部diffをとってもいい気がする。
   )
-
-  context "object" do
-    assert_default_formatter("different type",
-      [A.new(1, 2)],
-      [B.new(1, 2)],
-      AssertDiff::Option.new(true),
-      <<-DIFF
-        [
-      -   A {
-      -     x: 1,
-      -     y: 2,
-      -   },
-      +   B {
-      +     x: 1,
-      +     y: 2,
-      +   },
-        ]
-      DIFF
-    )
-
-    assert_default_formatter("added",
-      [] of B,
-      [B.new(1, 2)],
-      AssertDiff::Option.new(true),
-      <<-DIFF
-        [
-      +   B {
-      +     x: 1,
-      +     y: 2,
-      +   },
-        ]
-      DIFF
-    )
-
-    assert_default_formatter("deleted",
-      [A.new(1, 2)],
-      [] of A,
-      AssertDiff::Option.new(true),
-      <<-DIFF
-        [
-      -   A {
-      -     x: 1,
-      -     y: 2,
-      -   },
-        ]
-      DIFF
-    )
-  end
 
   assert_default_formatter("Hash",
     {
@@ -383,11 +343,13 @@ describe AssertDiff::SimpleFormatter do
           a: 1,
           b: 9, # changed
           c: 3,
+          d: {a: 1, b: 2},
         },
         <<-EOF
         .b: - 2
             + 9
         .c: + 3
+        .d: + {a: 1, b: 2}
         EOF
       )
 
@@ -418,42 +380,45 @@ describe AssertDiff::SimpleFormatter do
       BasicTypesStruct.before,
       BasicTypesStruct.after,
       <<-EOF
-      .int:             - 42
-                        + 43
-      .float:           - 1.2
-                        + 1.3
-      .bool:            - true
-                        + false
-      .optional:        - nil
-                        + "string"
-      .string:          - "Hello"
-                        + "Goodbye"
-      .path:            - "foo/bar/baz.cr"
-                        + "foo/bar/hoge.cr"
-      .symbol:          - :foo
-                        + :bar
-      .char:            - 'a'
-                        + 'b'
-      .array[1]:        - 2
-                        + 3
-      .deque[1]:        - 2
-                        + 3
-      .set:             - Set{1, 2}
-                        + Set{1, 3}
-      .hash.two:        - 2
-                        + 3
-      .tuple:           - {1, true}
-                        + {1, false}
-      .named_tuple.two: - 2
-                        + 3
-      .time:            - 2016-02-15 10:20:30 +09:00
-                        + 2017-02-15 10:20:30 +09:00
-      .uri:             - http://example.com/
-                        + http://example.com/foo
-      .json.two:        - "2"
-                        + "3"
-      .color:           - Color::Red
-                        + Color::Blue
+      .int:                - 42
+                           + 43
+      .float:              - 1.2
+                           + 1.3
+      .bool:               - true
+                           + false
+      .optional:           - nil
+                           + "string"
+      .string:             - "Hello"
+                           + "Goodbye"
+      .path:               - "foo/bar/baz.cr"
+                           + "foo/bar/hoge.cr"
+      .symbol:             - :foo
+                           + :bar
+      .char:               - 'a'
+                           + 'b'
+      .array[1]:           - 2
+                           + 3
+      .deque[1]:           - 2
+                           + 3
+      .set:                - Set{1, 2}
+                           + Set{1, 3}
+      .hash.two:           - 2
+                           + 3
+      .tuple:              - {1, true}
+                           + {1, false}
+      .named_tuple.two:    - 2
+                           + 3
+      .time:               - 2016-02-15 10:20:30 +09:00
+                           + 2017-02-15 10:20:30 +09:00
+      .uri:                - http://example.com/
+                           + http://example.com/foo
+      .json.two:           - "2"
+                           + "3"
+      .color:              - Color::Red
+                           + Color::Blue
+      .array_of_hash[0]:   + {one: 1, two: 2}
+      .array_of_array[0]:  + [1, 2]
+      .array_of_object[0]: + A { x: 1, y: 2 }
       EOF
     )
   end

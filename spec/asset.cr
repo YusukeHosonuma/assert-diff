@@ -6,6 +6,16 @@ enum Color
   Blue
 end
 
+struct A
+  def initialize(@x : Int32, @y : Int32)
+  end
+end
+
+struct B
+  def initialize(@x : Int32, @y : Int32)
+  end
+end
+
 struct BasicTypesStruct
   def initialize(
     @int : Int32,
@@ -25,7 +35,10 @@ struct BasicTypesStruct
     @time : Time,
     @uri : URI,
     @json : JSON::Any,
-    @color : Color
+    @color : Color,
+    @array_of_hash : Array(Hash(String, Int32)),
+    @array_of_array : Array(Array(Int32)),
+    @array_of_object : Array(A)
   )
   end
 
@@ -48,7 +61,10 @@ struct BasicTypesStruct
       time: Time.local(2016, 2, 15, 10, 20, 30, location: Time::Location.load("Asia/Tokyo")),
       uri: URI.parse("http://example.com/"),
       json: JSON::Any.new({"one" => JSON::Any.new("1"), "two" => JSON::Any.new("2")}),
-      color: Color::Red
+      color: Color::Red,
+      array_of_hash: [] of Hash(String, Int32),
+      array_of_array: [] of Array(Int32),
+      array_of_object: [] of A
     )
   end
 
@@ -71,7 +87,10 @@ struct BasicTypesStruct
       time: Time.local(2017, 2, 15, 10, 20, 30, location: Time::Location.load("Asia/Tokyo")),
       uri: URI.parse("http://example.com/foo"),
       json: JSON::Any.new({"one" => JSON::Any.new("1"), "two" => JSON::Any.new("3")}),
-      color: Color::Blue
+      color: Color::Blue,
+      array_of_hash: [{"one" => 1, "two" => 2}],
+      array_of_array: [[1, 2]],
+      array_of_object: [A.new(1, 2)]
     )
   end
 end

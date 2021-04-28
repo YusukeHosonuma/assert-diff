@@ -20,7 +20,10 @@ private class BasicTypesClass
     @time : Time,
     @uri : URI,
     @json : JSON::Any,
-    @color : Color
+    @color : Color,
+    @array_of_hash : Array(Hash(String, Int32)),
+    @array_of_array : Array(Array(Int32)),
+    @array_of_object : Array(A)
   )
   end
 end
@@ -54,6 +57,7 @@ private class NestedClass
   end
 end
 
+# TODO: ここのテストとしては冗長なので整理したい。
 private def expected(typename)
   AnyHash.new(
     AnyObject.new(typename, [
@@ -93,32 +97,16 @@ private def expected(typename)
       AnyProperty.new("uri", AnyHash.new(URI.parse("http://example.com/"))),
       AnyProperty.new("json", AnyHash.new({"one" => AnyHash.new("1"), "two" => AnyHash.new("2")})),
       AnyProperty.new("color", AnyHash.new(AnyEnum.new(Color::Red))),
+      AnyProperty.new("array_of_hash", AnyHash.new([] of AnyHash)),
+      AnyProperty.new("array_of_array", AnyHash.new([] of AnyHash)),
+      AnyProperty.new("array_of_object", AnyHash.new([] of AnyHash)),
     ])
   )
 end
 
 describe Object do
   describe "#__to_json_any" do
-    object = BasicTypesStruct.new(
-      int: 42,
-      float: 1.2,
-      bool: true,
-      optional: nil,
-      string: "Hello",
-      path: Path["foo/bar/baz.cr"],
-      symbol: :foo,
-      char: 'a',
-      array: [1, 2],
-      deque: Deque.new([1, 2]),
-      set: Set{1, 2},
-      hash: {"one" => 1, "two" => 2},
-      tuple: {1, true},
-      named_tuple: {one: 1, two: 2},
-      time: Time.local(2016, 2, 15, 10, 20, 30, location: Time::Location.load("Asia/Tokyo")),
-      uri: URI.parse("http://example.com/"),
-      json: JSON::Any.new({"one" => JSON::Any.new("1"), "two" => JSON::Any.new("2")}),
-      color: Color::Red
-    )
+    object = BasicTypesStruct.before
     klass = BasicTypesClass.new(
       int: 42,
       float: 1.2,
@@ -137,7 +125,10 @@ describe Object do
       time: Time.local(2016, 2, 15, 10, 20, 30, location: Time::Location.load("Asia/Tokyo")),
       uri: URI.parse("http://example.com/"),
       json: JSON::Any.new({"one" => JSON::Any.new("1"), "two" => JSON::Any.new("2")}),
-      color: Color::Red
+      color: Color::Red,
+      array_of_hash: [] of Hash(String, Int32),
+      array_of_array: [] of Array(Int32),
+      array_of_object: [] of A
     )
 
     it "struct" do
